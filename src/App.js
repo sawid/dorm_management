@@ -1,4 +1,8 @@
 import MainPage from "./components/main-page.component";
+import Menu from "./components/sidebar.component";
+import Header from "./components/header.component";
+import Footer from "./components/footer.component";
+import Dashboard from "./components/dashboard.component";
 
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
@@ -12,7 +16,12 @@ import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
 
 function App() {
   return (
+    <div class="wrapper">
     <Router>
+      <Header/>
+      <Menu/>
+      <Dashboard/>
+      <Footer/>
       <div className="App">
           <nav className="navbar navbar-dark bg-dark">
             <Container>
@@ -44,6 +53,7 @@ function App() {
         </Container>
       </div>
     </Router>
+    </div>
   );
 }
 

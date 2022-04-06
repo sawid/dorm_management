@@ -578,7 +578,7 @@ export default class Dashboard extends Component {
                             defaultValue={50}
                             data-width={60}
                             data-height={60}
-                            data-fgcolor="#39CCCC"
+                            data-fgcolor="#39CCCC" 
                           />
                           <div className="text-white">Online</div>
                         </div>

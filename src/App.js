@@ -13,46 +13,22 @@ import Col from "react-bootstrap/Col";
 import "./App.css";
 import "bootstrap/dist/css/bootstrap.css";
 import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
+import Withnav from "./components/withnav.component";
+import Loginpage from "./components/login.component";
+import Withoutnav from "./components/withoutnav.component";
 
 function App() {
   return (
     <div class="wrapper">
-    <Router>
-      <Header/>
-      <Menu/>
-      <Dashboard/>
-      <Footer/>
-      <div className="App">
-          <nav className="navbar navbar-dark bg-dark">
-            <Container>
-              <Navbar.Brand>
-                <Link to={"/"} className="nav-link">
-                  React Dorm System
-                </Link>
-              </Navbar.Brand>
-
-              <Nav className="justify-content-end">
-                <Nav>
-                  <Link to={"/"} className="nav-link">
-                    main
-                  </Link>
-                </Nav>
-              </Nav>
-            </Container>
-          </nav>
-        <Container>
-          <Row>
-            <Col md="12">
-              <div className="wrapper">
-                <Routes>
-                  <Route exact path="/" element={<MainPage />} />
-                </Routes>
-              </div>
-            </Col>
-          </Row>
-        </Container>
-      </div>
-    </Router>
+      <Router>
+        <Header />
+        <Menu />
+        <Routes>
+          <Route path="/" exact element={<Dashboard />}/>
+          <Route path="/login" element={<Loginpage />}/>
+        </Routes>
+        <Footer />
+      </Router>
     </div>
   );
 }

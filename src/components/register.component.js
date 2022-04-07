@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 
-export default class Loginpage extends Component {
+export default class Registerpage extends Component {
   render() {
     return (
       <body class="hold-transition login-page font-sarabun">
@@ -12,7 +12,7 @@ export default class Loginpage extends Component {
               </a>
             </div>
             <div class="card-body">
-              <p class="login-box-msg">ลงชื่อเข้าใช้</p>
+              <p class="login-box-msg">สมัครสมาชิก</p>
               <form action="../../index3.html" method="post">
                 <div class="input-group mb-3">
                   <input
@@ -38,26 +38,35 @@ export default class Loginpage extends Component {
                     </div>
                   </div>
                 </div>
-                <div class="row">
-                  <div class="col-8">
-                    
+                <div class="input-group mb-3">
+                  <input
+                    type="password"
+                    class="form-control"
+                    placeholder="ยืนยันรหัสผ่าน"
+                  />
+                  <div class="input-group-append">
+                    <div class="input-group-text">
+                      <span class="fas fa-lock"></span>
+                    </div>
                   </div>
+                </div>
+                <div class="row">
+                  <div class="col-6"></div>
 
-                  <div class="col-4">
+                  <div class="col-6">
                     <button type="submit" class="btn btn-primary btn-block">
-                      ล็อกอิน
+                      สมัครสมาชิก
                     </button>
                   </div>
                 </div>
               </form>
-              <div class="social-auth-links text-center mt-2 mb-3">
-                
-              </div>
+              <div class="social-auth-links text-center mt-2 mb-3"></div>
 
-              <p class="mb-1">
-                <a href="forgot-password.html">ลืมรหัสผ่าน</a>
+              <p class="mb-0">
+                <a href="register.html" class="text-center">
+                  เข้าสู่ระบบ
+                </a>
               </p>
-              
             </div>
           </div>
         </div>

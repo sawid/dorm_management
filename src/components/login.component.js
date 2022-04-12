@@ -1,9 +1,9 @@
-import React, { Component } from "react";
+import React from 'react'
 
-export default class Loginpage extends Component {
-  render() {
-    return (
-      <body class="hold-transition login-page font-sarabun">
+const Loginpage = () => {
+  
+  return (
+    <body class="hold-transition login-page font-sarabun">
         <div class="login-box">
           <div class="card card-outline card-primary">
             <div class="card-header text-center">
@@ -68,6 +68,7 @@ export default class Loginpage extends Component {
 
         <script src="../../dist/js/adminlte.min.js?v=3.2.0"></script>
       </body>
-    );
-  }
+  )
 }
+
+export default Loginpage

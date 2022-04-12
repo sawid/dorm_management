@@ -10,7 +10,6 @@ import Registerpage from "./components/register.component";
 import "./App.css";
 import "bootstrap/dist/css/bootstrap.css";
 import {
-  BrowserRouter as Router,
   Route,
   Routes,
   Link,
@@ -21,7 +20,6 @@ import {
 function App() {
   return (
     <div class="wrapper">
-      <Router>
         <Routes>
           <Route element={<WithoutNav />}>
             <Route path="/login" element={<Loginpage />} />
@@ -31,7 +29,6 @@ function App() {
             <Route path="/" exact element={<Dashboard />} />
           </Route>
         </Routes>
-      </Router>
     </div>
   );
 }

@@ -1,8 +1,13 @@
 import React, { useState } from "react";
 
 import { login } from "./function.components/auth";
+import { useDispatch } from "react-redux";
+import { Navigate, useNavigate } from "react-router-dom";
 
-const Loginpage = () => {
+const Loginpage = ({ history }) => {
+  const navigate = useNavigate()
+  const dispatch = useDispatch()
+
   const [value, setValue] = useState({
     username: "",
     password: "",
@@ -12,15 +17,35 @@ const Loginpage = () => {
     setValue({ ...value, [e.target.name]: e.target.value });
   };
 
+  const roleBaseRedirect = (role) => {
+    if (role === 'admin') {
+      navigate('/');
+    }
+    else {
+      navigate('/');
+    }
+  };
+
   console.log(value);
 
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log(value); 
+
     login(value)
       .then((res) => {
         console.log(res.data);
         alert(res.data);
+        dispatch({
+          type:'LOGIN',
+          payload: {
+            token: res.data.token,
+            username: res.data.payload.user.username,
+            role: res.data.payload.user.role,
+          }
+        });
+        localStorage.setItem('token', res.data.token);
+        roleBaseRedirect(res.data.payload.user.role)
       })
       .catch((err) => {
         console.log(err.response.data);

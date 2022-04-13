@@ -1,7 +1,23 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { Button } from "bootstrap";
 
 const Menu = () => {
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const logout = () => {
+    dispatch({
+      type:'LOGOUT',
+      payload: null,
+    });
+    navigate('/login');
+
+  }
+
   return (
     <div>
       <aside className="main-sidebar sidebar-dark-primary elevation-4">
@@ -58,6 +74,9 @@ const Menu = () => {
                   <i className="nav-icon far fa-image" />
                   <p>จัดการห้องพัก</p>
                 </a>
+              </li>
+              <li className="nav-item">
+                <button type="button" class="btn btn-block btn-primary" onClick={logout}>ออกจากระบบ</button>
               </li>
             </ul>
           </nav>

@@ -18,11 +18,11 @@ const Loginpage = ({ history }) => {
   };
 
   const roleBaseRedirect = (role) => {
-    if (role === 'admin') {
-      navigate('/');
+    if (role === "admin") {
+      navigate('/admin/index');
     }
     else {
-      navigate('/');
+      navigate('/user/index');
     }
   };
 

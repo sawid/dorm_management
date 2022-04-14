@@ -6,6 +6,6 @@ export function userReducer(state = null, action) {
       localStorage.clear();
       return action.payload;
     default:
-      return state;
+      return state
   }
 }

@@ -4,6 +4,7 @@ import LoadingToRedirect from './LoadingToRedirect'
 
 const UserRoute = ({children}) => {
   const { user } = useSelector((state) => ({...state}))
+  console.log('userRoute',children)
 
   return user && user.token 
   ? children

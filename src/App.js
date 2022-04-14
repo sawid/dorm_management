@@ -62,7 +62,11 @@ function App() {
                 <HomeAdmin />
               </AdminRoute>
             } />
-            <Route path="/user/index" element={<HomeUser />} />
+            <Route path="/user/index" element={
+            <UserRoute>
+              <HomeUser />
+            </UserRoute>
+            } />
 
           </Route>
           <Route element={<WithNav />}>

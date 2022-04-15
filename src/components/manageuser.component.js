@@ -80,7 +80,7 @@ const Manageuser = () => {
                         </th>
                       </tr>
                     </tbody>
-                  </table>
+                  </table>      
                     </div>
                   </div>
                 </div>

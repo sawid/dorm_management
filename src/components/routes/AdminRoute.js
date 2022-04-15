@@ -8,7 +8,6 @@ const AdminRoute = ({children}) => {
         const { user } = useSelector((state) => ({...state}))
         const [ok, setOk] = useState()
         console.log(user)
-        debugger;
     
         useEffect(()=>{
     

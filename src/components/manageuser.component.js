@@ -1,6 +1,27 @@
 import React from "react";
+import { useState, useEffect } from 'react';
+import { listUser } from "./function.components/users";
+import { useSelector } from "react-redux";
 
 const Manageuser = () => {
+  const { user } = useSelector((state) => ({...state}))
+  const [ data, setData ] = useState([]);
+
+  console.log(data)
+  useEffect(() => {
+        loadData(user.token);
+  },[])
+
+  const loadData = (authtoken) => {
+        listUser(authtoken)
+        .then(res => {
+                setData(res.data);
+        })
+        .catch(err => {
+                console.log(err);
+        })
+  };
+
   return (
     <div>
       <div className="content-wrapper font-sarabun">
@@ -36,53 +57,44 @@ const Manageuser = () => {
                   <div className="card-header">
                     <h3 class="card-title">รายชื่อผู้ใช้ในระบบ</h3>
                   </div>
-                  <div className="card-body">
+                  
                     <div class="card-body p-0">
-                    <table className="table table-bordered">
-                    <thead className="table-light">
-                      <tr>
-                        <th scope="col">ค่าห้อง</th>
-                        <th scope="col">ค่าไฟต่อหน่วย</th>
-                        <th scope="col">ค่าน้ำต่อหน่วย</th>
-                        <th scope="col">ค่าส่วนกลาง</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <th scope="row">
-                          {" "}
-                          <input
-                            class="form-control form-control-sm "
-                            type="text"
-                            value="5,000 บาท"
-                          ></input>
-                        </th>
-                        <th scope="row">
-                          <input
-                            class="form-control form-control-sm"
-                            type="text"
-                            value="7 บาทต่อหน่วย"
-                          ></input>
-                        </th>
-                        <th scope="row">
-                          <input
-                            class="form-control form-control-sm"
-                            type="text"
-                            value="18 บาทต่อหน่วย"
-                          ></input>
-                        </th>
-                        <th scope="row">
-                          <input
-                            class="form-control form-control-sm"
-                            type="text"
-                            value="150 บาท"
-                          ></input>
-                        </th>
-                      </tr>
-                    </tbody>
-                  </table>      
+                      <table className="table table-bordered">
+                        <thead className="table-light">
+                          <tr>
+                            <th scope="col">ชื่อผู้ใช้</th>
+                            <th scope="col">สถานะ</th>
+                            <th scope="col">การเปิดใช้</th>
+                            <th scope="col">วันที่สร้าง</th>
+                            <th scope="col">อัพเดต</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {data.map((item, index)=> 
+                        <tr>
+                            <th scope="row">
+                              <p>{ item.username }</p>
+                            </th>
+                            <th scope="row">
+                              <p>{ item.role }</p>
+                            </th>
+                            <th scope="row">
+                              <p>{ item.enabled }</p>
+                            </th>
+                            <th scope="row">
+                              <p>{ item.createdAt }</p>
+                            </th>
+                            <th scope="row">
+                              <p>{ item.updatedAt }</p>
+                            </th>
+                        </tr>
+                          )}
+                          
+
+                        </tbody>
+                      </table>
                     </div>
-                  </div>
+                  
                 </div>
               </div>
             </div>

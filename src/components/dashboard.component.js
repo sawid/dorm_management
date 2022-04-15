@@ -34,8 +34,8 @@ export default class Dashboard extends Component {
               {/* Small boxes (Stat box) */}
               <div className="row">
                 <div className="col-lg-3 col-6">
-                  {/* small box */}
                   <div className="small-box bg-info">
+                  {/* small box */}
                     <div className="inner">
                       <h3>150</h3>
                       <p>จำนวนผู้เช่า</p>

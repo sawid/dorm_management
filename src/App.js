@@ -9,6 +9,7 @@ import Footer from "./components/footer.component";
 import Dashboard from "./components/dashboard.component";
 import Loginpage from "./components/login.component";
 import Registerpage from "./components/register.component";
+import Billgenerate from "./components/billGenerate.component";
 import Manageuser from "./components/manageuser.component";
 
 import HomeUser from "./components/user/Home";
@@ -75,6 +76,11 @@ function App() {
             <Route path="/" exact element={
             <UserRoute>
               <Dashboard />
+            </UserRoute>
+            } />
+             <Route path="/billgenerate" exact element={
+            <UserRoute>
+              <Billgenerate />
             </UserRoute>
             } />
             <Route path="/manage-user" element={

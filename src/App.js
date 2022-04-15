@@ -82,6 +82,7 @@ function App() {
             <UserRoute>
               <Billgenerate />
             </UserRoute>
+            } />
             <Route path="/manage-user" element={
               <AdminRoute>
                 <Manageuser />

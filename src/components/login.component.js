@@ -2,7 +2,7 @@ import React, { useState } from "react";
 
 import { login } from "./function.components/auth";
 import { useDispatch } from "react-redux";
-import { Navigate, useNavigate } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 
 const Loginpage = ({ history }) => {
   const navigate = useNavigate()
@@ -94,17 +94,20 @@ const Loginpage = ({ history }) => {
                 </div>
               </div>
               <div class="row">
-                <div class="col-8"></div>
+                <div class="col-7"></div>
 
-                <div class="col-4">
+                <div class="col-5">
                   <button type="submit" class="btn btn-primary btn-block">
-                    ล็อกอิน
+                    เข้าสู่ระบบ
                   </button>
                 </div>
               </div>
             </form>
             <div class="social-auth-links text-center mt-2 mb-3"></div>
 
+            <p class="mb-1">
+              <Link to="/register">สมัครสมาชิก</Link>
+            </p>
             <p class="mb-1">
               <a href="forgot-password.html">ลืมรหัสผ่าน</a>
             </p>

@@ -65,14 +65,17 @@ const Menu = () => {
                     <Link style={{ textDecoration: "none" }} to="/">
                       รายงานผล
                     </Link>
-                    <span className="badge badge-info right">2</span>
                   </p>
                 </a>
               </li>
               <li className="nav-item">
-                <a href="pages/gallery.html" className="nav-link">
+                <a className="nav-link">
                   <i className="nav-icon far fa-image" />
-                  <p>จัดการห้องพัก</p>
+                  <p>
+                    <Link style={{ textDecoration: "none" }} to="/manage-user">
+                      จัดการผู้ใช้
+                    </Link>
+                    </p>
                 </a>
               </li>
               <li className="nav-item">

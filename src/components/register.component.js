@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 
 import { register } from './function.components/auth'
 
@@ -105,9 +106,7 @@ const Registerpage = () => {
             <div class="social-auth-links text-center mt-2 mb-3"></div>
 
             <p class="mb-0">
-              <a href="register.html" class="text-center">
-                เข้าสู่ระบบ
-              </a>
+              <Link to="/login">เข้าสู่ระบบ</Link>
             </p>
           </div>
         </div>

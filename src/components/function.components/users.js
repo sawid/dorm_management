@@ -43,3 +43,14 @@ export const removeUser = async (authtoken, id) => {
           }
         );
       };
+
+export const resetPassword = async (authtoken, id, values) => {
+        return await axios.put(
+          process.env.REACT_APP_API + "/users/" + id, values,
+          {
+            headers: {
+              authtoken,
+            },
+          }
+        );
+      };

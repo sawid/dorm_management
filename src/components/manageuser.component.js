@@ -1,14 +1,45 @@
 import React from "react";
 import { useState, useEffect } from 'react';
-import { listUser, changeStatus, changeRole, removeUser } from "./function.components/users";
+import { listUser, changeStatus, changeRole, removeUser, resetPassword } from "./function.components/users";
 import { useSelector } from "react-redux";
-import { Switch, Select, Tag } from 'antd';
-import { DeleteFilled } from '@ant-design/icons'
+import { Switch, Select, Tag, Modal } from 'antd';
+import { DeleteFilled, EditFilled } from '@ant-design/icons'
 import moment from "moment/min/moment-with-locales";
 
 const Manageuser = () => {
   const { user } = useSelector((state) => ({...state}))
   const [ data, setData ] = useState([]);
+  const [ values, setValues] = useState({
+    id: "",
+    password: "",
+  });
+
+  const [isModalVisible, setIsModalVisible] = useState(false);
+
+  const showModal = (id) => {
+    setIsModalVisible(true);
+    setValues({...values, id:id});
+  };
+
+  const handleonChangePassword = (e) => {
+    setValues({...values, [e.target.name]:e.target.value });
+  }
+
+  const handleOk = () => {
+    setIsModalVisible(false);
+    resetPassword(user.token, values.id, { values })
+    .then(res => {
+      console.log(res)
+      loadData(user.token)
+    })
+    .catch(err => {
+      console.log(err.response)
+    })
+  };
+
+  const handleCancel = () => {
+    setIsModalVisible(false);
+  };
 
   console.log(data)
   useEffect(() => {
@@ -152,7 +183,10 @@ const Manageuser = () => {
                                 </p>
                             </th>
                             <th scope="row">
-                              <p><DeleteFilled onClick={ () => handleonRemove(item._id) }/></p>
+                              <p>
+                              <DeleteFilled onClick={ () => handleonRemove(item._id) }/>
+                              <EditFilled onClick={ () => showModal(item._id) }/>
+                              </p>
                             </th>
                         </tr>
                           )}
@@ -170,6 +204,10 @@ const Manageuser = () => {
         </section>
         {/* /.content */}
       </div>
+      <Modal title="Basic Modal" visible={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
+        <p>New Password</p>
+        <input onChange={handleonChangePassword} type="text" name="password" />
+      </Modal>
     </div>
   );
 };

@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { Button } from "bootstrap";
+import { toast, ToastContainer } from "react-toastify";
 
 const Menu = () => {
 
@@ -14,6 +15,14 @@ const Menu = () => {
       type:'LOGOUT',
       payload: null,
     });
+    toast.success('ออกจากสู่ระบบสำเร็จ', {
+      position: "top-right",
+      autoClose: 1000,
+      hideProgressBar: false,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      });
     navigate('/login');
 
   }

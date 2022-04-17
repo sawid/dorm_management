@@ -20,6 +20,9 @@ import { currentUser } from "./components/function.components/auth";
 import UserRoute from "./components/routes/UserRoute";
 import AdminRoute from "./components/routes/AdminRoute";
 
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 import "./App.css";
 import "bootstrap/dist/css/bootstrap.css";
 import {
@@ -55,6 +58,7 @@ function App() {
 
   return (
     <div class="wrapper">
+        <ToastContainer closeButton={false}/>
         <Routes>
           <Route element={<WithoutNav />}>
             <Route path="/login" element={<Loginpage />} />

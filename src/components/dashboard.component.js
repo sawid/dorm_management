@@ -1,9 +1,9 @@
-import React, { Component } from "react";
+import React from 'react'
 
-export default class Dashboard extends Component {
-  render() {
-    return (
-      <div>
+const Dashboard = () => {
+
+  return (
+    <div>
         <div className="content-wrapper font-sarabun">
           {/* Content Header (Page header) */}
           <div className="content-header">
@@ -43,7 +43,7 @@ export default class Dashboard extends Component {
                     <div className="icon">
                       <i className="ion ion-bag" />
                     </div>
-                    <a href="#" className="small-box-footer">
+                    <a className="small-box-footer">
                       ข้อมูลเพิ่มเติม <i className="fas fa-arrow-circle-right" />
                     </a>
                   </div>
@@ -670,6 +670,7 @@ export default class Dashboard extends Component {
           {/* /.content */}
         </div>
       </div>
-    );
-  }
+  )
 }
+
+export default Dashboard

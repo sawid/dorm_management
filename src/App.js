@@ -36,12 +36,13 @@ import {
 function App() {
   const dispatch = useDispatch();
   
-
+  const [ userData, setUserData ] = useState()
   const idtoken = localStorage.token;
   if (idtoken) {
     currentUser(idtoken)
     .then(res => {
       console.log(res.data);
+      setUserData(res.data.username)
       dispatch({
         type:'LOGIN',
         payload: {
@@ -76,16 +77,16 @@ function App() {
             } />
 
           </Route>
-          <Route element={<WithNav />}>
+          <Route element={<WithNav username={userData}/>}>
             <Route path="/" exact element={
             <UserRoute>
               <Dashboard />
             </UserRoute>
             } />
-             <Route path="/billgenerate" exact element={
-            <UserRoute>
+             <Route path="/billgenerate/:id" element={
+            <AdminRoute>
               <Billgenerate />
-            </UserRoute>
+            </AdminRoute>
             } />
             <Route path="/manage-user" element={
               <AdminRoute>
@@ -98,11 +99,11 @@ function App() {
   );
 }
 
-const WithNav = () => {
+const WithNav = (props) => {
   return (
     <>
       <Header />
-      <Menu />
+      <Menu username={props.username} />
 
       <Outlet />
     </>

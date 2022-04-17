@@ -2,13 +2,17 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { Button } from "bootstrap";
 import { toast, ToastContainer } from "react-toastify";
+import { useSelector } from "react-redux";
+import { useEffect } from "react";
+import { useState } from "react";
 
-const Menu = () => {
-
+const Menu = (props) => {
+  const { user } = useSelector((state) => ({...state}))
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [ data, setData ] = useState([]);
+  
 
   const logout = () => {
     dispatch({
@@ -26,6 +30,14 @@ const Menu = () => {
     navigate('/login');
 
   }
+
+  console.log(user)
+  console.log("user.username")
+
+  
+  
+
+  
 
   return (
     <div>
@@ -53,7 +65,7 @@ const Menu = () => {
                 alt="User Image"
               />
             </div>
-            <div className="info font-sarabun text-light">พาสา ไทย</div>
+            <div className="info font-sarabun text-light">{ props.username }</div>
           </div>
           {/* Sidebar Menu */}
           <nav className="mt-2 font-sarabun">

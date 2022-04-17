@@ -1,12 +1,35 @@
 import React, { Component } from "react";
+import { useState, useEffect } from 'react';
+import { useSelector } from "react-redux";
 import { DatePicker, Space, Button, Card } from "antd";
 import { CaretRightFilled, CaretLeftFilled } from "@ant-design/icons";
-import { Link } from "react-router-dom";
+import { useParams } from "react-router-dom";
+import { readBill } from "./function.components/bill";
 
 const Billgenerate = () => {
+  let { id } = useParams(); 
+  const { user } = useSelector((state) => ({...state}))
+  const [ data, setData ] = useState([]);
+
   const onChange = (date, dateString) => {
     console.log(date, dateString);
   };
+  
+  const loadData = (authtoken, values) => {
+    readBill(authtoken, values)
+    .then(res => {
+            setData(res.data)
+            
+    })
+    .catch(err => {
+            console.log(err);
+    })
+};
+
+ useEffect(() => {
+   loadData(user.token, id);
+ },[])
+ console.log(data)
 
   return (
     <div>
@@ -42,7 +65,7 @@ const Billgenerate = () => {
                   <p></p>
                   <div className="col-sm-8">
                     <h1 className="m-0 ms-3 text-dark">
-                      ห้อง 1206{" "}
+                      ห้อง { data.roomName }
                       <span class="badge rounded-pill bg-success text-md">
                         จ่ายแล้ว
                       </span>
@@ -78,7 +101,7 @@ const Billgenerate = () => {
               <div className="col-sm-3 ">
                 <div className="card">
                   <h4 className="m-0 ms-2 text-dark bg-white">
-                    สถานะบิล <small class="text-muted text "> แจ้งแล้ว</small>
+                    สถานะบิล <small class="text-muted text ">  { data.isBillNotified ? "แจ้งแล้ว" : "ยังไม่แจ้ง" }</small>
                   </h4>
 
                   <h4 className="m-0 ms-2 text-dark bg-white">
@@ -151,11 +174,10 @@ const Billgenerate = () => {
                   extra={<a href="#">ดูข้อมูล</a>}
                   block
                 >
-                  <p>ค่าหอ 5000</p>
+                  <p>ค่าหอ { data.rentalFee }</p>
                   <p>ค่าไฟ 7*113 = 791 บาท</p>
                   <p>ค่าน้ำ 18*12 = 168 บาท</p>
                   <p>ค่าส่วนกลาง = 150 บาท</p>
-                  <p>Card content</p>
 
                   <h1>รวม 6,109 บาท</h1>
                 </Card>

@@ -11,13 +11,10 @@ import Loginpage from "./components/login.component";
 import Registerpage from "./components/register.component";
 import Billgenerate from "./components/billGenerate.component";
 import Manageuser from "./components/manageuser.component";
-<<<<<<< HEAD
 import Billmanage from "./components/billManage.component";
-=======
 import ManagementRoom from "./components/management-room.component";
 import Editprofile from "./components/editpro.component";
 import Managemeter from "./components/managemeter.component";
->>>>>>> d3afc8497d220d3fd10ffc8a80032e1fb00b4d3d
 
 import HomeUser from "./components/user/Home";
 import HomeAdmin from "./components/admin/Home";

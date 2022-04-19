@@ -22,6 +22,9 @@ import { currentUser } from "./components/function.components/auth";
 import UserRoute from "./components/routes/UserRoute";
 import AdminRoute from "./components/routes/AdminRoute";
 
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 import "./App.css";
 import "bootstrap/dist/css/bootstrap.css";
 import {
@@ -35,12 +38,13 @@ import {
 function App() {
   const dispatch = useDispatch();
   
-
+  const [ userData, setUserData ] = useState()
   const idtoken = localStorage.token;
   if (idtoken) {
     currentUser(idtoken)
     .then(res => {
       console.log(res.data);
+      setUserData(res.data.username)
       dispatch({
         type:'LOGIN',
         payload: {
@@ -57,6 +61,7 @@ function App() {
 
   return (
     <div class="wrapper">
+        <ToastContainer closeButton={false}/>
         <Routes>
           <Route element={<WithoutNav />}>
             <Route path="/login" element={<Loginpage />} />
@@ -74,16 +79,16 @@ function App() {
             } />
 
           </Route>
-          <Route element={<WithNav />}>
+          <Route element={<WithNav username={userData}/>}>
             <Route path="/" exact element={
             <UserRoute>
               <Dashboard />
             </UserRoute>
             } />
-             <Route path="/billgenerate" exact element={
-            <UserRoute>
+             <Route path="/billgenerate/:id" element={
+            <AdminRoute>
               <Billgenerate />
-            </UserRoute>
+            </AdminRoute>
             } />
             <Route path="/manage-user" element={
               <AdminRoute>
@@ -106,11 +111,11 @@ function App() {
   );
 }
 
-const WithNav = () => {
+const WithNav = (props) => {
   return (
     <>
       <Header />
-      <Menu />
+      <Menu username={props.username} />
 
       <Outlet />
     </>

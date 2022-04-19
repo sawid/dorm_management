@@ -11,6 +11,7 @@ import Loginpage from "./components/login.component";
 import Registerpage from "./components/register.component";
 import Billgenerate from "./components/billGenerate.component";
 import Manageuser from "./components/manageuser.component";
+import Billmanage from "./components/billManage.component";
 
 import HomeUser from "./components/user/Home";
 import HomeAdmin from "./components/admin/Home";
@@ -81,6 +82,11 @@ function App() {
              <Route path="/billgenerate" exact element={
             <UserRoute>
               <Billgenerate />
+            </UserRoute>
+            } />
+            <Route path="/billmanage" exact element={
+            <UserRoute>
+              <Billmanage />
             </UserRoute>
             } />
             <Route path="/manage-user" element={

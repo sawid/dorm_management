@@ -1,12 +1,20 @@
 import axios from "axios";
 
-export const readBill = async (authtoken, values) => {
-        return await axios.get(
-          process.env.REACT_APP_API + "/bill/" + values,
-          {
+export const readBill = async(authtoken, values) => {
+    return await axios.get(
+        process.env.REACT_APP_API + "/bill/" + values, {
             headers: {
-              authtoken,
+                authtoken,
             },
-          }
-        );
-      };
+        }
+    );
+};
+export const changeBillNet = async(authtoken, values) => {
+    return await axios.put(
+        process.env.REACT_APP_API + "/bill/" + values, {
+            headers: {
+                authtoken,
+            },
+        }
+    );
+};

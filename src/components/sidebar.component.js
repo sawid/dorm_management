@@ -120,6 +120,16 @@ const Menu = (props) => {
                 </a>
               </li>
               <li className="nav-item">
+                <a className="nav-link">
+                  <i className="nav-icon far fa-image" />
+                  <p>
+                    <Link style={{ textDecoration: "none" }} to="/billmanage">
+                      จัดการบิล
+                    </Link>
+                    </p>
+                </a>
+              </li>
+              <li className="nav-item">
                 <button type="button" class="btn btn-block btn-primary" onClick={logout}>ออกจากระบบ</button>
               </li>
             </ul>

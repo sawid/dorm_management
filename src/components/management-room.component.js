@@ -1,47 +1,64 @@
-import React, { Component } from "react";
-import { Button } from "antd";
-import { useState } from "react";
-import { Modal } from "antd";
-import { Input } from "antd";
-import { AppstoreOutlined } from "@ant-design/icons";
-import { Radio } from "antd";
-import { Card } from "antd";
-const ManagementRoom = () => {
-  const [minValue, setMinValues] = useState(0);
-  const [maxValue, setMaxValues] = useState(12);
+import { DatePicker, Space } from "antd";
+import ReactPaginate from "react-paginate";
+import { useSelector } from "react-redux";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { listRoom } from "./function.components/room";
 
-  const onChangeRadio = (e) => {
-    console.log("radio checked:", e.target.value);
-  };
+function ManagementRoom() {
+  const { user } = useSelector((state) => ({ ...state }));
+  const navigate = useNavigate();
+  const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [postsPerPage, setPostPerPage] = useState(9);
+  const [searchText, setSearchText] = useState("");
 
-  const [isModalVisible, setIsModalVisible] = useState(false);
-
-  const showModal = () => {
-    setIsModalVisible(true);
-  };
-
-  const handleOk = () => {
-    setIsModalVisible(false);
-  };
-
-  const handleCancel = () => {
-    setIsModalVisible(false);
-  };
-  const { TextArea } = Input;
-
-  const onChange = (e) => {
-    console.log("Change:", e.target.name);
-  };
-
-  const dataTest = [];
-  for (let i = 1001; i < 1100; i++) {
-    dataTest.push({
-      key: i,
-      roomName: `${i}`,
-      status: "empty",
-      contactLength: "3"
-    });
+  // const loadData = (authtoken) => {
+  //         listBills(authtoken)
+  //         .then(res => {
+  //                 setPosts(res.data);
+  //             })
+  //             .catch(err => {
+  //                     console.log(err);
+  //                 })
+  //             };
+  function getRandomIntInclusive(min, max) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min + 1) + min); //The maximum is inclusive and the minimum is inclusive
   }
+  useEffect(() => {
+    setLoading(true);
+    loadData(user.token);
+    // loadData(user.token)
+    setLoading(false);
+  }, []);
+
+  const loadData = (authtoken) => {
+    listRoom(authtoken)
+      .then((res) => {
+        setPosts(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  const fillteredPosts = posts.filter((post) => {
+    return post.roomName.toString().includes(searchText);
+  });
+  if (loading) {
+    return <h2>loading...</h2>;
+  }
+  const handlePageClick = (data) => {
+    console.log(data.selected);
+    setCurrentPage(data.selected + 1);
+  };
+  const indexOfLastPost = currentPage * postsPerPage;
+  const indexOfFirstPost = indexOfLastPost - postsPerPage;
+  const currentPosts = fillteredPosts.slice(indexOfFirstPost, indexOfLastPost);
 
   return (
     <div>
@@ -49,96 +66,110 @@ const ManagementRoom = () => {
         {/* Content Header (Page header) */}
         <div className="content-header">
           <div className="container-fluid">
-            <div className="row">
-              <div className="col-sm-6 pb-5">
-                <div classname="row">
-                  <div className="col-6">
-                    <h1 className="m-0 text-dark">จัดการห้องพัก</h1>
-                  </div>
-                  <div className="col-6 clearfix"></div>
-                </div>
+            <div className="row mb-2">
+              <div className="col-sm-6">
+                <h1 className="m-0 text-dark">จัดการห้องพัก</h1>
               </div>
-              <div className="col-sm-6 pb-5">
+              {/* /.col */}
+              <div className="col-sm-6">
                 <ol className="breadcrumb float-sm-right">
                   <li className="breadcrumb-item">
-                    <a href="#">รายงานผล</a>
+                    <a href="#">จัดการห้องพัก</a>
                   </li>
                   <li className="breadcrumb-item active">ระบบจัดการหอพัก</li>
                 </ol>
               </div>
               {/* /.col */}
             </div>
-
-            <div className="row">
-              <div className="col-6">
-                <form>
-                  <Radio.Group onChange={onChangeRadio} defaultValue="a">
-                    <Radio.Button value="a"></Radio.Button>
-                    <Radio.Button
-                      icon={<AppstoreOutlined />}
-                      value="b"
-                    ></Radio.Button>
-                  </Radio.Group>
-                </form>
-              </div>
-              <div className="col-6">
-                <div className="row">
-                  <div className="col-6 d-flex flex-row justify-content-end">
-                    <Button type="primary" onClick={showModal}>
-                      สร้างห้อง
-                    </Button>
-                  </div>
-                  <div className="col-6">
-                    <div class="input-group input-group-sm ">
-                      <input
-                        type="text"
-                        class="form-control"
-                        placeholder="ค้นหาหมายเลขห้อง"
-                      />
-                      <span class="input-group-append">
-                        <button type="button" class="btn btn-info btn-flat">
-                          ค้นหา
-                        </button>
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+            {/* /.row */}
           </div>
           {/* /.container-fluid */}
         </div>
         {/* /.content-header */}
         {/* Main content */}
         <section className="content">
-          <div className="container-fluid">
-            <div className="row">
-              {dataTest &&
-                dataTest.length > 0 &&
-                dataTest.slice(minValue, maxValue).map((item, index) => (
-                  <div className="col-lg-2 col-12 col-sm-12 mt-4">
-                    <Card title={"ห้อง " + item.roomName} bordered={true} >
-                      <p>สถานะห้อง : { item.status ? <b>ว่าง</b> : <b>ไม่ว่าง</b> }</p>
-                      <p>Card content</p>
-                      <p>Card content</p>
-                    </Card>
+          {/* /.container-fluid */}
+          
+
+          <div className="row m-2">
+          <form class="form-inline">
+              <input
+                class="form-control mr-sm-2"
+                type="search"
+                placeholder="Search"
+                aria-label="Search"
+                value={searchText}
+                onChange={(event) => {
+                  setSearchText(event.target.value);
+                }}
+              />
+              
+              <button type="button" class="btn btn-outline-success m-2">
+                สร้างห้อง
+              </button>
+              <button type="button" class="btn btn-outline-primary m-2">
+                แจ้งทุกห้อง
+              </button>
+            </form>
+            {currentPosts.map((post) => {
+              return (
+                <div className="col-sm-6 col-md-3 v my-2">
+                  <div
+                    className="card shadow-sm w-100 "
+                    style={{ minHeight: 175 }}
+                  >
+                    <div className="card-header">
+                    <h5 className="catd-title text-center h3 mt-2">
+                        {post.status === "empty" ? "🟢" : "🔴"} ห้องพัก {post.roomName}
+                      </h5>
+                    </div>
+                    <div className="card-body">
+                      
+                      <h5 className="catd-subtitle mb-2 text-muted text-center">
+                        {"สถานะ : "}
+                        {post.status === "empty" ? <b style={{ color: "#73d13d" }}>ว่าง</b> : <b style={{ color: "#ff4d4f" }}>ไม่ว่าง</b>}{" "}
+                        
+                      </h5>
+                      <h5 className="catd-subtitle mb-2 text-muted text-center">
+                        {"ประเภท : "}
+                        {post.room_type === "fan" ? <b>พัดลม</b> : <b>แอร์</b>}{" "}
+                        
+                      </h5>
+                      <div className="d-flex justify-content-center">
+                        <button
+                          type="button"
+                          class="btn btn-outline-success text-center m-3"
+                          onClick={() => navigate('/roomdetail')}
+                        >
+                          ดูรายละเอียดของห้อง {post.roomName}
+                        </button>
+                      </div>
+                    </div>
                   </div>
-                ))}
-            </div>
+                </div>
+              );
+            })}
           </div>
+          <ReactPaginate
+            onPageChange={handlePageClick}
+            pageCount={posts.length / postsPerPage}
+            previousLabel={"<<"}
+            nextLabel={">>"}
+            containerClassName={"pagination justify-content-center"}
+            pageClassName={"page-item"}
+            pageLinkClassName={"page-link"}
+            previousClassName={"page-item"}
+            previousLinkClassName={"page-link"}
+            nextClassName={"page-item"}
+            nextLinkClassName={"page-link"}
+            breakClassName={"paeg-item"}
+            breakLinkClassName={"page-link"}
+            activeClassName={"active"}
+          />
         </section>
         {/* /.content */}
       </div>
-      <Modal
-        title="Basic Modal"
-        visible={isModalVisible}
-        onOk={handleOk}
-        onCancel={handleCancel}
-      >
-        <Input showCount maxLength={20} onChange={onChange} name="text-box" />
-      </Modal>
     </div>
   );
-};
-
+}
 export default ManagementRoom;

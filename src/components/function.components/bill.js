@@ -9,6 +9,17 @@ export const readBill = async(authtoken, values) => {
         }
     );
 };
+
+export const listBill = async(authtoken) => {
+    return await axios.get(
+        process.env.REACT_APP_API + "/bill/" , {
+            headers: {
+                authtoken,
+            },
+        }
+    );
+};
+
 export const changeBillNet = async(authtoken, values) => {
     return await axios.put(
         process.env.REACT_APP_API + "/bill/" + values, {

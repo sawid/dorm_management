@@ -11,6 +11,7 @@ import Loginpage from "./components/login.component";
 import Registerpage from "./components/register.component";
 import Billgenerate from "./components/billGenerate.component";
 import Manageuser from "./components/manageuser.component";
+import ManagementRoom from "./components/management-room.component";
 
 import HomeUser from "./components/user/Home";
 import HomeAdmin from "./components/admin/Home";
@@ -29,6 +30,8 @@ import {
   useLocation,
   Outlet,
 } from "react-router-dom";
+import { Row } from "react-bootstrap";
+import RoomDetail from "./components/roomdetail.component";
 
 function App() {
   const dispatch = useDispatch();
@@ -88,6 +91,16 @@ function App() {
                 <Manageuser />
               </AdminRoute>
             } />
+            <Route path="/management-room" exact element={
+            <UserRoute>
+              <ManagementRoom />
+            </UserRoute>
+            } /> 
+            <Route path="/roomdetail" exact element={
+            <UserRoute>
+              <RoomDetail />
+            </UserRoute>
+            } /> 
           </Route>
         </Routes>
     </div>

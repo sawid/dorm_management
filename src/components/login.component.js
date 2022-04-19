@@ -4,6 +4,8 @@ import { login } from "./function.components/auth";
 import { useDispatch } from "react-redux";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 
+import { toast, ToastContainer } from "react-toastify";
+
 const Loginpage = ({ history }) => {
   const navigate = useNavigate()
   const dispatch = useDispatch()
@@ -19,10 +21,10 @@ const Loginpage = ({ history }) => {
 
   const roleBaseRedirect = (role) => {
     if (role === "admin") {
-      navigate('/admin/index');
+      navigate('/');
     }
     else {
-      navigate('/user/index');
+      navigate('/');
     }
   };
 
@@ -35,7 +37,14 @@ const Loginpage = ({ history }) => {
     login(value)
       .then((res) => {
         console.log(res.data);
-        alert(res.data);
+        toast.success('เข้าสู่ระบบสำเร็จ !', {
+          position: "top-right",
+          autoClose: 1000,
+          hideProgressBar: false,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          });
         dispatch({
           type:'LOGIN',
           payload: {
@@ -49,12 +58,20 @@ const Loginpage = ({ history }) => {
       })
       .catch((err) => {
         console.log(err.response.data);
-        alert(err.response.data);
+        toast.error('ไม่สามารถเข้าสู่ระบบได้', {
+          position: "top-right",
+          autoClose: 1000,
+          hideProgressBar: false,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          });
       });
   };
 
   return (
     <body class="hold-transition login-page font-sarabun">
+
       <div class="login-box">
         <div class="card card-outline card-primary">
           <div class="card-header text-center">

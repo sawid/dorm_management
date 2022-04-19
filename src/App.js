@@ -11,6 +11,8 @@ import Loginpage from "./components/login.component";
 import Registerpage from "./components/register.component";
 import Billgenerate from "./components/billGenerate.component";
 import Manageuser from "./components/manageuser.component";
+import Editprofile from "./components/editpro.component";
+import Managemeter from "./components/managemeter.component";
 
 import HomeUser from "./components/user/Home";
 import HomeAdmin from "./components/admin/Home";
@@ -87,6 +89,16 @@ function App() {
               <AdminRoute>
                 <Manageuser />
               </AdminRoute>
+            } />
+            <Route path="/editprofile" element={
+              <UserRoute>
+                <Editprofile />
+              </UserRoute>
+            } />
+            <Route path="/managemeter" element={
+              <UserRoute>
+                <Managemeter />
+              </UserRoute>
             } />
           </Route>
         </Routes>

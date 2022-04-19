@@ -107,7 +107,7 @@ const Billgenerate = () => {
                 <div className="card">
                   <p></p>
                   <div className="col-sm-8">
-                    {isPayedBadge(false)}
+                    {isPayedBadge(data.isBillNotified)}
                     <p></p>
                     <DatePicker
                       className="ms-3"

@@ -19,3 +19,15 @@ export const listRoom = async(authtoken) => {
         }
     );
 };
+
+export const createRoom = async (authtoken, data) => {
+    return await axios.post(
+      process.env.REACT_APP_API + "/room/",
+      data,
+      {
+        headers: {
+          authtoken,
+        },
+      }
+    );
+  };

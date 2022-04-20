@@ -103,7 +103,7 @@ const onChangeRadio = e => {
       <section className="content">
         <div className="container-fluid"></div>
           <div className="row">
-            <div className="col-4">
+            <div className="col-6">
                 <div className="card ms-3">
                     <h4 className="card-body"> ห้องพัก 101 </h4> 
                     <div className="card-subtitle mb-2 ms-3 text-muted">
@@ -114,8 +114,13 @@ const onChangeRadio = e => {
                       <p>เบอร์โทรศัพท์ 095-XXX-XXXX</p>
                       </div> 
                 </div>
+                <form>
+                      <input className="btn btn-success btn-block text-lg mb-3 mt-2" type="button" value="แก้ไข้รายละเอียด"></input>
+                      <input className="btn btn-success btn-block text-lg mb-3" type="button" value="ดูสัญญา"></input>
+                      <input className="btn btn-success btn-block text-lg" type="button" value="ดูรอบบิล"></input>
+                  </form>
             </div>
-            <div className="col-1"></div>
+            
             
             
             
@@ -139,11 +144,7 @@ const onChangeRadio = e => {
             </div> 
             <div className="row">
               <div className="col-4 ms-3">
-                  <form>
-                      <input className="btn btn-success btn-block text-lg mb-3 mt-2" type="button" value="แก้ไข้รายละเอียด"></input>
-                      <input className="btn btn-success btn-block text-lg mb-3" type="button" value="ดูสัญญา"></input>
-                      <input className="btn btn-success btn-block text-lg" type="button" value="ดูรอบบิล"></input>
-                  </form>
+                  
               </div>
               <div className="col-1"></div>
               <div className="col-6">

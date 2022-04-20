@@ -2,9 +2,10 @@ import React from "react";
 import { useState, useEffect } from 'react';
 import { listUser, changeStatus, changeRole, removeUser, resetPassword } from "./function.components/users";
 import { useSelector } from "react-redux";
-import { Switch, Select, Tag, Modal } from 'antd';
+import { Switch, Select, Tag } from 'antd';
 import { DeleteFilled, EditFilled } from '@ant-design/icons'
 import moment from "moment/min/moment-with-locales";
+import { Modal, Button } from "react-bootstrap";
 
 const Manageuser = () => {
   const { user } = useSelector((state) => ({...state}))
@@ -204,9 +205,20 @@ const Manageuser = () => {
         </section>
         {/* /.content */}
       </div>
-      <Modal title="Basic Modal" visible={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
-        <p>New Password</p>
-        <input onChange={handleonChangePassword} type="text" name="password" />
+      
+      <Modal className="font-sarabun" show={isModalVisible} onHide={handleCancel} centered backdrop="static" keyboard={false}>
+        <Modal.Header>
+          <Modal.Title>ตั้งค่ารหัสผ่านใหม่</Modal.Title>
+        </Modal.Header>
+        <Modal.Body><input class="form-control" onChange={handleonChangePassword} type="text" name="password" placeholder="กรอกรหัสผ่านใหม่"/></Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleCancel}>
+            ยกเลิก
+          </Button>
+          <Button variant="primary" onClick={handleOk}>
+            ตั้งค่ารหัสผ่านใหม่
+          </Button>
+        </Modal.Footer>
       </Modal>
     </div>
   );

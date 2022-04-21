@@ -104,10 +104,10 @@ function App() {
                 <Manageuser />
               </AdminRoute>
             } />
-            <Route path="/management-room" exact element={
-            <UserRoute>
+            <Route path="/management-room" element={
+            <AdminRoute>
               <ManagementRoom />
-            </UserRoute>
+            </AdminRoute>
             } /> 
             <Route path="/roomdetail" exact element={
             <UserRoute>

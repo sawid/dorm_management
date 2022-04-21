@@ -1,285 +1,228 @@
-import React, { Component } from "react";
-import { Button } from 'antd';
-import { useState } from 'react';
-import { Modal } from 'antd';
-import { Input } from 'antd';
-import {AppstoreOutlined}  from '@ant-design/icons';
-import { Radio } from 'antd';
-const ManagementRoom = () => {
-  
-  const onChangeRadio = e => {
-    console.log('radio checked:', e.target.value)
+import { DatePicker, Space } from "antd";
+import ReactPaginate from "react-paginate";
+import { useSelector } from "react-redux";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { createRoom, listRoom } from "./function.components/room";
+import { Modal, Button } from "react-bootstrap";
+
+function ManagementRoom() {
+  const { user } = useSelector((state) => ({ ...state }));
+  const navigate = useNavigate();
+  const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [postsPerPage, setPostPerPage] = useState(9);
+  const [searchText, setSearchText] = useState("");
+  // Modal
+  const [show, setShow] = useState(false);
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+
+  //Data Input
+  const [ dataRoom, setdataRoom ] = useState({
+    roomName: "",
+  });
+
+  // const loadData = (authtoken) => {
+  //         listBills(authtoken)
+  //         .then(res => {
+  //                 setPosts(res.data);
+  //             })
+  //             .catch(err => {
+  //                     console.log(err);
+  //                 })
+  //             };
+
+  const handleonChangeRoomName = (e) => {
+    setdataRoom({...dataRoom, [e.target.name]:e.target.value });
+    
+  }
+  console.log(dataRoom)
+
+  function getRandomIntInclusive(min, max) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min + 1) + min); //The maximum is inclusive and the minimum is inclusive
+  }
+  useEffect(() => {
+    setLoading(true);
+    loadData(user.token);
+    // loadData(user.token)
+    setLoading(false);
+  }, []);
+
+  const loadData = (authtoken) => {
+    listRoom(authtoken)
+      .then((res) => {
+        setPosts(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
-  const [isModalVisible, setIsModalVisible] = useState(false);
+  const fillteredPosts = posts.filter((post) => {
+    return post.roomName.toString().includes(searchText);
+  });
+  if (loading) {
+    return <h2>loading...</h2>;
+  }
 
-  const showModal = () => {
-    setIsModalVisible(true);
+  const handlePageClick = (data) => {
+    console.log(data.selected);
+    setCurrentPage(data.selected + 1);
   };
 
-  const handleOk = () => {
-    setIsModalVisible(false);
-  };
+  const indexOfLastPost = currentPage * postsPerPage;
+  const indexOfFirstPost = indexOfLastPost - postsPerPage;
+  const currentPosts = fillteredPosts.slice(indexOfFirstPost, indexOfLastPost);
 
-  const handleCancel = () => {
-    setIsModalVisible(false);
-  };
-const { TextArea } = Input;
-
-const onChange = e => {
-    console.log('Change:', e.target.name);
-  };
+  const handleonCreate = () => {
+    setShow(false);
+    createRoom(user.token, dataRoom)
+    .then(res => {
+          console.log(res)
+          loadData(user.token);
+    })
+    .catch(err => {
+          console.log(err)
+    })
+    // console.log(dataRoom.roomName)
+}
 
   return (
     <div>
-        <div className="content-wrapper font-sarabun">
-          {/* Content Header (Page header) */}
-          <div className="content-header">
-            <div className="container-fluid">
-              <div className="row">
-                <div className="col-sm-6 pb-5">
-                    <div classname="row"> 
-                        <div className="col-6">
-                            <h1 className="m-0 text-dark">จัดการห้องพัก</h1>
-                        </div>
-                        <div className="col-6 clearfix">
-                    </div>
-                    
-                    </div> 
-                </div>
-                <div className="col-sm-6 pb-5">
-                  <ol className="breadcrumb float-sm-right">
-                    <li className="breadcrumb-item">
-                      <a href="#">รายงานผล</a>
-                    </li>
-                    <li className="breadcrumb-item active">ระบบจัดการหอพัก</li>
-                  </ol>
-                </div>
-                {/* /.col */}
+      <div className="content-wrapper font-sarabun">
+        {/* Content Header (Page header) */}
+        <div className="content-header">
+          <div className="container-fluid">
+            <div className="row mb-2">
+              <div className="col-sm-6">
+                <h1 className="m-0 text-dark">จัดการห้องพัก</h1>
               </div>
-              
-                <div className="row"> 
-                  <div className="col-6"> 
-                  <form>
-                    <Radio.Group onChange={onChangeRadio} defaultValue="a">
-                      <Radio.Button value="a"></Radio.Button>
-                      <Radio.Button icon={<AppstoreOutlined/>} value="b"></Radio.Button>
-                      
-                    </Radio.Group>
-                 </form>
-                  </div>  
-                  <div className="col-6">
-
-                    <div className="row">
-                      <div className="col-6 d-flex flex-row justify-content-end">
-                        <Button  type="primary" onClick={ showModal }>สร้างห้อง</Button>
-                      </div>
-                      <div className="col-6">
-                        <div class="input-group input-group-sm ">
-                            <input type="text" class="form-control" placeholder="ค้นหาหมายเลขห้อง"/>
-                                <span class="input-group-append">
-                                <button type="button" class="btn btn-info btn-flat">ค้นหา</button>
-                            </span>
-                        </div>
-                      </div> 
-                    </div>
-                      
-                  </div> 
-
-              </div>  
-                    
-                   
-              
+              {/* /.col */}
+              <div className="col-sm-6">
+                <ol className="breadcrumb float-sm-right">
+                  <li className="breadcrumb-item">
+                    <a href="#">จัดการห้องพัก</a>
+                  </li>
+                  <li className="breadcrumb-item active">ระบบจัดการหอพัก</li>
+                </ol>
+              </div>
+              {/* /.col */}
             </div>
-            {/* /.container-fluid */}
+            {/* /.row */}
           </div>
-          {/* /.content-header */}
-          {/* Main content */}
-          <section className="content">
-            <div className="container fluid"></div>
-              <div className="row"> 
-                <div className="col-lg-2 col-6">   
-                  <div class="small-box bg-light">
-                    <div class="d-flex flex-row justify-content-start ">  
-                      <i class="mt-3 ms-3 mb-2 fas fa-square text-success"></i>
-                      <h4 class="ms-3 mb-5 mt-2 "> ห้องพัก 101 </h4>
-                    </div>
-                    <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-                  </div>
-                </div>
-                <div className="col-lg-2 col-6">   
-                  <div class="small-box bg-light">
-                    <div class="d-flex flex-row justify-content-start ">  
-                      <i class="mt-3 ms-3 mb-2 fas fa-square text-success"></i>
-                      <h4 class="ms-3 mb-5 mt-2 "> ห้องพัก 102 </h4>
-                    </div>
-                    <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-                  </div>
-                </div>
-                <div className="col-lg-2 col-6">   
-                  <div class="small-box bg-light">
-                    <div class="d-flex flex-row justify-content-start ">  
-                      <i class="mt-3 ms-3 mb-2 fas fa-square text-success"></i>
-                      <h4 class="ms-3 mb-5 mt-2 "> ห้องพัก 103 </h4>
-                    </div>
-                    <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-                  </div>
-                </div>
-                <div className="col-lg-2 col-6">   
-                  <div class="small-box bg-light">
-                    <div class="d-flex flex-row justify-content-start ">  
-                      <i class="mt-3 ms-3 mb-2 fas fa-square text-success"></i>
-                      <h4 class="ms-3 mb-5 mt-2 "> ห้องพัก 104 </h4>
-                    </div>
-                    <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-                  </div>
-                </div>
-                <div className="col-lg-2 col-6">   
-                  <div class="small-box bg-light">
-                    <div class="d-flex flex-row justify-content-start ">  
-                      <i class="mt-3 ms-3 mb-2 fas fa-square text-success"></i>
-                      <h4 class="ms-3 mb-5 mt-2 "> ห้องพัก 105 </h4>
-                    </div>
-                    <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-                  </div>
-                </div>
-                <div className="col-lg-2 col-6">   
-                  <div class="small-box bg-light">
-                    <div class="d-flex flex-row justify-content-start ">  
-                      <i class="mt-3 ms-3 mb-2 fas fa-square text-success"></i>
-                      <h4 class="ms-3 mb-5 mt-2 "> ห้องพัก 106 </h4>
-                    </div>
-                    <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-                  </div>
-                </div>
-                <div className="col-lg-2 col-6">   
-                  <div class="small-box bg-light">
-                    <div class="d-flex flex-row justify-content-start ">  
-                      <i class="mt-3 ms-3 mb-2 fas fa-square text-success"></i>
-                      <h4 class="ms-3 mb-5 mt-2 "> ห้องพัก 107 </h4>
-                    </div>
-                    <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-                  </div>
-                </div>
-                <div className="col-lg-2 col-6">   
-                  <div class="small-box bg-light">
-                    <div class="d-flex flex-row justify-content-start ">  
-                      <i class="mt-3 ms-3 mb-2 fas fa-square text-success"></i>
-                      <h4 class="ms-3 mb-5 mt-2 "> ห้องพัก 108 </h4>
-                    </div>
-                    <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-                  </div>
-                </div>
-                <div className="col-lg-2 col-6">   
-                  <div class="small-box bg-light">
-                    <div class="d-flex flex-row justify-content-start ">  
-                      <i class="mt-3 ms-3 mb-2 fas fa-square text-success"></i>
-                      <h4 class="ms-3 mb-5 mt-2 "> ห้องพัก 109 </h4>
-                    </div>
-                    <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-                  </div>
-                </div>
-                <div className="col-lg-2 col-6">   
-                  <div class="small-box bg-light">
-                    <div class="d-flex flex-row justify-content-start ">  
-                      <i class="mt-3 ms-3 mb-2 fas fa-square text-success"></i>
-                      <h4 class="ms-3 mb-5 mt-2 "> ห้องพัก 110 </h4>
-                    </div>
-                    <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-                  </div>
-                </div>
-                <div className="col-lg-2 col-6">   
-                  <div class="small-box bg-light">
-                    <div class="d-flex flex-row justify-content-start ">  
-                      <i class="mt-3 ms-3 mb-2 fas fa-square text-success"></i>
-                      <h4 class="ms-3 mb-5 mt-2 "> ห้องพัก 111 </h4>
-                    </div>
-                    <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-                  </div>
-                </div>
-                <div className="col-lg-2 col-6">   
-                  <div class="small-box bg-light">
-                    <div class="d-flex flex-row justify-content-start ">  
-                      <i class="mt-3 ms-3 mb-2 fas fa-square text-success"></i>
-                      <h4 class="ms-3 mb-5 mt-2 "> ห้องพัก 112 </h4>
-                    </div>
-                    <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-                  </div>
-                </div>
-                <div className="col-lg-2 col-6">   
-                  <div class="small-box bg-light">
-                    <div class="d-flex flex-row justify-content-start ">  
-                      <i class="mt-3 ms-3 mb-2 fas fa-square text-success"></i>
-                      <h4 class="ms-3 mb-5 mt-2 "> ห้องพัก 113 </h4>
-                    </div>
-                    <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-                  </div>
-                </div>
-                <div className="col-lg-2 col-6">   
-                  <div class="small-box bg-light">
-                    <div class="d-flex flex-row justify-content-start ">  
-                      <i class="mt-3 ms-3 mb-2 fas fa-square text-success"></i>
-                      <h4 class="ms-3 mb-5 mt-2 "> ห้องพัก 114 </h4>
-                    </div>
-                    <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-                  </div>
-                </div>
-                <div className="col-lg-2 col-6">   
-                  <div class="small-box bg-light">
-                    <div class="d-flex flex-row justify-content-start ">  
-                      <i class="mt-3 ms-3 mb-2 fas fa-square text-success"></i>
-                      <h4 class="ms-3 mb-5 mt-2 "> ห้องพัก 115 </h4>
-                    </div>
-                    <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-                  </div>
-                </div>
-                <div className="col-lg-2 col-6">   
-                  <div class="small-box bg-light">
-                    <div class="d-flex flex-row justify-content-start ">  
-                      <i class="mt-3 ms-3 mb-2 fas fa-square text-success"></i>
-                      <h4 class="ms-3 mb-5 mt-2 "> ห้องพัก 116 </h4>
-                    </div>
-                    <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-                  </div>
-                </div>
-                <div className="col-lg-2 col-6">   
-                  <div class="small-box bg-light">
-                    <div class="d-flex flex-row justify-content-start ">  
-                      <i class="mt-3 ms-3 mb-2 fas fa-square text-success"></i>
-                      <h4 class="ms-3 mb-5 mt-2 "> ห้องพัก 117 </h4>
-                    </div>
-                    <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-                  </div>
-                </div>
-                <div className="col-lg-2 col-6">   
-                  <div class="small-box bg-light">
-                    <div class="d-flex flex-row justify-content-start ">  
-                      <i class="mt-3 ms-3 mb-2 fas fa-square text-success"></i>
-                      <h4 class="ms-3 mb-5 mt-2 "> ห้องพัก 118 </h4>
-                    </div>
-                    <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-                  </div>
-                </div>
-                <div class=" dataTables_paginate paging_simple_numbers " id="example1_paginate">
-                  <ul class="pagination d-flex justify-content-center"><li class="paginate_button page-item previous disabled " id="example1_previous">
-                    <a href="#" aria-controls="example1" data-dt-idx="0" tabindex="0" class="page-link">Previous</a></li>
-                    <li class="paginate_button page-item active"><a href="#" aria-controls="example1" data-dt-idx="1" tabindex="0" class="page-link">1</a></li><li class="paginate_button page-item "><a href="#" aria-controls="example1" data-dt-idx="2" tabindex="0" class="page-link">2</a></li>
-                    <li class="paginate_button page-item "><a href="#" aria-controls="example1" data-dt-idx="3" tabindex="0" class="page-link">3</a></li>
-                    <li class="paginate_button page-item "><a href="#" aria-controls="example1" data-dt-idx="4" tabindex="0" class="page-link">4</a></li>
-                    <li class="paginate_button page-item "><a href="#" aria-controls="example1" data-dt-idx="5" tabindex="0" class="page-link">5</a></li>
-                    <li class="paginate_button page-item "><a href="#" aria-controls="example1" data-dt-idx="6" tabindex="0" class="page-link">6</a></li>
-                    <li class="paginate_button page-item next" id="example1_next"><a href="#" aria-controls="example1" data-dt-idx="7" tabindex="0" class="page-link">Next</a></li>
-                    </ul>
-                  </div>
-              </div>
-          </section>
-          {/* /.content */}
+          {/* /.container-fluid */}
         </div>
-        <Modal title="Basic Modal" visible={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
-            <Input showCount maxLength={20} onChange={onChange} name="text-box" />
-        </Modal>
-      </div>
-  )
-}
+        {/* /.content-header */}
+        {/* Main content */}
+        <section className="content">
+          {/* /.container-fluid */}
+          
 
-export default ManagementRoom
+          <div className="row m-2">
+          <form class="form-inline">
+              <input
+                class="form-control mr-sm-2"
+                type="search"
+                placeholder="Search"
+                aria-label="Search"
+                value={searchText}
+                onChange={(event) => {
+                  setSearchText(event.target.value);
+                }}
+              />
+              
+              <button type="button" class="btn btn-outline-success m-2" onClick={handleShow}>
+                สร้างห้อง
+              </button>
+              <button type="button" class="btn btn-outline-primary m-2">
+                แจ้งทุกห้อง
+              </button>
+            </form>
+            {currentPosts.map((post) => {
+              return (
+                <div className="col-sm-6 col-md-3 v my-2">
+                  <div
+                    className="card shadow-sm w-100 "
+                    style={{ minHeight: 175 }}
+                  >
+                    <div className="card-header">
+                    <h5 className="catd-title text-center h3 mt-2">
+                        {post.status === "empty" ? "🟢" : "🔴"} ห้องพัก {post.roomName}
+                      </h5>
+                    </div>
+                    <div className="card-body">
+                      
+                      <h5 className="catd-subtitle mb-2 text-muted text-center">
+                        {"สถานะ : "}
+                        {post.status === "empty" ? <b style={{ color: "#73d13d" }}>ว่าง</b> : <b style={{ color: "#ff4d4f" }}>ไม่ว่าง</b>}{" "}
+                        
+                      </h5>
+                      <h5 className="catd-subtitle mb-2 text-muted text-center">
+                        {"ประเภท : "}
+                        {post.room_type === "fan" ? <b>พัดลม</b> : <b>แอร์</b>}{" "}
+                        
+                      </h5>
+                      <div className="d-flex justify-content-center">
+                        <button
+                          type="button"
+                          class="btn btn-outline-success text-center m-3"
+                          onClick={() => navigate('/roomdetail')}
+                        >
+                          ดูรายละเอียดของห้อง {post.roomName}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+          <ReactPaginate
+            onPageChange={handlePageClick}
+            pageCount={posts.length / postsPerPage}
+            previousLabel={"<<"}
+            nextLabel={">>"}
+            containerClassName={"pagination justify-content-center"}
+            pageClassName={"page-item"}
+            pageLinkClassName={"page-link"}
+            previousClassName={"page-item"}
+            previousLinkClassName={"page-link"}
+            nextClassName={"page-item"}
+            nextLinkClassName={"page-link"}
+            breakClassName={"paeg-item"}
+            breakLinkClassName={"page-link"}
+            activeClassName={"active"}
+          />
+        </section>
+        {/* /.content */}
+      </div>
+      <Modal className="font-sarabun" show={show} onHide={handleClose} centered backdrop="static" keyboard={false}>
+        <Modal.Header>
+          <Modal.Title>สร้างห้องพักใหม่</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+        <div class="input-group mb-3">
+          <div class="input-group-prepend">
+            <span class="input-group-text" id="basic-addon1">รหัสห้อง</span>
+          </div>
+          <input name="roomName" onChange={handleonChangeRoomName} type="text" class="form-control" placeholder="กรอกรหัสห้อง" aria-label="Username" aria-describedby="basic-addon1"/>
+        </div>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleClose}>
+            ยกเลิก
+          </Button>
+          <Button variant="primary" onClick={handleonCreate}>
+            ยืนยันการสร้างห้อง
+          </Button>
+        </Modal.Footer>
+      </Modal>
+    </div>
+  );
+}
+export default ManagementRoom;

@@ -6,8 +6,9 @@ import axios from 'axios';
 import { listBills } from "./function.components/billmana";
 
 function Billmanage(){
-    // const { user } = useSelector((state) => ({...state}))
-    const [posts, setPosts] = useState([]);
+    const { user } = useSelector((state) => ({...state}))
+    const [data, setData] = useState([]);
+    const [posts,setPosts] = useState([]);
     const [loading, setLoading] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
     const [postsPerPage, setPostPerPage] = useState(9);
@@ -15,15 +16,16 @@ function Billmanage(){
 
     
     
-    // const loadData = (authtoken) => {
-    //         listBills(authtoken)
-    //         .then(res => {
-    //                 setPosts(res.data);
-    //             })
-    //             .catch(err => {
-    //                     console.log(err);
-    //                 })
-    //             };
+    const loadData = (authtoken) => {
+            listBills(authtoken)
+            .then(res => {
+                    setData(res.data)
+                    setPosts(res.data);
+                })
+                .catch(err => {
+                        console.log(err);
+                    })
+                };
     function getRandomIntInclusive(min, max) {
         min = Math.ceil(min);
         max = Math.floor(max);
@@ -31,16 +33,17 @@ function Billmanage(){
       }
     useEffect(()=> {
         setLoading(true)
-        axios.get(`https://jsonplaceholder.typicode.com/posts`)
-        .then((res) => {
-            setPosts(res.data);
-        })
-        // loadData(user.token)
+        // axios.get(`https://jsonplaceholder.typicode.com/posts`)
+        // .then((res) => {
+        //     setData(res.data);
+        //     setPosts(res.data)
+        // })
+        loadData(user.token)
         setLoading(false)
     }, []);
-    
+    // const fillteredPosts = posts
     const fillteredPosts = posts.filter((post)=>{        
-        return post.id.toString().includes(searchText);
+        return post._id.includes(searchText);
     })
     if(loading){
         return <h2>loading...</h2>
@@ -49,6 +52,19 @@ function Billmanage(){
         console.log(data.selected)
         setCurrentPage(data.selected + 1)
     };
+    // const A = posts
+    var B = posts.filter(post => post.isPayed === true)
+    // var C = posts.filter(e => e.title === "C")    
+
+
+    function showAll() {
+      setPosts(data)
+    }
+
+    function showB() {
+      setPosts(B)
+    }
+
     const indexOfLastPost = currentPage * postsPerPage;
     const indexOfFirstPost = indexOfLastPost - postsPerPage;
     const currentPosts = fillteredPosts.slice(indexOfFirstPost,indexOfLastPost);
@@ -91,9 +107,9 @@ function Billmanage(){
                 <form class="form-inline">
                     <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" value={searchText}
                 onChange={(event)=>{setSearchText(event.target.value)}}/>
-                    <button class="btn btn-outline-success my-2 my-sm-0 m-2" type="submit">Search</button>
-                    <button type="button" class="btn btn-outline-danger m-2">ค่างชำระ</button>
-                    <button type="button" class="btn btn-outline-primary m-2">แจ้งทุกห้อง</button>
+                    <button class="btn btn-outline-success my-2 my-sm-0 m-2" onClick={showAll}>แสดงทั้งหมด</button>
+                    <button type="button" class="btn btn-outline-danger m-2" onClick={showB}>month = may</button>
+                    <button type="button" class="btn btn-outline-primary m-2" onClick={showAll}>แจ้งทุกห้อง</button>
                 </form>
             </nav>
                 
@@ -103,7 +119,8 @@ function Billmanage(){
               return <div className="col-sm-6 col-md-4 v my-2">
                 <div className="card shadow-sm w-100 " style={{ minHeight:175}}>
                 <div className="card-body">
-                    <h5 className="catd-title text-center h2">ห้องพัก {post.id}</h5>
+                    <h5 className="catd-title text-center h2">ห้องพัก {post.roomId}</h5>
+                    <h6 className="catd-title text-center h2">and : {post.isPayed}</h6>
                     <h5 className="catd-subtitle mb-2 text-muted text-center">{getRandomIntInclusive(1000,3000).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')} บาท</h5>
                     <div className="d-flex justify-content-center">
                     <button type="button" class="btn btn-success text-center m-4">แจ้งบิล</button>
@@ -117,7 +134,7 @@ function Billmanage(){
             </div>
             <ReactPaginate
             onPageChange={handlePageClick}
-            pageCount={posts.length/postsPerPage}
+            pageCount={fillteredPosts.length/postsPerPage}
             previousLabel={'<<'}
             nextLabel={'>>'}
             containerClassName={'pagination justify-content-center'}

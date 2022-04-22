@@ -13,7 +13,7 @@ function ManagementRoom() {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const [postsPerPage, setPostPerPage] = useState(9);
+  const [postsPerPage, setPostPerPage] = useState(8);
   const [searchText, setSearchText] = useState("");
   // Modal
   const [show, setShow] = useState(false);

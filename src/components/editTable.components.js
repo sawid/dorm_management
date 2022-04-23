@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
 import { useContext,  useEffect, useRef } from "react";
 import { Table, Input, InputNumber, Popconfirm, Form, Typography } from "antd";
-import { useParams } from "react-router-dom";
+import { readBill } from "./function.components/bill";
 import { useSelector } from "react-redux";
-import { readBill, changeBillNet } from "./function.components/bill";
-
+import { useParams } from "react-router-dom";
 
 const originData = [];
 
@@ -47,11 +46,15 @@ const EditableCell = ({
 };
 
 const EditableTable = () => {
+  let { id } = useParams();
+  const { user } = useSelector((state) => ({ ...state }));
   const [form] = Form.useForm();
-  const [data, setData] = useState(originData);
+  const [data, setData] = useState([]);
   const [editingKey, setEditingKey] = useState("");
 
   const isEditing = (record) => record.key === editingKey;
+
+  
 
   const edit = (record) => {
     form.setFieldsValue({
@@ -67,6 +70,21 @@ const EditableTable = () => {
   const cancel = () => {
     setEditingKey("");
   };
+
+  const loadData = (authtoken, values) => {
+    readBill(authtoken, values)
+      .then((res) => {
+        setData(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  useEffect(() => {
+    loadData(user.token, id);
+  }, []);
+
 
   const save = async (key) => {
     try {
@@ -110,7 +128,7 @@ const EditableTable = () => {
     },
     {
       title: "ค่าส่วนกลาง",
-      dataIndex: "rentalNet",
+      dataIndex: "rentalNet", 
       width: "15%",
       editable: true,
     },

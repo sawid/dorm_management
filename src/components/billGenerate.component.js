@@ -10,7 +10,7 @@ import {
   Popconfirm,
   Form,
   InputRef,
-  Typography 
+  Typography ,InputNumber
 } from "antd";
 import { CaretRightFilled, CaretLeftFilled } from "@ant-design/icons";
 import { useParams } from "react-router-dom";
@@ -350,3 +350,4 @@ const Billgenerate = () => {
 };
 
 export default Billgenerate;
+ 

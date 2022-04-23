@@ -21,6 +21,8 @@
     "express": "^4.17.3",
     "jsonwebtoken": "^8.5.1",
     "jspdf": "^2.5.1",
+    "jspdf-autotable": "^3.5.23",
+    "jspdf-customfonts": "0.0.4-rc.4",
     "moment": "^2.29.2",
     "mongoose": "^6.2.10",
     "morgan": "^1.10.0",

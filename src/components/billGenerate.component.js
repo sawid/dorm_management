@@ -1,78 +1,129 @@
 import React, { Component } from "react";
-import { useState, useEffect } from 'react';
+import { useContext, useState, useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
-import { DatePicker, Button, Card } from "antd";
+import {
+  DatePicker,
+  Button,
+  Card,
+  Table,
+  Input,
+  Popconfirm,
+  Form,
+  InputRef,
+  Typography,
+  InputNumber,
+} from "antd";
 import { CaretRightFilled, CaretLeftFilled } from "@ant-design/icons";
-import { useParams } from "react-router-dom";
-import { readBill, changeBillNet} from "./function.components/bill";
-
+import { useParams, Link } from "react-router-dom";
+import { Modal } from "react-bootstrap";
+import { readBill, resetVaule } from "./function.components/bill";
 
 const Billgenerate = () => {
-  let { id } = useParams(); 
-  const { user } = useSelector((state) => ({...state}))
-  const [ data, setData ] = useState([]);
-  const [ values, setValues] = useState({
+  let { id } = useParams();
+  const { user } = useSelector((state) => ({ ...state }));
+  const [data, setData] = useState([]);
+  const [values, setValues] = useState({
     rentalFee: "",
-    electricUnitPrice: "",
-    waterUnitPrice: "",
-    rentalNet:"",
+    waterUnitLastMonth: "",
+    waterUnitThisMonth: "",
+    electricUnitLastMonth: "",
+    electricUnitThisMonth: "",
+    rentalNet: "",
   });
 
   const onChange = (date, dateString) => {
     console.log(date, dateString);
   };
 
-  const separator=(numb) =>{
+  const separator = (numb) => {
     var str = numb.toString().split(".");
     str[0] = str[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-        return str.join(".");
-    }
+    return str.join(".");
+  };
 
-  const isPayedBadge=(props)=>{
-    if (props){
-      return <h1 className="m-0 ms-3 text-dark">
-      ห้อง { data.roomId }
-      <span class="badge rounded-pill bg-success text-md">จ่ายแล้ว</span>
-    </h1>
+  const isPayedBadge = (props) => {
+    if (props) {
+      return (
+        <h1 className="m-0 ms-3 text-dark">
+          ห้อง {data.roomId}
+          <span class="badge rounded-pill bg-success text-md">จ่ายแล้ว</span>
+        </h1>
+      );
+    } else {
+      return (
+        <h1 className="m-0 ms-3 text-dark">
+          ห้อง {data.roomId}
+          <span class="badge rounded-pill bg-danger text-md">ยังไม่จ่าย</span>
+        </h1>
+      );
     }
-    else {
-      return <h1 className="m-0 ms-3 text-dark">
-      ห้อง { data.roomId }
-      <span class="badge rounded-pill bg-danger text-md">ยังไม่จ่าย</span>
-    </h1> 
-    }
-  }
+  };
 
-  const UnitPrice=(thisMonth,lastMonth)=>{
-    if (lastMonth>thisMonth)
-    {
-      return thisMonth-lastMonth+9999;
+  const [isModalVisible, setIsModalVisible] = useState(false);
+
+  const handleOk = () => {
+    setIsModalVisible(false);
+    resetVaule(user.token, values.id, { dataBill })
+      .then((res) => {
+        console.log(res);
+        loadData(user.token, id);
+      })
+      .catch((err) => {
+        console.log(err.response);
+      });
+  };
+
+  const handleCancel = () => {
+    setIsModalVisible(false);
+  };
+
+  const showModal = (id) => {
+    setIsModalVisible(true);
+    setValues({ ...values, id: id });
+  };
+
+  const UnitPrice = (thisMonth, lastMonth) => {
+    if (lastMonth > thisMonth) {
+      return thisMonth - lastMonth + 9999;
+    } else {
+      return thisMonth - lastMonth;
     }
-    else{
-      return (thisMonth-lastMonth)
-    }
-  }
+  };
 
   const handleonChange = (e) => {
-    setValues({...values, [e.target.name]:e.target.value });
-  }
+    setValues({ ...values, [e.target.name]: e.target.value });
+  };
 
+  //input
+  const [dataBill, setdataBill] = useState({
+    rentalFee: data.rentalFee,
+    waterUnitLastMonth: data.waterUnitLastMonth,
+    waterUnitThisMonth: data.waterUnitThisMonth,
+    electricUnitLastMonth: data.electricUnitLastMonth,
+    electricUnitThisMonth: data.electricUnitThisMonth,
+    rentalNet: data.rentalNet,
+  });
+
+  const handleonChangeValue = (e) => {
+    setdataBill({ ...dataBill, [e.target.name]: e.target.value });
+  };
+
+  //table
 
   const loadData = (authtoken, values) => {
     readBill(authtoken, values)
-    .then(res => {
-            setData(res.data)
-            
-    })
-    .catch(err => {
-            console.log(err);
-    })
-};
+      .then((res) => {
+        setData(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
- useEffect(() => {
-   loadData(user.token, id);
- },[])
- console.log(data)
+  useEffect(() => {
+    loadData(user.token, id);
+  }, []);
+  console.log(data);
 
   return (
     <div>
@@ -87,10 +138,13 @@ const Billgenerate = () => {
               {/* /.col */}
               <div className="col-sm-6">
                 <ol className="breadcrumb float-sm-right">
+                  <li className="breadcrumb-item active">ห้อง {data.roomId}</li>
                   <li className="breadcrumb-item">
-                    <a href="#">จัดการบิล</a>
+                    <Link to="/billmanage">ระบบจัดการหอพัก</Link>
                   </li>
-                  <li className="breadcrumb-item active">ระบบจัดการหอพัก</li>
+                  <li className="breadcrumb-item">
+                    <Link to="/">ระบบจัดการหอพัก</Link>
+                  </li>
                 </ol>
               </div>
               {/* /.col */}
@@ -139,12 +193,19 @@ const Billgenerate = () => {
               <div className="col-sm-3 ">
                 <div className="card">
                   <h4 className="m-0 ms-2 text-dark bg-white">
-                    สถานะบิล <small class="text-muted text ">  { data.isBillNotified ? "แจ้งแล้ว" : "ยังไม่แจ้ง" }</small>
+                    สถานะบิล{" "}
+                    <small class="text-muted text ">
+                      {" "}
+                      {data.isBillNotified ? "แจ้งแล้ว" : "ยังไม่แจ้ง"}
+                    </small>
                   </h4>
 
                   <h4 className="m-0 ms-2 text-dark bg-white">
                     สถานะห้อง
-                    <small className="text-muted">  { data.isPayed ? "จ่ายแล้ว" : "ยังไม่จ่าย" }</small>
+                    <small className="text-muted">
+                      {" "}
+                      {data.isPayed ? "จ่ายแล้ว" : "ยังไม่จ่าย"}
+                    </small>
                   </h4>
                   <p></p>
                 </div>
@@ -212,13 +273,49 @@ const Billgenerate = () => {
                   extra={<a href="#">ดูข้อมูล</a>}
                   block
                 >
-                  <p>ค่าหอ = { separator(1*data.rentalFee) } บาท</p> 
-                  <p>ค่าไฟ = { separator(7* (UnitPrice(data.electricUnitThisMonth ,data.electricUnitLastMonth) )) } บาท</p>
-                  <p>ค่าน้ำ = { separator(18* (UnitPrice(data.waterUnitThisMonth,data.waterUnitLastMonth ))) } บาท</p>
-                  <p>ค่าส่วนกลาง = { separator(1*data.rentalNet) } บาท</p>
+                  <p>ค่าหอ = {separator(1 * data.rentalFee)} บาท</p>
+                  <p>
+                    ค่าไฟ ={" "}
+                    {separator(
+                      7 *
+                        UnitPrice(
+                          data.electricUnitThisMonth,
+                          data.electricUnitLastMonth
+                        )
+                    )}{" "}
+                    บาท
+                  </p>
+                  <p>
+                    ค่าน้ำ ={" "}
+                    {separator(
+                      18 *
+                        UnitPrice(
+                          data.waterUnitThisMonth,
+                          data.waterUnitLastMonth
+                        )
+                    )}{" "}
+                    บาท
+                  </p>
+                  <p>ค่าส่วนกลาง = {separator(1 * data.rentalNet)} บาท</p>
 
-                  <h1>รวม { separator(data.rentalFee+(7*UnitPrice(data.electricUnitThisMonth ,data.electricUnitLastMonth))
-                            + (18*UnitPrice(data.waterUnitThisMonth ,data.waterUnitLastMonth)) + data.rentalNet)} บาท</h1>
+                  <h1>
+                    รวม{" "}
+                    {separator(
+                      data.rentalFee +
+                        7 *
+                          UnitPrice(
+                            data.electricUnitThisMonth,
+                            data.electricUnitLastMonth
+                          ) +
+                        18 *
+                          UnitPrice(
+                            data.waterUnitThisMonth,
+                            data.waterUnitLastMonth
+                          ) +
+                        data.rentalNet
+                    )}{" "}
+                    บาท
+                  </h1>
                 </Card>
                 <p></p>
               </div>
@@ -239,68 +336,45 @@ const Billgenerate = () => {
                         </thead>
                         <tbody>
                           <tr>
-                          
                             <th scope="row">
                               {" "}
-                              
                               <input
                                 class="form-control form-control-sm "
                                 type="text"
-                                value={ data.rentalFee } 
-                              ></input>
-                            </th>
-                            <th scope="row">                             
-                              <input
-                                class="form-control form-control-sm"
-                                type="text"
-                                
-                              ></input>                           
-                            </th>
-                            <th scope="row">
-                              <input
-                                class="form-control form-control-sm"
-                                type="text"
-                                value= {18}
+                                value={data.rentalFee}
+                                disabled
                               ></input>
                             </th>
                             <th scope="row">
                               <input
                                 class="form-control form-control-sm"
                                 type="text"
-                                value= {150}
+                                value={7}
+                                disabled
                               ></input>
                             </th>
-                            
+                            <th scope="row">
+                              <input
+                                class="form-control form-control-sm"
+                                type="text"
+                                value={18}
+                                disabled
+                              ></input>
+                            </th>
+                            <th scope="row">
+                              <input
+                                class="form-control form-control-sm"
+                                type="text"
+                                value={150}
+                                disabled
+                              ></input>
+                            </th>
                           </tr>
                         </tbody>
                       </table>
                     </div>
                   </div>
-
-                  <div className="row">
-                    <div className="col-sm-4">
-                      <input
-                        class="btn btn-sm btn-success ms-2 text-sm"
-                        type="submit"
-                        form ="default"
-                        name ="changeOne"
-                        value="กดเพื่อยืนยันการเปลี่ยนแปลง"
-                      ></input>
-                      <p></p>
-                    </div>
-                    <div className="col-sm-8">
-                      <input
-                        class="btn btn-sm btn-warning ms-2 text-sm"
-                        type="submit"
-                        
-                        name ="changeAll"
-                        value="กดเพื่อยืนยันการเปลี่ยนแปลงกับทุกห้อง"
-                      ></input>
-                      <p></p>
-                    </div>
-                  </div>
                 </div>
-
                 <div className="card">
                   <div className="card-header">ค่าหอโดยรวม</div>
                   <div className="row">
@@ -321,33 +395,56 @@ const Billgenerate = () => {
                               <input
                                 class="form-control form-control-sm"
                                 type="text"
-                                value= {data.rentalFee}
+                                value={data.rentalFee}
+                                disabled
                               ></input>
                             </th>
                             <th scope="row">
                               <input
                                 class="form-control form-control-sm"
                                 type="text"
-                                value={UnitPrice(data.electricUnitThisMonth,data.electricUnitLastMonth)}
+                                value={UnitPrice(
+                                  data.electricUnitThisMonth,
+                                  data.electricUnitLastMonth
+                                )}
+                                disabled
                               ></input>
                               <p></p>
                               <input
                                 class="form-control form-control-sm"
                                 type="text"
-                                value={7*UnitPrice(data.electricUnitThisMonth,data.electricUnitLastMonth)}
+                                value={
+                                  7 *
+                                  UnitPrice(
+                                    data.electricUnitThisMonth,
+                                    data.electricUnitLastMonth
+                                  )
+                                }
+                                disabled
                               ></input>
                             </th>
                             <th scope="row">
                               <input
                                 class="form-control form-control-sm"
                                 type="text"
-                                value={UnitPrice(data.waterUnitThisMonth,data.waterUnitLastMonth)}
+                                value={UnitPrice(
+                                  data.waterUnitThisMonth,
+                                  data.waterUnitLastMonth
+                                )}
+                                disabled
                               ></input>
                               <p></p>
                               <input
                                 class="form-control form-control-sm"
                                 type="text"
-                                value={18*UnitPrice(data.waterUnitThisMonth,data.waterUnitLastMonth)}
+                                value={
+                                  18 *
+                                  UnitPrice(
+                                    data.waterUnitThisMonth,
+                                    data.waterUnitLastMonth
+                                  )
+                                }
+                                disabled
                               ></input>
                             </th>
                             <th scope="row">
@@ -355,11 +452,23 @@ const Billgenerate = () => {
                                 class="form-control form-control-sm"
                                 type="text"
                                 value={data.rentalNet}
+                                disabled
                               ></input>
                             </th>
                           </tr>
                         </tbody>
                       </table>
+                    </div>
+                    <div className="row">
+                      <div className="col-sm-3">
+                        <button
+                          type="button  "
+                          className="btn btn-success btn-sm btn-block text-md ms-3 mb-3 mt-2"
+                          onClick={() => showModal(data._id)}
+                        >
+                          แก้ไขข้อมูล
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -370,6 +479,125 @@ const Billgenerate = () => {
         </section>
         {/* /.content */}
       </div>
+      <Modal
+        className="font-sarabun"
+        show={isModalVisible}
+        onHide={handleCancel}
+        centered
+        backdrop="static"
+        keyboard={false}
+      >
+        <Modal.Header>
+          <Modal.Title>แก้ไขรายละเอียด</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text" id="basic-addon1">
+                {" "}
+                ค่าห้อง ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+              </span>
+            </div>
+            <input
+              name="rentalFee"
+              onChange={handleonChangeValue}
+              type="text"
+              class="form-control"
+              placeholder="กรอกค่าห้อง"
+              aria-label="Username"
+              aria-describedby="basic-addon1"
+            />
+          </div>
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text" id="basic-addon1">
+                มิเตอร์ค่าไฟเดือนที่แล้ว{" "}
+              </span>
+            </div>
+            <input
+              name="electricUnitLastMonth"
+              onChange={handleonChangeValue}
+              type="text"
+              class="form-control"
+              placeholder="กรอกค่ามิเตอร์ไฟฟ้าเดือนที่แล้ว"
+              aria-label="Username"
+              aria-describedby="basic-addon1"
+            />
+          </div>
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text" id="basic-addon1">
+                มิเตอร์ค่าไฟเดือนนี้⠀⠀⠀
+              </span>
+            </div>
+            <input
+              name="electricUnitThisMonth"
+              onChange={handleonChangeValue}
+              type="text"
+              class="form-control"
+              placeholder="กรอกค่ามิเตอร์ไฟฟ้าเดือนนี้"
+              aria-label="Username"
+              aria-describedby="basic-addon1"
+            />
+          </div>
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text" id="basic-addon1">
+                มิเตอร์ค่าน้ำเดือนที่แล้ว⠀
+              </span>
+            </div>
+            <input
+              name="waterUnitLastMonth"
+              onChange={handleonChangeValue}
+              type="text"
+              class="form-control"
+              placeholder="กรอกค่ามิเตอร์น้ำเดือนที่แล้ว"
+              aria-label="Username"
+              aria-describedby="basic-addon1"
+            />
+          </div>
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text" id="basic-addon1">
+                มิเตอร์ค่าน้ำเดือนนี้⠀⠀⠀
+              </span>
+            </div>
+            <input
+              name="waterUnitThisMonth"
+              onChange={handleonChangeValue}
+              type="text"
+              class="form-control"
+              placeholder="กรอกค่ามิเตอร์น้ำเดือนนี้"
+              aria-label="Username"
+              aria-describedby="basic-addon1"
+            />
+          </div>
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text" id="basic-addon1">
+                ค่าส่วนกลาง⠀⠀⠀⠀⠀⠀⠀
+              </span>
+            </div>
+            <input
+              name="rentalNet"
+              type="text"
+              onChange={handleonChangeValue}
+              class="form-control"
+              placeholder="กรอกค่าส่วนกลาง"
+              aria-label="Username"
+              aria-describedby="basic-addon1"
+            />
+          </div>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="primary" onClick={handleOk}>
+            ตกลง
+          </Button>
+          <Button variant="secondary" onClick={handleCancel}>
+            ยกเลิก
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 };

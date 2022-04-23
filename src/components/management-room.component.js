@@ -171,7 +171,7 @@ function ManagementRoom() {
                         <button
                           type="button"
                           class="btn btn-outline-success text-center m-3"
-                          onClick={() => navigate('/roomdetail')}
+                          onClick={() => navigate('/roomdetail/' + post._id)}
                         >
                           ดูรายละเอียดของห้อง {post.roomName}
                         </button>

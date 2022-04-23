@@ -2,13 +2,14 @@ import { DatePicker,Space } from "antd";
 import ReactPaginate from "react-paginate";
 import { useSelector } from "react-redux";
 import {useState, useEffect} from 'react';
-import axios from 'axios';
 import { listBills } from "./function.components/billmana";
+import moment from "moment";
 
 function Billmanage(){
     const { user } = useSelector((state) => ({...state}))
     const [data, setData] = useState([]);
     const [posts,setPosts] = useState([]);
+    const [postDate,setPostDate] = useState('')
     const [loading, setLoading] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
     const [postsPerPage, setPostPerPage] = useState(9);
@@ -33,18 +34,16 @@ function Billmanage(){
       }
     useEffect(()=> {
         setLoading(true)
-        // axios.get(`https://jsonplaceholder.typicode.com/posts`)
-        // .then((res) => {
-        //     setData(res.data);
-        //     setPosts(res.data)
-        // })
         loadData(user.token)
         setLoading(false)
     }, []);
-    // const fillteredPosts = posts
-    const fillteredPosts = posts.filter((post)=>{        
-        return post._id.includes(searchText);
-    })
+    const fillteredPosts = posts.filter((post)=>{       
+        return post.roomId.includes(searchText);
+      })
+    const fillteredPostDate = data.filter((post)=>{       
+        return moment(post.createdAt).format("MMM") === postDate
+      })
+        
     if(loading){
         return <h2>loading...</h2>
     }
@@ -52,17 +51,24 @@ function Billmanage(){
         console.log(data.selected)
         setCurrentPage(data.selected + 1)
     };
-    // const A = posts
-    var B = posts.filter(post => post.isPayed === true)
-    // var C = posts.filter(e => e.title === "C")    
+    var notPayed = data.filter(post => post.isPayed == false)
+    var payed = data.filter(post => post.isPayed == true)
 
 
     function showAll() {
       setPosts(data)
     }
 
-    function showB() {
-      setPosts(B)
+    function showNotPayed() {
+      setPosts(notPayed)
+    }
+    function showPayed(){
+      setPosts(payed)
+    }
+    function fillterDate(date){
+      setPostDate(moment(date).format('MMM'))
+      console.log(postDate)
+      setPosts(fillteredPostDate)
     }
 
     const indexOfLastPost = currentPage * postsPerPage;
@@ -89,7 +95,7 @@ function Billmanage(){
                     <div className="card" style={{margin: "auto",padding: "10px 100px 10px 100px", width: "60%", textAlign: "center"}}>
                         <h1 className="m-0 text-dark">เลือกรอบมิเตอร์</h1>
                         <Space direction="vertical" style={{margin: "20px 0px 20px 0px"}}>
-                            <DatePicker picker="month" />
+                            <DatePicker picker="month"  onChange={(date)=>fillterDate(date)}/>
                         </Space>
                     </div>
                   </div>
@@ -107,9 +113,9 @@ function Billmanage(){
                 <form class="form-inline">
                     <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" value={searchText}
                 onChange={(event)=>{setSearchText(event.target.value)}}/>
-                    <button class="btn btn-outline-success my-2 my-sm-0 m-2" onClick={showAll}>แสดงทั้งหมด</button>
-                    <button type="button" class="btn btn-outline-danger m-2" onClick={showB}>month = may</button>
-                    <button type="button" class="btn btn-outline-primary m-2" onClick={showAll}>แจ้งทุกห้อง</button>
+                    <button type="button" class="btn btn-outline-success my-2 my-sm-0 m-2" onClick={showAll}>แสดงทั้งหมด</button>
+                    <button type="button" class="btn btn-outline-danger m-2" onClick={showNotPayed}>ยังไม่จ่าย</button>
+                    <button type="button" class="btn btn-outline-primary m-2" onClick={showPayed}>จ่ายแล้ว</button>
                 </form>
             </nav>
                 
@@ -118,10 +124,14 @@ function Billmanage(){
             currentPosts.map(post =>{
               return <div className="col-sm-6 col-md-4 v my-2">
                 <div className="card shadow-sm w-100 " style={{ minHeight:175}}>
+                <div className="card-header">
+                    <h5 className="catd-title text-center h3 mt-2">
+                        {post.isPayed === true ? "🟢" : "🔴"} ห้องพัก {post.roomId}
+                      </h5>
+                    </div>
                 <div className="card-body">
-                    <h5 className="catd-title text-center h2">ห้องพัก {post.roomId}</h5>
-                    <h6 className="catd-title text-center h2">and : {post.isPayed}</h6>
-                    <h5 className="catd-subtitle mb-2 text-muted text-center">{getRandomIntInclusive(1000,3000).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')} บาท</h5>
+                    <h6 className="catd-title text-center h2">{moment(post.createdAt).format('MMM')}</h6>
+                    <h5 className="catd-subtitle mb-2 text-muted text-center">{post.rentalFee} บาท</h5>
                     <div className="d-flex justify-content-center">
                     <button type="button" class="btn btn-success text-center m-4">แจ้งบิล</button>
                 </div>

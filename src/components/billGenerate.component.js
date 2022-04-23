@@ -14,6 +14,7 @@ import {
 } from "antd";
 import { CaretRightFilled, CaretLeftFilled } from "@ant-design/icons";
 import { useParams } from "react-router-dom";
+import { Modal } from "react-bootstrap";
 import { readBill, changeBillNet } from "./function.components/bill";
 import EditableTable from "./editTable.components"
 

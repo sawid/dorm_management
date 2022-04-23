@@ -10,13 +10,12 @@ import {
   Popconfirm,
   Form,
   InputRef,
-  Typography ,InputNumber, Modal
+  Typography ,InputNumber
 } from "antd";
 import { CaretRightFilled, CaretLeftFilled } from "@ant-design/icons";
-import { useParams } from "react-router-dom";
+import { useParams,Link } from "react-router-dom";
 import { Modal } from "react-bootstrap";
-import { readBill, changeBillNet } from "./function.components/bill";
-import EditableTable from "./editTable.components"
+import { readBill, resetVaule } from "./function.components/bill";
 
 const Billgenerate = () => {
   let { id } = useParams();
@@ -24,11 +23,14 @@ const Billgenerate = () => {
   const [data, setData] = useState([]);
   const [values, setValues] = useState({
     rentalFee: "",
-    electricUnitPrice: "",
-    waterUnitPrice: "",
+    waterUnitLastMonth: "",
+    waterUnitThisMonth: "",
+    electricUnitLastMonth:"",
+    electricUnitThisMonth: "",
     rentalNet: "",
   });
 
+  
   
 
   const onChange = (date, dateString) => {
@@ -59,6 +61,30 @@ const Billgenerate = () => {
     }
   };
 
+  const [isModalVisible, setIsModalVisible] = useState(false);
+
+  const handleOk = () => {
+    setIsModalVisible(false);
+    resetVaule(user.token, values.id, {dataBill})
+    .then(res => {
+      console.log(res)
+      loadData(user.token, id)
+    })
+    .catch(err => {
+      console.log(err.response)
+    })
+  };
+
+  const handleCancel = () => {
+    setIsModalVisible(false);
+  };
+
+  const showModal = (id) => {
+    setIsModalVisible(true);
+    setValues({...values, id:id});
+  };
+
+
   const UnitPrice = (thisMonth, lastMonth) => {
     if (lastMonth > thisMonth) {
       return thisMonth - lastMonth + 9999;
@@ -71,10 +97,24 @@ const Billgenerate = () => {
     setValues({ ...values, [e.target.name]: e.target.value });
   };
 
-  //table
-  
 
- 
+  //input
+  const [ dataBill, setdataBill ] = useState({
+    
+    rentalFee: data.rentalFee ,
+    waterUnitLastMonth: data.waterUnitLastMonth,
+    waterUnitThisMonth: data.waterUnitThisMonth,
+    electricUnitLastMonth: data.electricUnitLastMonth,
+    electricUnitThisMonth: data.electricUnitThisMonth,
+    rentalNet: data.rentalNet
+  });
+  
+  const handleonChangeValue = (e) => {
+    setdataBill({...dataBill, [e.target.name]:e.target.value });
+  }
+
+
+  //table
 
   const loadData = (authtoken, values) => {
     readBill(authtoken, values)
@@ -104,10 +144,14 @@ const Billgenerate = () => {
               {/* /.col */}
               <div className="col-sm-6">
                 <ol className="breadcrumb float-sm-right">
-                  <li className="breadcrumb-item">
-                    <a href="#">จัดการบิล</a>
+                <li className="breadcrumb-item active">
+                    ห้อง {data.roomId}
                   </li>
-                  <li className="breadcrumb-item active">ระบบจัดการหอพัก</li>
+                  <li className="breadcrumb-item">
+                  <Link  to="/billmanage">ระบบจัดการหอพัก</Link>
+                  </li>
+                  <li className="breadcrumb-item"><Link  to="/">ระบบจัดการหอพัก</Link></li>
+                  
                 </ol>
               </div>
               {/* /.col */}
@@ -311,6 +355,7 @@ const Billgenerate = () => {
                               <input
                                 class="form-control form-control-sm"
                                 type="text"
+                                value={7}
                               ></input>
                             </th>
                             <th scope="row">
@@ -337,7 +382,70 @@ const Billgenerate = () => {
                 </div>
                 <div className="card">
                   <div className="card-header">ค่าหอโดยรวม</div>
-                  <EditableTable />
+                  <div className="row">
+                    <div className="col-sm-12">
+                      <table className="table table-bordered">
+                        <thead className="table-light">
+                          <tr>
+                            <th scope="col">ค่าห้อง</th>
+                            <th scope="col">หน่วยค่าไฟ/ค่าไฟรวม</th>
+                            <th scope="col">หน่วยค่าน้ำ/ค่าน้ำรวม</th>
+                            <th scope="col">ค่าส่วนกลาง</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <th scope="row">
+                              {" "}
+                              <input
+                                class="form-control form-control-sm"
+                                type="text"
+                                value= {data.rentalFee}
+                              ></input>
+                            </th>
+                            <th scope="row">
+                              <input
+                                class="form-control form-control-sm"
+                                type="text"
+                                value={UnitPrice(data.electricUnitThisMonth,data.electricUnitLastMonth)}
+                              ></input>
+                              <p></p>
+                              <input
+                                class="form-control form-control-sm"
+                                type="text"                                
+                                value={7*UnitPrice(data.electricUnitThisMonth,data.electricUnitLastMonth)}
+                              ></input>
+                            </th>
+                            <th scope="row">
+                              <input
+                                class="form-control form-control-sm"
+                                type="text"
+                                value={UnitPrice(data.waterUnitThisMonth,data.waterUnitLastMonth)}
+                              ></input>
+                              <p></p>
+                              <input
+                                class="form-control form-control-sm"
+                                type="text"
+                                value={18*UnitPrice(data.waterUnitThisMonth,data.waterUnitLastMonth)}
+                              ></input>
+                            </th>
+                            <th scope="row">
+                              <input
+                                class="form-control form-control-sm"
+                                type="text"
+                                value={data.rentalNet}
+                              ></input>
+                            </th>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                    <div className="row">
+                      <div className="col-sm-6">
+                    <button type="button " className="btn btn-success btn-block text-lg ms-3 mb-3 mt-2" onClick={() => showModal(data._id)}>แก้ไขข้อมูล</button>
+                    </div>
+                    </div>
+                  </div>
                 </div>
               </div>             
             </div>
@@ -346,7 +454,59 @@ const Billgenerate = () => {
         </section>
         {/* /.content */}
       </div>
-      
+      <Modal className="font-sarabun" show={isModalVisible} onHide={handleCancel} centered backdrop="static" keyboard={false}>
+        <Modal.Header>
+          <Modal.Title>แก้ไขรายละเอียด</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+        <div class="input-group mb-3">
+          <div class="input-group-prepend">
+            <span class="input-group-text" id="basic-addon1"> ค่าห้อง ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀</span>
+          </div>
+          <input name="rentalFee"   onChange={handleonChangeValue} type="text" class="form-control" placeholder="กรอกค่าห้อง" aria-label="Username" aria-describedby="basic-addon1"/>
+        </div>
+        <div class="input-group mb-3">
+          <div class="input-group-prepend">
+            <span class="input-group-text" id="basic-addon1">มิเตอร์ค่าไฟเดือนที่แล้ว </span>
+          </div>
+          <input name="electricUnitLastMonth" onChange={handleonChangeValue} type="text" class="form-control" placeholder="กรอกค่ามิเตอร์ไฟฟ้าเดือนที่แล้ว" aria-label="Username" aria-describedby="basic-addon1"/>
+        </div>
+        <div class="input-group mb-3">
+          <div class="input-group-prepend">
+            <span class="input-group-text" id="basic-addon1">มิเตอร์ค่าไฟเดือนนี้⠀⠀⠀</span>
+          </div>
+          <input name="electricUnitThisMonth" onChange={handleonChangeValue} type="text" class="form-control" placeholder="กรอกค่ามิเตอร์ไฟฟ้าเดือนนี้" aria-label="Username" aria-describedby="basic-addon1"/>
+        </div>
+        <div class="input-group mb-3">
+          <div class="input-group-prepend">
+            <span class="input-group-text" id="basic-addon1">มิเตอร์ค่าน้ำเดือนที่แล้ว⠀</span>
+          </div>
+          <input name="waterUnitLastMonth" onChange={handleonChangeValue} type="text" class="form-control" placeholder="กรอกค่ามิเตอร์น้ำเดือนที่แล้ว" aria-label="Username" aria-describedby="basic-addon1"/>
+        </div>
+        <div class="input-group mb-3">
+          <div class="input-group-prepend">
+            <span class="input-group-text" id="basic-addon1">มิเตอร์ค่าน้ำเดือนนี้⠀⠀⠀</span>
+          </div>
+          <input name="waterUnitThisMonth"  onChange={handleonChangeValue} type="text" class="form-control" placeholder="กรอกค่ามิเตอร์น้ำเดือนนี้" aria-label="Username" aria-describedby="basic-addon1"/>
+        </div>
+        <div class="input-group mb-3">
+          <div class="input-group-prepend">
+            <span class="input-group-text" id="basic-addon1">ค่าส่วนกลาง⠀⠀⠀⠀⠀⠀⠀</span>
+          </div>
+          <input name="rentalNet"type="text" onChange={handleonChangeValue}  class="form-control" placeholder="กรอกค่าส่วนกลาง" aria-label="Username" aria-describedby="basic-addon1"/>
+        </div>
+        </Modal.Body>
+        <Modal.Footer>
+          
+          <Button variant="primary" onClick={handleOk}>
+            ตกลง
+          </Button>
+          <Button variant="secondary" onClick={handleCancel}>
+            ยกเลิก
+          </Button>
+          
+        </Modal.Footer>
+    </Modal>
     </div>
   );
 };

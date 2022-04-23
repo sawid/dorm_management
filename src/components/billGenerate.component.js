@@ -1,78 +1,94 @@
 import React, { Component } from "react";
-import { useState, useEffect } from 'react';
+import { useContext, useState, useEffect, useRef, } from "react";
 import { useSelector } from "react-redux";
-import { DatePicker, Button, Card } from "antd";
+import {
+  DatePicker,
+  Button,
+  Card,
+  Table,
+  Input,
+  Popconfirm,
+  Form,
+  InputRef,
+  Typography 
+} from "antd";
 import { CaretRightFilled, CaretLeftFilled } from "@ant-design/icons";
 import { useParams } from "react-router-dom";
-import { readBill, changeBillNet} from "./function.components/bill";
-
+import { readBill, changeBillNet } from "./function.components/bill";
+import EditableTable from "./editTable.components"
 
 const Billgenerate = () => {
-  let { id } = useParams(); 
-  const { user } = useSelector((state) => ({...state}))
-  const [ data, setData ] = useState([]);
-  const [ values, setValues] = useState({
+  let { id } = useParams();
+  const { user } = useSelector((state) => ({ ...state }));
+  const [data, setData] = useState([]);
+  const [values, setValues] = useState({
     rentalFee: "",
     electricUnitPrice: "",
     waterUnitPrice: "",
-    rentalNet:"",
+    rentalNet: "",
   });
+
+  
 
   const onChange = (date, dateString) => {
     console.log(date, dateString);
   };
 
-  const separator=(numb) =>{
+  const separator = (numb) => {
     var str = numb.toString().split(".");
     str[0] = str[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-        return str.join(".");
-    }
+    return str.join(".");
+  };
 
-  const isPayedBadge=(props)=>{
-    if (props){
-      return <h1 className="m-0 ms-3 text-dark">
-      ห้อง { data.roomId }
-      <span class="badge rounded-pill bg-success text-md">จ่ายแล้ว</span>
-    </h1>
+  const isPayedBadge = (props) => {
+    if (props) {
+      return (
+        <h1 className="m-0 ms-3 text-dark">
+          ห้อง {data.roomId}
+          <span class="badge rounded-pill bg-success text-md">จ่ายแล้ว</span>
+        </h1>
+      );
+    } else {
+      return (
+        <h1 className="m-0 ms-3 text-dark">
+          ห้อง {data.roomId}
+          <span class="badge rounded-pill bg-danger text-md">ยังไม่จ่าย</span>
+        </h1>
+      );
     }
-    else {
-      return <h1 className="m-0 ms-3 text-dark">
-      ห้อง { data.roomId }
-      <span class="badge rounded-pill bg-danger text-md">ยังไม่จ่าย</span>
-    </h1> 
-    }
-  }
+  };
 
-  const UnitPrice=(thisMonth,lastMonth)=>{
-    if (lastMonth>thisMonth)
-    {
-      return thisMonth-lastMonth+9999;
+  const UnitPrice = (thisMonth, lastMonth) => {
+    if (lastMonth > thisMonth) {
+      return thisMonth - lastMonth + 9999;
+    } else {
+      return thisMonth - lastMonth;
     }
-    else{
-      return (thisMonth-lastMonth)
-    }
-  }
+  };
 
   const handleonChange = (e) => {
-    setValues({...values, [e.target.name]:e.target.value });
-  }
+    setValues({ ...values, [e.target.name]: e.target.value });
+  };
 
+  //table
+  
+
+ 
 
   const loadData = (authtoken, values) => {
     readBill(authtoken, values)
-    .then(res => {
-            setData(res.data)
-            
-    })
-    .catch(err => {
-            console.log(err);
-    })
-};
+      .then((res) => {
+        setData(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
- useEffect(() => {
-   loadData(user.token, id);
- },[])
- console.log(data)
+  useEffect(() => {
+    loadData(user.token, id);
+  }, []);
+  console.log(data);
 
   return (
     <div>
@@ -139,12 +155,19 @@ const Billgenerate = () => {
               <div className="col-sm-3 ">
                 <div className="card">
                   <h4 className="m-0 ms-2 text-dark bg-white">
-                    สถานะบิล <small class="text-muted text ">  { data.isBillNotified ? "แจ้งแล้ว" : "ยังไม่แจ้ง" }</small>
+                    สถานะบิล{" "}
+                    <small class="text-muted text ">
+                      {" "}
+                      {data.isBillNotified ? "แจ้งแล้ว" : "ยังไม่แจ้ง"}
+                    </small>
                   </h4>
 
                   <h4 className="m-0 ms-2 text-dark bg-white">
                     สถานะห้อง
-                    <small className="text-muted">  { data.isPayed ? "จ่ายแล้ว" : "ยังไม่จ่าย" }</small>
+                    <small className="text-muted">
+                      {" "}
+                      {data.isPayed ? "จ่ายแล้ว" : "ยังไม่จ่าย"}
+                    </small>
                   </h4>
                   <p></p>
                 </div>
@@ -212,13 +235,49 @@ const Billgenerate = () => {
                   extra={<a href="#">ดูข้อมูล</a>}
                   block
                 >
-                  <p>ค่าหอ = { separator(1*data.rentalFee) } บาท</p> 
-                  <p>ค่าไฟ = { separator(7* (UnitPrice(data.electricUnitThisMonth ,data.electricUnitLastMonth) )) } บาท</p>
-                  <p>ค่าน้ำ = { separator(18* (UnitPrice(data.waterUnitThisMonth,data.waterUnitLastMonth ))) } บาท</p>
-                  <p>ค่าส่วนกลาง = { separator(1*data.rentalNet) } บาท</p>
+                  <p>ค่าหอ = {separator(1 * data.rentalFee)} บาท</p>
+                  <p>
+                    ค่าไฟ ={" "}
+                    {separator(
+                      7 *
+                        UnitPrice(
+                          data.electricUnitThisMonth,
+                          data.electricUnitLastMonth
+                        )
+                    )}{" "}
+                    บาท
+                  </p>
+                  <p>
+                    ค่าน้ำ ={" "}
+                    {separator(
+                      18 *
+                        UnitPrice(
+                          data.waterUnitThisMonth,
+                          data.waterUnitLastMonth
+                        )
+                    )}{" "}
+                    บาท
+                  </p>
+                  <p>ค่าส่วนกลาง = {separator(1 * data.rentalNet)} บาท</p>
 
-                  <h1>รวม { separator(data.rentalFee+(7*UnitPrice(data.electricUnitThisMonth ,data.electricUnitLastMonth))
-                            + (18*UnitPrice(data.waterUnitThisMonth ,data.waterUnitLastMonth)) + data.rentalNet)} บาท</h1>
+                  <h1>
+                    รวม{" "}
+                    {separator(
+                      data.rentalFee +
+                        7 *
+                          UnitPrice(
+                            data.electricUnitThisMonth,
+                            data.electricUnitLastMonth
+                          ) +
+                        18 *
+                          UnitPrice(
+                            data.waterUnitThisMonth,
+                            data.waterUnitLastMonth
+                          ) +
+                        data.rentalNet
+                    )}{" "}
+                    บาท
+                  </h1>
                 </Card>
                 <p></p>
               </div>
@@ -239,131 +298,47 @@ const Billgenerate = () => {
                         </thead>
                         <tbody>
                           <tr>
-                          
                             <th scope="row">
                               {" "}
-                              
                               <input
                                 class="form-control form-control-sm "
                                 type="text"
-                                value={ data.rentalFee } 
-                              ></input>
-                            </th>
-                            <th scope="row">                             
-                              <input
-                                class="form-control form-control-sm"
-                                type="text"
-                                
-                              ></input>                           
-                            </th>
-                            <th scope="row">
-                              <input
-                                class="form-control form-control-sm"
-                                type="text"
-                                value= {18}
+                                value={data.rentalFee}
                               ></input>
                             </th>
                             <th scope="row">
                               <input
                                 class="form-control form-control-sm"
                                 type="text"
-                                value= {150}
                               ></input>
                             </th>
-                            
+                            <th scope="row">
+                              <input
+                                class="form-control form-control-sm"
+                                type="text"
+                                value={18}
+                              ></input>
+                            </th>
+                            <th scope="row">
+                              <input
+                                class="form-control form-control-sm"
+                                type="text"
+                                value={150}
+                              ></input>
+                            </th>
                           </tr>
                         </tbody>
                       </table>
                     </div>
                   </div>
 
-                  <div className="row">
-                    <div className="col-sm-4">
-                      <input
-                        class="btn btn-sm btn-success ms-2 text-sm"
-                        type="submit"
-                        form ="default"
-                        name ="changeOne"
-                        value="กดเพื่อยืนยันการเปลี่ยนแปลง"
-                      ></input>
-                      <p></p>
-                    </div>
-                    <div className="col-sm-8">
-                      <input
-                        class="btn btn-sm btn-warning ms-2 text-sm"
-                        type="submit"
-                        
-                        name ="changeAll"
-                        value="กดเพื่อยืนยันการเปลี่ยนแปลงกับทุกห้อง"
-                      ></input>
-                      <p></p>
-                    </div>
-                  </div>
+                  
                 </div>
-
                 <div className="card">
                   <div className="card-header">ค่าหอโดยรวม</div>
-                  <div className="row">
-                    <div className="col-sm-12">
-                      <table className="table table-bordered">
-                        <thead className="table-light">
-                          <tr>
-                            <th scope="col">ค่าห้อง</th>
-                            <th scope="col">หน่วยค่าไฟ/ค่าไฟรวม</th>
-                            <th scope="col">หน่วยค่าน้ำ/ค่าน้ำรวม</th>
-                            <th scope="col">ค่าส่วนกลาง</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr>
-                            <th scope="row">
-                              {" "}
-                              <input
-                                class="form-control form-control-sm"
-                                type="text"
-                                value= {data.rentalFee}
-                              ></input>
-                            </th>
-                            <th scope="row">
-                              <input
-                                class="form-control form-control-sm"
-                                type="text"
-                                value={UnitPrice(data.electricUnitThisMonth,data.electricUnitLastMonth)}
-                              ></input>
-                              <p></p>
-                              <input
-                                class="form-control form-control-sm"
-                                type="text"
-                                value={7*UnitPrice(data.electricUnitThisMonth,data.electricUnitLastMonth)}
-                              ></input>
-                            </th>
-                            <th scope="row">
-                              <input
-                                class="form-control form-control-sm"
-                                type="text"
-                                value={UnitPrice(data.waterUnitThisMonth,data.waterUnitLastMonth)}
-                              ></input>
-                              <p></p>
-                              <input
-                                class="form-control form-control-sm"
-                                type="text"
-                                value={18*UnitPrice(data.waterUnitThisMonth,data.waterUnitLastMonth)}
-                              ></input>
-                            </th>
-                            <th scope="row">
-                              <input
-                                class="form-control form-control-sm"
-                                type="text"
-                                value={data.rentalNet}
-                              ></input>
-                            </th>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
+                  <EditableTable />
                 </div>
-              </div>
+              </div>             
             </div>
           </div>
           {/* /.container-fluid */}

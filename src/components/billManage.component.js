@@ -107,14 +107,8 @@ function Billmanage(){
                     <h5 className="catd-title text-center h2">ห้องพัก {post.id}</h5>
                     <h5 className="catd-subtitle mb-2 text-muted text-center">{getRandomIntInclusive(1000,3000).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')} บาท</h5>
                     <div className="d-flex justify-content-center">
-                    <button type="button" class="btn btn-success text-center m-4">แจ้งบิล</button>
-                    <button
-                          type="button"
-                          class="btn btn-outline-success text-center m-3"
-                          onClick={() => navigate('/roomdetail/' + post._id)}
-                        >
-                          ดูรายละเอียดของห้อง {post.roomName}
-                        </button>
+                    <button type="button" class="btn btn-success text-center m-4" onClick={() => navigate('/roomdetail/' + post._id)}>ดูรายละเอียดของห้อง {post.roomName}</button>
+                    
                 </div>
                 </div>
                 </div>

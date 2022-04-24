@@ -13,7 +13,7 @@ function Billmanage(){
     const { user } = useSelector((state) => ({...state}))
     const [data, setData] = useState([]);
     const [posts,setPosts] = useState([]);
-    const [postDate,setPostDate] = useState('xxx')
+    const [postDate,setPostDate] = useState('')
     const [loading, setLoading] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
     const [postsPerPage, setPostPerPage] = useState(9);
@@ -50,8 +50,8 @@ function Billmanage(){
         console.log(data.selected)
         setCurrentPage(data.selected + 1)
     };
-    var notPayed = data.filter(post => post.isPayed == false)
-    var payed = data.filter(post => post.isPayed == true)
+    var notPayed = data.filter(post => post.isBillNotified == false)
+    var payed = data.filter(post => post.isBillNotified == true)
 
 
     function showAll() {
@@ -127,14 +127,14 @@ function Billmanage(){
                 <div className="card shadow-sm w-100 " style={{ minHeight:175}}>
                 <div className="card-header">
                     <h5 className="catd-title text-center h3 mt-2">
-                        {post.isPayed === true ? "🟢" : "🔴"} ห้องพัก {post.roomId}
+                        {post.isBillNotified === true ? "🟢" : "🔴"} ห้องพัก {post.roomId}
                       </h5>
                     </div>
                 <div className="card-body">
                     <h6 className="catd-title text-center h2">{moment(post.createdAt).format('MMM')}</h6>
                     <h5 className="catd-subtitle mb-2 text-muted text-center">{post.rentalFee} บาท</h5>
                     <div className="d-flex justify-content-center">
-                    <button type="button" class="btn btn-success text-center m-4" onClick={() => navigate('/roomdetail/' + post._id)}>ดูรายละเอียดของห้อง {post.roomName}</button>
+                    <button type="button" class="btn btn-success text-center m-4" onClick={() => navigate('/Billgenerate/' + post._id)}>ดูรายละเอียดของห้อง {post.roomName}</button>
                     
                 </div>
                 </div>

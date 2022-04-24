@@ -3,7 +3,11 @@ import ReactPaginate from "react-paginate";
 import { useSelector } from "react-redux";
 import {useState, useEffect} from 'react';
 import { listBills } from "./function.components/billmana";
+
 import moment from "moment";
+
+import { useNavigate } from "react-router-dom";
+
 
 function Billmanage(){
     const { user } = useSelector((state) => ({...state}))
@@ -14,7 +18,8 @@ function Billmanage(){
     const [currentPage, setCurrentPage] = useState(1);
     const [postsPerPage, setPostPerPage] = useState(9);
     const [searchText,setSearchText]=useState('');
-    let fillteredPostDate
+
+  const navigate = useNavigate();
 
     
     
@@ -62,7 +67,7 @@ function Billmanage(){
     async function fillterDate(date){
       await setPostDate(date)
       console.log(date+' and '+postDate)    
-      fillteredPostDate = data.filter((post)=>{ 
+      let fillteredPostDate = data.filter((post)=>{ 
         return moment(post.createdAt).format("MMM YY") === date
       })
       setPosts(fillteredPostDate)
@@ -129,7 +134,8 @@ function Billmanage(){
                     <h6 className="catd-title text-center h2">{moment(post.createdAt).format('MMM')}</h6>
                     <h5 className="catd-subtitle mb-2 text-muted text-center">{post.rentalFee} บาท</h5>
                     <div className="d-flex justify-content-center">
-                    <button type="button" class="btn btn-success text-center m-4">แจ้งบิล</button>
+                    <button type="button" class="btn btn-success text-center m-4" onClick={() => navigate('/roomdetail/' + post._id)}>ดูรายละเอียดของห้อง {post.roomName}</button>
+                    
                 </div>
                 </div>
                 </div>

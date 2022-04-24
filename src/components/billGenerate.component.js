@@ -16,12 +16,13 @@ import {
 import { CaretRightFilled, CaretLeftFilled } from "@ant-design/icons";
 import { useParams, Link } from "react-router-dom";
 import { Modal } from "react-bootstrap";
-import { readBill, resetVaule } from "./function.components/bill";
+import { listBill, readBill, resetVaule } from "./function.components/bill";
 
 const Billgenerate = () => {
   let { id } = useParams();
   const { user } = useSelector((state) => ({ ...state }));
   const [data, setData] = useState([]);
+  const [allData, setAllData] = useState([]);
   const [values, setValues] = useState({
     rentalFee: "",
     waterUnitLastMonth: "",
@@ -107,6 +108,18 @@ const Billgenerate = () => {
   const handleonChangeValue = (e) => {
     setdataBill({ ...dataBill, [e.target.name]: e.target.value });
   };
+  function prevBill(){
+    const prevbill=allData.find(x=>Number(x.roomId) === Number(data.roomId)-1)
+    if(typeof prevbill !== 'undefined'){
+      setData(prevbill)}
+      else console.log('not exists')
+  }
+  function nextBill(){
+    const nextbill=allData.find(x=>Number(x.roomId) === Number(data.roomId)+1)
+    if(typeof nextbill !== 'undefined'){
+      setData(nextbill)}
+    else console.log('not exists')
+  }
 
   //table
 
@@ -119,9 +132,19 @@ const Billgenerate = () => {
         console.log(err);
       });
   };
+  const loadAllData = (authtoken) => {
+    listBill(authtoken)
+      .then((res) => {
+        setAllData(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
   useEffect(() => {
     loadData(user.token, id);
+    loadAllData(user.token)
   }, []);
   console.log(data);
 
@@ -244,12 +267,13 @@ const Billgenerate = () => {
                             type="dashed"
                             block
                             icon={<CaretLeftFilled />}
+                            onClick={prevBill}
                           >
                             ห้องก่อนหน้า{" "}
                           </Button>
                         </div>
                         <div className="col-sm-6">
-                          <Button type="dashed" block>
+                          <Button type="dashed" block onClick={nextBill}>
                             ห้องถัดไป <CaretRightFilled />
                           </Button>
                         </div>

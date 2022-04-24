@@ -1,116 +1,226 @@
-import React from 'react'
+import React, { useState, useEffect } from "react";
+import { Table } from "react-bootstrap";
+import { useSelector } from "react-redux";
+import { createAnnoucement, listAnnoucement } from "./function.components/dashboard";
+import moment from "moment/min/moment-with-locales";
+import { Modal, Button } from "react-bootstrap";
 
 const Dashboard = () => {
+  const { user } = useSelector((state) => ({ ...state }));
+  const [dataAnnoucement, setDataAnnoucement] = useState([]);
+
+  const [show, setShow] = useState(false);
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+
+
+  const [ dataAnnoucementInput, setdataAnnoucementInput ] = useState({
+    text: "",
+  });
+
+  const handleonChangeAnnoucement = (e) => {
+    setdataAnnoucementInput({...dataAnnoucementInput, [e.target.name]:e.target.value });   
+  }
+
+  const handleonCreate = () => {
+    setShow(false);
+    createAnnoucement(user.token, dataAnnoucementInput)
+    .then(res => {
+          console.log(res)
+          loadDataAnnoucement(user.token);
+    })
+    .catch(err => {
+          console.log(err)
+    })
+    // console.log(dataRoom.roomName)
+}
+
+console.log(dataAnnoucementInput)
+
+  useEffect(() => {
+    loadDataAnnoucement(user.token);
+  }, []);
+
+  const loadDataAnnoucement = (authtoken) => {
+    listAnnoucement(authtoken)
+      .then((res) => {
+        setDataAnnoucement(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
   return (
     <div>
-        <div className="content-wrapper font-sarabun">
-          {/* Content Header (Page header) */}
-          <div className="content-header">
-            <div className="container-fluid">
-              <div className="row mb-2">
-                <div className="col-sm-6">
-                  <h1 className="m-0 text-dark">รายงานผล</h1>
-                </div>
-                {/* /.col */}
-                <div className="col-sm-6">
-                  <ol className="breadcrumb float-sm-right">
-                    <li className="breadcrumb-item">
-                      <a href="#">รายงานผล</a>
-                    </li>
-                    <li className="breadcrumb-item active">ระบบจัดการหอพัก</li>
-                  </ol>
-                </div>
-                {/* /.col */}
+      <div className="content-wrapper font-sarabun">
+        {/* Content Header (Page header) */}
+        <div className="content-header">
+          <div className="container-fluid">
+            <div className="row mb-2">
+              <div className="col-sm-6">
+                <h1 className="m-0 text-dark">รายงานผล</h1>
               </div>
-              {/* /.row */}
+              {/* /.col */}
+              <div className="col-sm-6">
+                <ol className="breadcrumb float-sm-right">
+                  <li className="breadcrumb-item">
+                    <a href="#">รายงานผล</a>
+                  </li>
+                  <li className="breadcrumb-item active">ระบบจัดการหอพัก</li>
+                </ol>
+              </div>
+              {/* /.col */}
             </div>
-            {/* /.container-fluid */}
+            {/* /.row */}
           </div>
-          {/* /.content-header */}
-          {/* Main content */}
-          <section className="content">
-            <div className="container-fluid">
-              {/* Small boxes (Stat box) */}
-              <div className="row">
-                <div className="col-lg-3 col-6">
-                  <div className="small-box bg-info">
-                  {/* small box */}
-                    <div className="inner">
-                      <h3>150</h3>
-                      <p>จำนวนผู้เช่า</p>
-                    </div>
-                    <div className="icon">
-                      <i className="ion ion-bag" />
-                    </div>
-                    <a className="small-box-footer">
-                      ข้อมูลเพิ่มเติม <i className="fas fa-arrow-circle-right" />
-                    </a>
-                  </div>
-                </div>
-                {/* ./col */}
-                <div className="col-lg-3 col-6">
-                  {/* small box */}
-                  <div className="small-box bg-success">
-                    <div className="inner">
-                      <h3>
-                        530,000<sup style={{ fontSize: 20 }}>฿</sup>
-                      </h3>
-                      <p>จำนวนยอดเงิน</p>
-                    </div>
-                    <div className="icon">
-                      <i className="ion ion-stats-bars" />
-                    </div>
-                    <a href="#" className="small-box-footer">
-                      ข้อมูลเพิ่มเติม <i className="fas fa-arrow-circle-right" />
-                    </a>
-                  </div>
-                </div>
-                {/* ./col */}
-                <div className="col-lg-3 col-6">
-                  {/* small box */}
-                  <div className="small-box bg-warning">
-                    <div className="inner">
-                      <h3>44</h3>
-                      <p>ปัญหาที่ได้รับรายงาน</p>
-                    </div>
-                    <div className="icon">
-                      <i className="ion ion-person-add" />
-                    </div>
-                    <a href="#" className="small-box-footer">
-                      ข้อมูลเพิ่มเติม <i className="fas fa-arrow-circle-right" />
-                    </a>
-                  </div>
-                </div>
-                {/* ./col */}
-                <div className="col-lg-3 col-6">
-                  {/* small box */}
-                  <div className="small-box bg-danger">
-                    <div className="inner">
-                      <h3>65</h3>
-                      <p>จำนวนผู้ค้างชำระ</p>
-                    </div>
-                    <div className="icon">
-                      <i className="ion ion-pie-graph" />
-                    </div>
-                    <a href="#" className="small-box-footer">
-                      ข้อมูลเพิ่มเติม <i className="fas fa-arrow-circle-right" />
-                    </a>
-                  </div>
-                </div>
-                {/* ./col */}
-              </div>
-              {/* /.row */}
-              {/* Main row */}
-              
-              {/* /.row (main row) */}
-            </div>
-            {/* /.container-fluid */}
-          </section>
-          {/* /.content */}
+          {/* /.container-fluid */}
         </div>
-      </div>
-  )
-}
+        {/* /.content-header */}
+        {/* Main content */}
+        <section className="content">
+          <div className="container-fluid">
+            {/* Small boxes (Stat box) */}
+            <div className="row">
+              <div className="col-lg-3 col-6">
+                <div className="small-box bg-info">
+                  {/* small box */}
+                  <div className="inner">
+                    <h3>150</h3>
+                    <p>จำนวนผู้เช่า</p>
+                  </div>
+                  <div className="icon">
+                    <i className="ion ion-bag" />
+                  </div>
+                  <a className="small-box-footer">
+                    ข้อมูลเพิ่มเติม <i className="fas fa-arrow-circle-right" />
+                  </a>
+                </div>
+              </div>
+              {/* ./col */}
+              <div className="col-lg-3 col-6">
+                {/* small box */}
+                <div className="small-box bg-success">
+                  <div className="inner">
+                    <h3>
+                      530,000<sup style={{ fontSize: 20 }}>฿</sup>
+                    </h3>
+                    <p>จำนวนยอดเงิน</p>
+                  </div>
+                  <div className="icon">
+                    <i className="ion ion-stats-bars" />
+                  </div>
+                  <a href="#" className="small-box-footer">
+                    ข้อมูลเพิ่มเติม <i className="fas fa-arrow-circle-right" />
+                  </a>
+                </div>
+              </div>
+              {/* ./col */}
+              <div className="col-lg-3 col-6">
+                {/* small box */}
+                <div className="small-box bg-warning">
+                  <div className="inner">
+                    <h3>44</h3>
+                    <p>ปัญหาที่ได้รับรายงาน</p>
+                  </div>
+                  <div className="icon">
+                    <i className="ion ion-person-add" />
+                  </div>
+                  <a href="#" className="small-box-footer">
+                    ข้อมูลเพิ่มเติม <i className="fas fa-arrow-circle-right" />
+                  </a>
+                </div>
+              </div>
+              {/* ./col */}
+              <div className="col-lg-3 col-6">
+                {/* small box */}
+                <div className="small-box bg-danger">
+                  <div className="inner">
+                    <h3>65</h3>
+                    <p>จำนวนผู้ค้างชำระ</p>
+                  </div>
+                  <div className="icon">
+                    <i className="ion ion-pie-graph" />
+                  </div>
+                  <a href="#" className="small-box-footer">
+                    ข้อมูลเพิ่มเติม <i className="fas fa-arrow-circle-right" />
+                  </a>
+                </div>
+              </div>
+              {/* ./col */}
+            </div>
 
-export default Dashboard
+            <div className="row">
+              <div className="col-lg-6">
+                <div className="card">
+                  <div className="card-body">
+                    <h4>ประกาศถึงผู้เข้าพัก</h4>
+                    
+                    <div className="card mt-3">
+                      <div className="card-body p-0">
+                        <table className="table table-bordered">
+                          <thead className="table-light">
+                            <tr>
+                              <th width="35%" scope="col">
+                                วันที่
+                              </th>
+                              <th scope="col">ข้อความประกาศ</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {dataAnnoucement.map((item, index) => (
+                              <tr>
+                                <th scope="row">
+                                  <p>
+                                    {moment(item.createdAt)
+                                      .locale("th")
+                                      .format("LLL")}
+                                  </p>
+                                </th>
+                                <th scope="row">
+                                  <p>{item.annoucementText}</p>
+                                </th>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                    <button type="button" class="btn btn-outline-success m-2" onClick={handleShow}>
+                สร้างประกาศ
+              </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          {/* /.container-fluid */}
+        </section>
+        {/* /.content */}
+      </div>
+      <Modal className="font-sarabun" show={show} onHide={handleClose} centered backdrop="static" keyboard={false}>
+        <Modal.Header>
+          <Modal.Title>ประกาศถึงผู้เช่า</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+        <div class="input-group mb-3">
+          <div class="input-group-prepend">
+            <span class="input-group-text" id="basic-addon1">ข้อความประกาศ</span>
+          </div>
+          <input name="text" onChange={handleonChangeAnnoucement} type="text" class="form-control" placeholder="กรอกข้อความประกาศ" aria-label="Username" aria-describedby="basic-addon1"/>
+        </div>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleClose}>
+            ยกเลิก
+          </Button>
+          <Button variant="primary" onClick={handleonCreate}>
+            ยืนยันการสร้าง
+          </Button>
+        </Modal.Footer>
+      </Modal>
+    </div>
+  );
+};
+
+export default Dashboard;

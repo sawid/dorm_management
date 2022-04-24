@@ -15,6 +15,9 @@ import Billmanage from "./components/billManage.component";
 import ManagementRoom from "./components/management-room.component";
 import Editprofile from "./components/editpro.component";
 import Managemeter from "./components/managemeter.component";
+import Printbill from "./components/printbill.component";
+import Printagreement  from "./components/printagreement.component";
+
 
 import HomeUser from "./components/user/Home";
 import HomeAdmin from "./components/admin/Home";
@@ -124,6 +127,16 @@ function App() {
                 <Managemeter />
               </UserRoute>
             } />
+            <Route path="/printbill/:id" element={
+            <UserRoute>
+              <Printbill />
+            </UserRoute>
+          } />
+          <Route path="/printagreement" element={
+            <UserRoute>
+              <Printagreement />
+            </UserRoute>
+          } />
           </Route>
         </Routes>
     </div>

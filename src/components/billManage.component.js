@@ -9,11 +9,12 @@ function Billmanage(){
     const { user } = useSelector((state) => ({...state}))
     const [data, setData] = useState([]);
     const [posts,setPosts] = useState([]);
-    const [postDate,setPostDate] = useState('')
+    const [postDate,setPostDate] = useState('xxx')
     const [loading, setLoading] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
     const [postsPerPage, setPostPerPage] = useState(9);
     const [searchText,setSearchText]=useState('');
+    let fillteredPostDate
 
     
     
@@ -27,11 +28,6 @@ function Billmanage(){
                         console.log(err);
                     })
                 };
-    function getRandomIntInclusive(min, max) {
-        min = Math.ceil(min);
-        max = Math.floor(max);
-        return Math.floor(Math.random() * (max - min + 1) + min); //The maximum is inclusive and the minimum is inclusive
-      }
     useEffect(()=> {
         setLoading(true)
         loadData(user.token)
@@ -40,9 +36,7 @@ function Billmanage(){
     const fillteredPosts = posts.filter((post)=>{       
         return post.roomId.includes(searchText);
       })
-    const fillteredPostDate = data.filter((post)=>{       
-        return moment(post.createdAt).format("MMM") === postDate
-      })
+   
         
     if(loading){
         return <h2>loading...</h2>
@@ -65,12 +59,14 @@ function Billmanage(){
     function showPayed(){
       setPosts(payed)
     }
-    function fillterDate(date){
-      setPostDate(moment(date).format('MMM'))
-      console.log(postDate)
+    async function fillterDate(date){
+      await setPostDate(date)
+      console.log(date+' and '+postDate)    
+      fillteredPostDate = data.filter((post)=>{ 
+        return moment(post.createdAt).format("MMM YY") === date
+      })
       setPosts(fillteredPostDate)
     }
-
     const indexOfLastPost = currentPage * postsPerPage;
     const indexOfFirstPost = indexOfLastPost - postsPerPage;
     const currentPosts = fillteredPosts.slice(indexOfFirstPost,indexOfLastPost);
@@ -93,9 +89,9 @@ function Billmanage(){
                   </div>
                   <div className="col-sm-12">
                     <div className="card" style={{margin: "auto",padding: "10px 100px 10px 100px", width: "60%", textAlign: "center"}}>
-                        <h1 className="m-0 text-dark">เลือกรอบมิเตอร์</h1>
+                        <h1 className="m-0 text-dark">เลือกรอบบิล {postDate}</h1>
                         <Space direction="vertical" style={{margin: "20px 0px 20px 0px"}}>
-                            <DatePicker picker="month"  onChange={(date)=>fillterDate(date)}/>
+                            <DatePicker picker="month" onChange={(date)=>fillterDate(moment(date).format("MMM YY"))}/>
                         </Space>
                     </div>
                   </div>

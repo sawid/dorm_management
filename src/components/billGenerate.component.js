@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { useContext, useState, useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
+import axios from "axios";
 import {
   DatePicker,
   Button,
@@ -14,7 +15,7 @@ import {
   InputNumber,
 } from "antd";
 import { CaretRightFilled, CaretLeftFilled } from "@ant-design/icons";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import { Modal } from "react-bootstrap";
 import { readBill, resetVaule } from "./function.components/bill";
 
@@ -30,9 +31,9 @@ const Billgenerate = () => {
     electricUnitThisMonth: "",
     rentalNet: "",
   });
-
-  const onChange = (date, dateString) => {
-    console.log(date, dateString);
+  const navigate = useNavigate();
+  const onChange = (date) => {
+    console.log(date, date.format("MMM"));
   };
 
   const separator = (numb) => {
@@ -45,14 +46,14 @@ const Billgenerate = () => {
     if (props) {
       return (
         <h1 className="m-0 ms-3 text-dark">
-          ห้อง {data.roomId}
+          ห้อง {data.roomId}⠀
           <span class="badge rounded-pill bg-success text-md">จ่ายแล้ว</span>
         </h1>
       );
     } else {
       return (
         <h1 className="m-0 ms-3 text-dark">
-          ห้อง {data.roomId}
+          ห้อง {data.roomId}⠀
           <span class="badge rounded-pill bg-danger text-md">ยังไม่จ่าย</span>
         </h1>
       );
@@ -165,8 +166,8 @@ const Billgenerate = () => {
                     <p></p>
                     <DatePicker
                       className="ms-3"
-                      onChange={onChange}
                       picker="month"
+                      onChange={onChange}
                     />
                   </div>
 

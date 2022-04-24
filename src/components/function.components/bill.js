@@ -20,6 +20,17 @@ export const listBill = async(authtoken) => {
     );
 };
 
+export const reqMonth = async(authtoken, data) => {
+    return await axios.post(
+        process.env.REACT_APP_API + "/room/",
+        data, {
+            headers: {
+                authtoken,
+            },
+        }
+    );
+};
+
 export const changeBillNet = async(authtoken, values) => {
     return await axios.put(
         process.env.REACT_APP_API + "/bill/" + values, {

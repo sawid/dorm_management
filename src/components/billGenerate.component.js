@@ -1,23 +1,17 @@
 import React, { Component } from "react";
 import { useContext, useState, useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
+import moment from 'moment'
 import axios from "axios";
 import {
   DatePicker,
   Button,
   Card,
-  Table,
-  Input,
-  Popconfirm,
-  Form,
-  InputRef,
-  Typography,
-  InputNumber,
 } from "antd";
 import { CaretRightFilled, CaretLeftFilled } from "@ant-design/icons";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { Modal } from "react-bootstrap";
-import { readBill, resetVaule } from "./function.components/bill";
+import { readBill,listBill, resetVaule,readMonth } from "./function.components/bill";
 
 const Billgenerate = () => {
   let { id } = useParams();
@@ -31,11 +25,18 @@ const Billgenerate = () => {
     electricUnitThisMonth: "",
     rentalNet: "",
   });
-  const navigate = useNavigate();
-  const onChange = (date) => {
-    console.log(date, date.format("MMM"));
-  };
 
+  const [dataBill, setdataBill] = useState({
+    rentalFee: data.rentalFee,
+    waterUnitLastMonth: data.waterUnitLastMonth,
+    waterUnitThisMonth: data.waterUnitThisMonth,
+    electricUnitLastMonth: data.electricUnitLastMonth,
+    electricUnitThisMonth: data.electricUnitThisMonth,
+    rentalNet: data.rentalNet,
+  });
+
+  const navigate = useNavigate();
+  
   const separator = (numb) => {
     var str = numb.toString().split(".");
     str[0] = str[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -95,15 +96,6 @@ const Billgenerate = () => {
     setValues({ ...values, [e.target.name]: e.target.value });
   };
 
-  //input
-  const [dataBill, setdataBill] = useState({
-    rentalFee: data.rentalFee,
-    waterUnitLastMonth: data.waterUnitLastMonth,
-    waterUnitThisMonth: data.waterUnitThisMonth,
-    electricUnitLastMonth: data.electricUnitLastMonth,
-    electricUnitThisMonth: data.electricUnitThisMonth,
-    rentalNet: data.rentalNet,
-  });
 
   const handleonChangeValue = (e) => {
     setdataBill({ ...dataBill, [e.target.name]: e.target.value });
@@ -121,9 +113,33 @@ const Billgenerate = () => {
       });
   };
 
+const [selectMonthData, setSelectMonthData] = useState({
+  month: "",
+});
+
+  const loadDataMonthId = (authtoken, id,values) => {
+    readMonth(authtoken,id, values)
+      .then((res) => {
+        var selectMonth = res.data._id;
+        navigate('/Billgenerate/' + selectMonth);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  const onChangeDate = (date) => {
+    console.log(date, date.format("MMM"));
+    setSelectMonthData({ ...selectMonthData, month: date.format("MMM") });
+    loadDataMonthId(user.token,data.roomId,selectMonthData);
+  };
+
+
   useEffect(() => {
-    loadData(user.token, id);
+    loadData(user.token, id); 
+    
   }, []);
+  
   console.log(data);
 
   return (
@@ -164,10 +180,10 @@ const Billgenerate = () => {
                   <div className="col-sm-8">
                     {isPayedBadge(data.isBillNotified)}
                     <p></p>
-                    <DatePicker
+                    <DatePicker  format={"MMM YYYY"}
                       className="ms-3"
                       picker="month"
-                      onChange={onChange}
+                      onChange={onChangeDate}
                     />
                   </div>
 

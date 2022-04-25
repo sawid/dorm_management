@@ -20,10 +20,9 @@ export const listBill = async(authtoken) => {
     );
 };
 
-export const reqMonth = async(authtoken, data) => {
+export const readMonth = async(authtoken, id, values) => {
     return await axios.post(
-        process.env.REACT_APP_API + "/room/",
-        data, {
+        process.env.REACT_APP_API + "/bill/" + id,values, {
             headers: {
                 authtoken,
             },

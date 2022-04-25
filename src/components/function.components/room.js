@@ -12,7 +12,7 @@ export const readRoom = async(authtoken, values) => {
 
 export const listRoom = async(authtoken) => {
     return await axios.get(
-        process.env.REACT_APP_API + "/room/" , {
+        process.env.REACT_APP_API + "/room/", {
             headers: {
                 authtoken,
             },
@@ -20,32 +20,27 @@ export const listRoom = async(authtoken) => {
     );
 };
 
-export const createRoom = async (authtoken, data) => {
+export const createRoom = async(authtoken, data) => {
     return await axios.post(
-      process.env.REACT_APP_API + "/room/",
-      data,
-      {
-        headers: {
-          authtoken,
-        },
-      }
+        process.env.REACT_APP_API + "/room/",
+        data, {
+            headers: {
+                authtoken,
+            },
+        }
     );
-  };
+};
 
 
-
-
-
-export const resetVaule = async (authtoken, id, values) => {
+export const resetVaule = async(authtoken, id, values) => {
     return await axios.put(
-      process.env.REACT_APP_API + "/room/" + id, values,
-      {
-        headers: {
-          authtoken,
-        },
-      }
+        process.env.REACT_APP_API + "/room/" + id, values, {
+            headers: {
+                authtoken,
+            },
+        }
     );
-  }; 
+};
 
 
 
@@ -95,4 +90,4 @@ export const resetPhoneNumber = async (authtoken, id, values) => {
       }
     );
   };
-  */ 
+  */

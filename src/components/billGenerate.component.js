@@ -114,7 +114,7 @@ const Billgenerate = () => {
   };
 
 const [selectMonthData, setSelectMonthData] = useState({
-  month: "",
+  month: data.month,
 });
 
   const loadDataMonthId = (authtoken, id,values) => {
@@ -134,10 +134,20 @@ const [selectMonthData, setSelectMonthData] = useState({
     loadDataMonthId(user.token,data.roomId,selectMonthData);
   };
 
+  const handleOnclick = () => {
+    loadDataMonthId(user.token,data.roomId,selectMonthData);
+    readMonth(user.token,id, values)
+    .then((res) => {
+      var selectMonth = res.data._id;
+       window.location.reload()
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+  };
 
   useEffect(() => {
     loadData(user.token, id); 
-    
   }, []);
   
   console.log(data);
@@ -183,8 +193,13 @@ const [selectMonthData, setSelectMonthData] = useState({
                     <DatePicker  format={"MMM YYYY"}
                       className="ms-3"
                       picker="month"
+                      placeholder= {data.month}
                       onChange={onChangeDate}
                     />
+                    <button type="click" className="btn btn-outline-success btn-sm text-sm ms-3 " 
+                    onClick={() => handleOnclick()}>
+                      change month
+                    </button>
                   </div>
 
                   <div className="col-sm-6">

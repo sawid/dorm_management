@@ -226,16 +226,18 @@ const Billgenerate = () => {
 
                   <div className="col-sm-6">
                     <p></p>
-                    <a
+                    <button
                       className="btn btn-info btn-sm text-white ms-3"
-                      href="#"
+                      onClick={() => navigate('/roomdetail/' + data._id)}
+
                       role="button"
                     >
                       ดูข้อมูล
-                    </a>
+                    </button>
                     <button
                       type="button"
                       className="btn  btn-sm btn-warning text-white"
+                      onClick={() => navigate('/printbill/' + data._id)}
                     >
                       สร้าง pdf
                     </button>

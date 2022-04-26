@@ -5,18 +5,11 @@ import {
   DatePicker,
   Button,
   Card,
-  Table,
-  Input,
-  Popconfirm,
-  Form,
-  InputRef,
-  Typography,
-  InputNumber,
 } from "antd";
 import { CaretRightFilled, CaretLeftFilled } from "@ant-design/icons";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link,useNavigate  } from "react-router-dom";
 import { Modal } from "react-bootstrap";
-import { listBill, readBill, resetVaule } from "./function.components/bill";
+import { listBill, readBill, resetVaule,readMonth } from "./function.components/bill";
 
 const Billgenerate = () => {
   let { id } = useParams();
@@ -31,7 +24,10 @@ const Billgenerate = () => {
     electricUnitThisMonth: "",
     rentalNet: "",
   });
-
+  const [selectMonthData, setSelectMonthData] = useState({
+    month: data.month,
+  });
+  const navigate = useNavigate();
   const onChange = (date, dateString) => {
     console.log(date, dateString);
   };
@@ -121,7 +117,17 @@ const Billgenerate = () => {
     else console.log('not exists')
   }
 
-  //table
+  const handleOnclick = () => {
+    loadDataMonthId(user.token,data.roomId,selectMonthData);
+    readMonth(user.token,id, values)
+    .then((res) => {
+      var selectMonth = res.data._id;
+       window.location.reload()
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+  };
 
   const loadData = (authtoken, values) => {
     readBill(authtoken, values)
@@ -132,6 +138,24 @@ const Billgenerate = () => {
         console.log(err);
       });
   };
+
+  const loadDataMonthId = (authtoken, id,values) => {
+    readMonth(authtoken,id, values)
+      .then((res) => {
+        var selectMonth = res.data._id;
+        navigate('/Billgenerate/' + selectMonth);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  const onChangeDate = (date) => {
+    console.log(date, date.format("MMM"));
+    setSelectMonthData({ ...selectMonthData, month: date.format("MMM") });
+    loadDataMonthId(user.token,data.roomId,selectMonthData);
+  };
+
   const loadAllData = (authtoken) => {
     listBill(authtoken)
       .then((res) => {
@@ -141,6 +165,8 @@ const Billgenerate = () => {
         console.log(err);
       });
   };
+
+  
 
   useEffect(() => {
     loadData(user.token, id);
@@ -186,11 +212,16 @@ const Billgenerate = () => {
                   <div className="col-sm-8">
                     {isPayedBadge(data.isBillNotified)}
                     <p></p>
-                    <DatePicker
+                    <DatePicker  format={"MMM YYYY"}
                       className="ms-3"
-                      onChange={onChange}
                       picker="month"
+                      placeholder= {data.month}
+                      onChange={onChangeDate}
                     />
+                    <button type="click" className="btn btn-outline-success btn-sm text-sm ms-3 " 
+                    onClick={() => handleOnclick()}>
+                      change month
+                    </button>
                   </div>
 
                   <div className="col-sm-6">

@@ -1,18 +1,23 @@
 import React, { Component } from "react";
 import { Button, Radio } from 'antd';
 import { useParams } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { Provider, useSelector } from "react-redux";
 import { useState, useEffect } from 'react';
-//import { Modal } from 'antd';
-
 import { Input } from 'antd';
 import { Table, Tag, Space } from 'antd';
-import { readRoom , resetVaule } from "./function.components/room";
+import { readRoom , resetValueRoom } from "./function.components/room";
+import {listRenter, resetValueRenter,readRenter} from "./function.components/renter"
+
 import { Modal } from "react-bootstrap";
+
+// Seachbar with dropdown
+import {Select} from 'react-select'
+
 
 const RoomDetail = () => {
   
   let { id } = useParams(); 
+  let { idRenter } = useParams(); 
   const { user } = useSelector((state) => ({...state}))
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -26,6 +31,12 @@ const RoomDetail = () => {
   });
 
 
+ /* const [ RenterId , setrenterId] = useState({
+    
+    renterId:"", 
+    vals : "", 
+  });*/
+
   // Input Data
   const [ dataRoom, setdataRoom ] = useState({
     
@@ -34,41 +45,35 @@ const RoomDetail = () => {
     amountBed: data.amountBed,
     
   });
- 
-  /* const [ dataRoom_type, setdataRoom_type ] = useState({
-    
-    room_type:"",
-    
-  });
-  const [ dataRentalFee, setdataRoomRentalFee ] = useState({
-    
-    rentalFee:0 ,
-    
-  });
-  const [ dataRoomPhoneNumber, setdataRoomPhoneNumber ] = useState({
-    
-    phoneNumber:0 ,
-    
-  });
-  const [ dataRoomNameRenter, setdataRoomNameRenter ] = useState({
-    
-    nameRenter:"",
-    
-  });
-  */
 
+
+  //const [dataRenter,setdataRenter] = useState([]);
+ 
   // Load Data 
   const loadData = (authtoken, values) => {
     readRoom(authtoken, values)
     .then(res => {
             setData(res.data)
             console.log(data)
-            
     })
     .catch(err => {
             console.log(err);
     })
   };
+
+ /* const loadDataName = (authtoken) => {
+      listRenter(authtoken)
+      .then(res => {
+        setdataRenter(res.data)
+        console.log(data)
+        
+        })
+      .catch(err => {
+        console.log(err);
+  })
+  };*/
+
+
 
   // Creat Table  
   const columns = [
@@ -79,26 +84,33 @@ const RoomDetail = () => {
       render: text => <a>{text}</a>,
     },
     {
-      title: 'Age',
-      dataIndex: 'age',
-      key: 'age',
+      title: 'Problem',
+      dataIndex: 'problem',
+      key: 'problem',
     },
-    {
-      title: 'Address',
-      dataIndex: 'address',
-      key: 'address',
-    },
+  
   ]
+
+  //  Test data Seachbar with Dropdown
+  const options = [
+    {values : 'cho', label: 'Cho' },
+    {values : 'straw',label: 'Straw'},
+    {values : 'van',label: 'Van'},
+  ] 
 
   // Modal  
     const [isModalVisible, setIsModalVisible] = useState(false);
 
     const handleOk = () => {
       setIsModalVisible(false);
-      resetVaule(user.token, values.id, {dataRoom})
+      resetValueRoom(user.token, values.id, {dataRoom})
+      console.log(values.id) 
+      //resetValueRenter(user.token, RenterId.renterId,{dataRenter}) 
+    
       .then(res => {
         console.log(res)
         loadData(user.token, id)
+        //loadDataName(user.token)
       })
       .catch(err => {
         console.log(err.response)
@@ -122,25 +134,11 @@ const RoomDetail = () => {
 
     console.log(dataRoom)
 
+   /* const handleonChangeRenterName = (e) => {
+      setdataRenter({...dataRenter,[e.target.name]:e.target.value}); 
+    }*/ 
 
-    // On Change
-    /*
-    const handleonChangeValueType = (e) => {
-      setdataRoom_type({...dataRoom_type, [e.target.name]:e.target.value });
-    }
-    const handleonChangeValueRentalFee = (e) => {
-      setdataRoomRentalFee({...dataRentalFee, [e.target.name]:e.target.value });
-    }
-    const handleonChangeValuePhoneNumber = (e) => {
-      setdataRoomPhoneNumber({...dataRoomPhoneNumber, [e.target.name]:e.target.value });
-    }
-    const handleonChangeValueNameRenter = (e) => {
-      setdataRoomNameRenter({...dataRoomNameRenter, [e.target.name]:e.target.value });
-    }
-*/
-
- 
-
+   
 
 
 const onChange = e => {
@@ -155,8 +153,6 @@ const onChangeRadio = e => {
 
 
 
-//
-
 const handlePageClick = (data) => {
   console.log(data.selected);
   setCurrentPage(data.selected + 1);
@@ -165,6 +161,7 @@ const handlePageClick = (data) => {
 
 useEffect(() => {
   loadData(user.token, id);
+  //loadDataName(user.token)
 },[])
 
 
@@ -205,7 +202,7 @@ useEffect(() => {
                     <div className="card-body justify-content-center"> 
                       <h2 className="mt-1">ห้องพัก {data.roomName}</h2>
                         <div className="card-subtitle text-muted">
-                          <p>ผู้เช่า นาย หนึ่งเดียวในใจ สองไส้ในกระเพาะ</p>
+                          <p>ผู้เช่า {data.renterName}</p>
                           <p>ประเถทห้อง {data.room_type}</p>
                           <p>จำนวนเตียง {data.amountBed}</p>
                           <p>ค่าเช่า {data.rentalFee}</p>
@@ -213,7 +210,7 @@ useEffect(() => {
                         </div>
                     </div>
                   </div> 
-               
+                  
                 </div>
                 
                 <div> 
@@ -223,7 +220,7 @@ useEffect(() => {
                           <input className="btn btn-success btn-block text-lg" type="button" value="ดูรอบบิล"></input>
                     </form>
                 </div>
-              
+                
             </div>
             
             
@@ -232,16 +229,14 @@ useEffect(() => {
             <div className="col-6">
               <form>
               <Radio.Group onChange={onChangeRadio} defaultValue="a">
-                <Radio.Button value="a">แจ้งปัญหา</Radio.Button>
-                <Radio.Button value="b">ของชำรุด</Radio.Button>
-                <Radio.Button value="c">การเข้า-ออกประตู</Radio.Button>
+                <Radio.Button value="a" className="ms-2">แจ้งปัญหา</Radio.Button>
               </Radio.Group>
               </form>
               <div className="row">
                 <div className="col-lg-12 mt-2">
                  <div className="card ms-2">
                     <div>
-
+                        <Table columns={columns} >  </Table>
                     </div>
                  </div>
                  </div>
@@ -271,7 +266,7 @@ useEffect(() => {
           <div class="input-group-prepend">
             <span class="input-group-text" id="basic-addon1">⠀⠀ผู้เช่า ⠀⠀⠀</span>
           </div>
-          <input name="nameRenter"  type="text" class="form-control" placeholder="กรอกชื่อผู้เช่า" aria-label="Username" aria-describedby="basic-addon1"/>
+             
         </div>
         <div class="input-group mb-3">
           <div class="input-group-prepend">
@@ -330,3 +325,12 @@ export default RoomDetail
            </Modal.title>
         </Modal.Header>
 */
+
+/*{ <select  > 
+  {dataRenter.map((item,index) =>
+   <option name="renterName" onChange={handleonChangeRenterName} >
+     {item.renterName} 
+   </option>
+
+ )} 
+</select> }*/

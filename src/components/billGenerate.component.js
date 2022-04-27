@@ -63,7 +63,7 @@ const Billgenerate = () => {
     }
 
     const preventMinus = (e) => {
-      if (e.code === 'Minus' || e.code ==='NumpadSubtract') {
+      if (e.code === 'Minus' || e.code ==='NumpadSubtract' || e.code ==='KeyE') {
           e.preventDefault();
       }
   };

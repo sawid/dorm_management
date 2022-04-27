@@ -99,7 +99,7 @@ export default function Managemeter () {
   ];
   const columns1 = [
     {
-      title: 'หน่วยที่ใช้จริง (ไฟฟ้า)',
+      title: 'หน่วยที่ใช้จริง (น้ำ)',
       // dataIndex: '1',
       // key: '1',
       render: elctric => (
@@ -113,7 +113,7 @@ export default function Managemeter () {
   ];
   const columns2 = [
     {
-      title: 'หน่วยที่ใช้จริง (น้ำ)',
+      title: 'หน่วยที่ใช้จริง (ไฟฟ้า)',
       // dataIndex: '1',
       // key: '1',
       render: water => (

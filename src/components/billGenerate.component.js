@@ -91,8 +91,7 @@ const Billgenerate = () => {
     if (
       e.code === "Minus" ||
       e.code === "NumpadSubtract" ||
-      e.code === "KeyE" ||
-      e.code === "Digit3" 
+      e.code === "KeyE" 
     ) {
       e.preventDefault();
     }
@@ -106,7 +105,6 @@ const Billgenerate = () => {
       e.code === "Minus" ||
       e.code === "NumpadSubtract" ||
       e.code === "KeyE" ||
-      e.code === "Digit3"
     ) {
       e.preventDefault();
     }

@@ -21,7 +21,7 @@ import { readRoom , resetVaule } from "./function.components/room";
 // Import styles
 import '@react-pdf-viewer/core/lib/styles/index.css';
 import '@react-pdf-viewer/default-layout/lib/styles/index.css';
-import { uploadFile } from './function.components/printDoc';
+import { getFile, uploadFile } from './function.components/printDoc';
 
 const Printagreement = () => {
     let { id } = useParams(); 
@@ -31,6 +31,7 @@ const Printagreement = () => {
     const [ fileData, setfileData ] = useState({
         selectedFile: null,
     });
+    const [ urlPath , setUrlPath ] = useState("");
     const handleSubmit = (e) => {
         e.preventDefault();
         const formData = new FormData();
@@ -43,7 +44,7 @@ const Printagreement = () => {
         uploadFile(user.token, id, formData)
         .then(res => {
             console.log(res)
-            
+            window.location.reload();
         })
         .catch(err => {
                 console.log(err);
@@ -62,8 +63,26 @@ const Printagreement = () => {
         })
       };
 
+    const loadDataPDF = (authtoken, id) => {
+      getFile(authtoken, id)
+      .then(res => {
+        const file = new Blob([res.data], {
+            type: "application/pdf"
+          });
+          //Build a URL from the file
+          const fileURL = URL.createObjectURL(file);
+          console.log(fileURL)
+          setUrlPath(fileURL);
+
+      })
+      .catch(err => {
+              console.log(err);
+      })
+    };
+
       useEffect(() => {
         loadData(user.token, id);
+        loadDataPDF(user.token, id);
       },[])
       
 
@@ -134,7 +153,7 @@ const Printagreement = () => {
                                     height: '750px',
                                 }}
                             >
-                                <Viewer fileUrl={ data.contactPath === "none" ? agreement : (filePathData + data.contactPath) } />
+                                <Viewer fileUrl={ data.contactPath === "none" ? agreement : "http://localhost:5000/api/uploads/" + data._id } />
                             </div>
                         </Worker>
 

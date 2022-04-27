@@ -33,7 +33,7 @@ function Billmanage(){
             listBills(authtoken)
             .then(res => {
                     setData(res.data)
-                    setPosts(res.data);
+                    setPosts(res.data.sort((a, b) => (Number(a.roomId) > Number(b.roomId)) ? 1 : -1));
                 })
                 .catch(err => {
                         console.log(err);
@@ -146,9 +146,8 @@ function Billmanage(){
     }
     async function fillterDate(date){
       await setPostDate(date)
-      console.log(date+' and '+postDate)    
       let fillteredPostDate = data.filter((post)=>{ 
-        return moment(post.createdAt).format("MMM YY") === date
+        return post.month === date
       })
       setPosts(fillteredPostDate)
     }
@@ -176,7 +175,7 @@ function Billmanage(){
                     <div className="card" style={{margin: "auto",padding: "10px 100px 10px 100px", width: "60%", textAlign: "center"}}>
                         <h1 className="m-0 text-dark">เลือกรอบบิล {postDate}</h1>
                         <Space direction="vertical" style={{margin: "20px 0px 20px 0px"}}>
-                            <DatePicker picker="month" onChange={(date)=>fillterDate(moment(date).format("MMM YY"))}/>
+                            <DatePicker picker="month" onChange={(date)=>fillterDate(moment(date).format("MMM"))}/>
                         </Space>
                     </div>
                     <span>
@@ -214,11 +213,11 @@ function Billmanage(){
                 <div className="card shadow-sm w-100 " style={{ minHeight:175}}>
                 <div className="card-header">
                     <h5 className="catd-title text-center h3 mt-2">
-                        {post.isBillNotified === true ? "🟢" : "🔴"} ห้องพัก {post.roomId}
+                        {post.isPayed === true ? "🟢" : "🔴"} ห้องพัก {post.roomId}
                       </h5>
                     </div>
                 <div className="card-body">
-                    <h6 className="catd-title text-center h2">{moment(post.createdAt).format('MMM YY')}</h6>
+                    <h6 className="catd-title text-center h2">{post.month}</h6>
                     <h5 className="catd-subtitle mb-2 text-muted text-center">{separator(
                       post.rentalFee +
                         7 *
@@ -240,7 +239,7 @@ function Billmanage(){
                 </div>
                 </div>
             }
-            )
+            ).sort((a, b) => (Number(a.roomId) - Number(b.roomId)))
             }
             <Modal className="font-sarabun" show={show} onHide={handleClose} centered backdrop="static" keyboard={false}>
         <Modal.Header>

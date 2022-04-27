@@ -58,6 +58,20 @@ function Billmanage(){
       setPosts(data)
     }
 
+    const separator = (numb) => {
+      var str = numb.toString().split(".");
+      str[0] = str[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+      return str.join(".");
+    };
+
+    const UnitPrice = (thisMonth, lastMonth) => {
+      if (lastMonth > thisMonth) {
+        return thisMonth - lastMonth + 9999;
+      } else {
+        return thisMonth - lastMonth;
+      }
+    };
+  
     function showNotPayed() {
       setPosts(notPayed)
     }
@@ -131,10 +145,22 @@ function Billmanage(){
                       </h5>
                     </div>
                 <div className="card-body">
-                    <h6 className="catd-title text-center h2">{moment(post.createdAt).format('MMM')}</h6>
-                    <h5 className="catd-subtitle mb-2 text-muted text-center">{post.rentalFee} บาท</h5>
+                    <h6 className="catd-title text-center h2">{moment(post.createdAt).format('MMM YY')}</h6>
+                    <h5 className="catd-subtitle mb-2 text-muted text-center">{separator(
+                      post.rentalFee +
+                        7 *
+                          UnitPrice(
+                            post.electricUnitThisMonth,
+                            post.electricUnitLastMonth
+                          ) +
+                        18 *
+                          UnitPrice(
+                            post.waterUnitThisMonth,
+                            post.waterUnitLastMonth
+                          ) +
+                        post.rentalNet)} บาท</h5>
                     <div className="d-flex justify-content-center">
-                    <button type="button" class="btn btn-success text-center m-4" onClick={() => navigate('/Billgenerate/' + post._id)}>ดูรายละเอียดของห้อง {post.roomName}</button>
+                    <button type="button" class="btn btn-success text-center m-4" onClick={() => navigate('/Billgenerate/' + post._id)}>ดูรายละเอียดของบิล {post.roomName}</button>
                     
                 </div>
                 </div>
@@ -160,11 +186,6 @@ function Billmanage(){
             breakLinkClassName={'page-link'}
             activeClassName={'active'}
             />
-
-                
-
-
-
             </section>
             {/* /.content */}
           </div>

@@ -17,7 +17,7 @@ import Editprofile from "./components/editpro.component";
 import Managemeter from "./components/managemeter.component";
 import Printbill from "./components/printbill.component";
 import Printagreement  from "./components/printagreement.component";
-
+import ManageRenter from "./components/renter.component";
 
 import HomeUser from "./components/user/Home";
 import HomeAdmin from "./components/admin/Home";
@@ -107,6 +107,11 @@ function App() {
                 <Manageuser />
               </AdminRoute>
             } />
+            <Route path="/renter" element={
+            <AdminRoute>
+              <ManageRenter />
+            </AdminRoute>
+            } /> 
             <Route path="/management-room" element={
             <AdminRoute>
               <ManagementRoom />

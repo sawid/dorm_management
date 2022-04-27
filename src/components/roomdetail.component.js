@@ -16,6 +16,7 @@ import {Select} from 'react-select'
 
 const RoomDetail = () => {
   
+  
   let { id } = useParams(); 
   let { idRenter } = useParams(); 
   const { user } = useSelector((state) => ({...state}))
@@ -23,6 +24,7 @@ const RoomDetail = () => {
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [postsPerPage, setPostPerPage] = useState(9);
+  const [dataRenter,setdataRenter] = useState([]);
   const [ data, setData ] = useState([]);
   const [ values, setValues] = useState({
     
@@ -47,10 +49,10 @@ const RoomDetail = () => {
   });
 
 
-  //const [dataRenter,setdataRenter] = useState([]);
+  
  
   // Load Data 
-  const loadData = (authtoken, values) => {
+  const loadData = (authtoken, values ) => {
     readRoom(authtoken, values)
     .then(res => {
             setData(res.data)
@@ -59,20 +61,23 @@ const RoomDetail = () => {
     .catch(err => {
             console.log(err);
     })
+    
   };
 
- /* const loadDataName = (authtoken) => {
-      listRenter(authtoken)
-      .then(res => {
-        setdataRenter(res.data)
-        console.log(data)
-        
-        })
-      .catch(err => {
-        console.log(err);
-  })
-  };*/
+  const loadDataRenter = (authtoken, values) => {
 
+    readRenter(authtoken , values)
+    .then(res => {
+       setdataRenter(res.data)
+      console.log(data)
+      
+      })
+    .catch(err => {
+      console.log(err);
+    })
+  }
+  
+  
 
 
   // Creat Table  
@@ -134,9 +139,9 @@ const RoomDetail = () => {
 
     console.log(dataRoom)
 
-   /* const handleonChangeRenterName = (e) => {
+   const handleonChangeRenterName = (e) => {
       setdataRenter({...dataRenter,[e.target.name]:e.target.value}); 
-    }*/ 
+   }
 
    
 
@@ -147,11 +152,8 @@ const onChange = e => {
 
 const onChangeRadio = e => {
   console.log('radio checked:', e.target.value)
+  
 };
-
-
-
-
 
 const handlePageClick = (data) => {
   console.log(data.selected);
@@ -160,9 +162,10 @@ const handlePageClick = (data) => {
 
 
 useEffect(() => {
-  loadData(user.token, id);
-  //loadDataName(user.token)
-},[])
+  
+  loadData(user.token, id );
+  loadDataRenter(user.token,idRen);
+}, []);
 
 
 
@@ -198,7 +201,7 @@ useEffect(() => {
         <div className="row">
             <div className="col-6 ">
               <div className="row"> 
-                <div className="card">
+                <div className="card ms-3">
                     <div className="card-body justify-content-center"> 
                       <h2 className="mt-1">ห้องพัก {data.roomName}</h2>
                         <div className="card-subtitle text-muted">
@@ -206,7 +209,7 @@ useEffect(() => {
                           <p>ประเถทห้อง {data.room_type}</p>
                           <p>จำนวนเตียง {data.amountBed}</p>
                           <p>ค่าเช่า {data.rentalFee}</p>
-                          <p>เบอร์โทรศัพท์ 095-XXX-XXXX</p>
+                          <p>เบอร์โทรศัพท์ {dataRenter.telNum} </p>
                         </div>
                     </div>
                   </div> 
@@ -215,9 +218,9 @@ useEffect(() => {
                 
                 <div> 
                     <form>
-                          <button type="button"className="btn btn-success btn-block text-lg mb-3 mt-2" onClick={() => showModal(data._id)}>แก้ไขรายละเอียด</button>
-                          <input className="btn btn-success btn-block text-lg mb-3" type="button" value="ดูสัญญา"></input>
-                          <input className="btn btn-success btn-block text-lg" type="button" value="ดูรอบบิล"></input>
+                          <button type="button"className="btn btn-success btn-block text-lg mb-3 mt-2 ms-3" onClick={() => showModal(data._id)}>แก้ไขรายละเอียด</button>
+                          <input className="btn btn-success btn-block text-lg mb-3 ms-3" type="button" value="ดูสัญญา"></input>
+                          <input className="btn btn-success btn-block text-lg ms-3" type="button" value="ดูรอบบิล"></input>
                     </form>
                 </div>
                 
@@ -311,26 +314,3 @@ useEffect(() => {
 
 export default RoomDetail
 
-/*
-<Modal title="Basic Modal" visible={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
-            <Input showCount maxLength={20} onChange={onChange} name="text-box" />
-    </Modal>
-*/ 
-
-/*
-
-<Modal.Header>
-           <Modal.title>
-              แก้ไข  
-           </Modal.title>
-        </Modal.Header>
-*/
-
-/*{ <select  > 
-  {dataRenter.map((item,index) =>
-   <option name="renterName" onChange={handleonChangeRenterName} >
-     {item.renterName} 
-   </option>
-
- )} 
-</select> }*/

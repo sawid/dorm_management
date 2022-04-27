@@ -1,8 +1,8 @@
 import axios from "axios";
 
-export const readRoom = async(authtoken, values) => {
+export const readRenter = async(authtoken, values) => {
     return await axios.get(
-        process.env.REACT_APP_API + "/room/" + values, {
+        process.env.REACT_APP_API + "/renter/" + values, {
             headers: {
                 authtoken,
             },
@@ -10,9 +10,9 @@ export const readRoom = async(authtoken, values) => {
     );
 };
 
-export const listRoom = async(authtoken) => {
+export const listRenter = async(authtoken) => {
     return await axios.get(
-        process.env.REACT_APP_API + "/room/" , {
+        process.env.REACT_APP_API + "/renter/" , {
             headers: {
                 authtoken,
             },
@@ -20,11 +20,9 @@ export const listRoom = async(authtoken) => {
     );
 };
 
-
-
-export const createRoom = async (authtoken, data) => {
+export const createRenter = async (authtoken, data) => {
     return await axios.post(
-      process.env.REACT_APP_API + "/room/",
+      process.env.REACT_APP_API + "/renter/",
       data,
       {
         headers: {
@@ -34,9 +32,9 @@ export const createRoom = async (authtoken, data) => {
     );
   };
 
-export const resetValueRoom = async (authtoken, id, values) => {
+export const resetValueRenter = async (authtoken, id, values) => {
     return await axios.put(
-      process.env.REACT_APP_API + "/room/" + id, values,
+      process.env.REACT_APP_API + "/renter/" + id, values,
       {
         headers: {
           authtoken,
@@ -44,7 +42,6 @@ export const resetValueRoom = async (authtoken, id, values) => {
       }
     );
   }; 
-
 
 
 

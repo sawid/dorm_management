@@ -186,11 +186,6 @@ function Billmanage(){
             breakLinkClassName={'page-link'}
             activeClassName={'active'}
             />
-
-                
-
-
-
             </section>
             {/* /.content */}
           </div>

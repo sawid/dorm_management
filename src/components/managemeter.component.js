@@ -1,13 +1,11 @@
 import React, { Component } from "react";
 
 import { useState, useEffect } from "react";
-import axios from "axios";
 import { useSelector } from "react-redux";
 import { DatePicker, Space } from 'antd';
 import { Table, Tag} from 'antd';
 
-import { listRoom } from "./function.components/room";
-
+import { listBills } from "./function.components/billmana";
 
 
 export default function Managemeter () {
@@ -16,47 +14,120 @@ export default function Managemeter () {
   const { user } = useSelector((state) => ({...state}))
 
 
-  let color = 'blue';
-  // console.log(tables);
+  // const [searchText,setSearchText]=useState('');
+
+
+
+
+  let colorB = 'blue';
+  let colorY = 'orange';
+  let colorG = 'green';
+
+  const UnitPrice = (thisMonth, lastMonth) => {
+    if (lastMonth > thisMonth) {
+      return Math.abs(thisMonth - lastMonth);
+    } else {
+      return thisMonth - lastMonth;
+    }
+  };
+  const Real = [[], []]
+  
+  for (let i = 0;i < tables.length;i++) 
+  {
+    console.log(1)
+    Real[0].push(UnitPrice(tables[i].waterUnitThisMonth, tables[i].waterUnitLastMonth))
+    Real[1].push(UnitPrice(tables[i].electricUnitThisMonth, tables[i].electricUnitLastMonth))
+  }
+  console.log(Real)
   
   const columns = [
     {
       title: 'ห้อง',
-      dataIndex: 'roomName',
-      key: 'roomName',
+      dataIndex: 'roomId',
+      key: 'roomId',
       render: text => <a>{text}</a>,
     },
     {
-      title: 'สถานะห้อง',
-      dataIndex: 'status',
-      key: 'status',
-      render: status => (
+      title: 'หน่วยที่ใช้เดือนที่แล้ว (น้ำ)',
+      dataIndex: 'waterUnitLastMonth',
+      key: 'waterUnitLastMonth',
+      render: waterUnitLastMonth => (
         <>
-          <Tag color={color} key={status}>
-            {status.toUpperCase()}
+          <Tag color={colorB} key={waterUnitLastMonth}>
+            {waterUnitLastMonth} หน่วย
           </Tag>
         </>
       ),
     },
     {
-      title: 'หน่วยที่ใช้เดือนที่แล้ว',
-      dataIndex: '',
-      key: '',
+      title: 'หน่วยที่ใช้เดือนนี้ (น้ำ)',
+      dataIndex: 'waterUnitThisMonth',
+      key: 'waterUnitThisMonth',
+      render: waterUnitThisMonth => (
+        <>
+          <Tag color={colorB} key={waterUnitThisMonth}>
+            {waterUnitThisMonth} หน่วย
+          </Tag>
+        </>
+      ),
     },
     {
-      title: 'หน่วยที่ใช้เดือนนี้',
-      dataIndex: '',
-      key: '',
+      title: 'หน่วยที่ใช้เดือนที่แล้ว (ไฟฟ้า)',
+      dataIndex: 'electricUnitLastMonth',
+      key: 'electricUnitLastMonth',
+      render: waterUnitThisMonth => (
+        <>
+          <Tag color={colorY} key={waterUnitThisMonth}>
+            {waterUnitThisMonth} หน่วย
+          </Tag>
+        </>
+      ),
     },
     {
-      title: 'ราคาที่ต้องจ่าย',
-      dataIndex: 'rentalFee',
-      key: 'rentalFee',
+      title: 'หน่วยที่ใช้เดือนนี้ (ไฟฟ้า)',
+      dataIndex: 'electricUnitThisMonth',
+      key: 'electricUnitThisMonth',
+      render: waterUnitThisMonth => (
+        <>
+          <Tag color={colorY} key={waterUnitThisMonth}>
+            {waterUnitThisMonth} หน่วย
+          </Tag>
+        </>
+      ),
+    },
+
+  ];
+  const columns1 = [
+    {
+      title: 'หน่วยที่ใช้จริง (ไฟฟ้า)',
+      // dataIndex: '1',
+      // key: '1',
+      render: elctric => (
+            <>
+              <Tag color={colorG} key={elctric}>
+                {elctric} หน่วย
+              </Tag>
+            </>
+          ),
+    },
+  ];
+  const columns2 = [
+    {
+      title: 'หน่วยที่ใช้จริง (น้ำ)',
+      // dataIndex: '1',
+      // key: '1',
+      render: water => (
+            <>
+              <Tag color={colorG} key={water}>
+                {water} หน่วย
+              </Tag>
+            </>
+          ),
     },
   ];
 
     const loadData = (authtoken) => {
-          listRoom(authtoken)
+          listBills(authtoken)
           .then(res => {
               setTables(res.data);
           })
@@ -88,11 +159,10 @@ export default function Managemeter () {
                     </ol>
                   </div>
                   <div className="col-sm-12">
-                    <div className="card" style={{margin: "auto",padding: "10px 100px 10px 100px", width: "60%", textAlign: "center"}}>
-                        <h1 className="m-0 text-dark">เลือกรอบมิเตอร์</h1>
-                        <Space direction="vertical" style={{margin: "20px 0px 20px 0px"}}>
-                            <DatePicker picker="month" />
-                        </Space>
+                    <div className="card" style={{margin: "auto",padding: "25px 100px 25px 100px", width: "40%", textAlign: "center"}}>
+                        <h1 className="m-0 text-dark">รอบมิเตอร์</h1>
+                        {/* <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" value={searchText}                
+                        onChange={(event)=>{setSearchText(event.target.value)}}/> */}
                     </div>
                   </div>
                   {/* /.col */}
@@ -120,7 +190,7 @@ export default function Managemeter () {
                             {/* <p>ราคาต่อหน่วย</p>
                             <input size={2}></input>
                             <p>บาท</p> */}
-                            <p>ราคาต่อหน่วย . . . บาท</p>
+                            <p>ราคาต่อหน่วย 18 บาท</p>
                         </div>
                     </div>
                   </div>
@@ -131,17 +201,27 @@ export default function Managemeter () {
                             {/* <p>ราคาต่อหน่วย</p>
                             <input size={2}></input>
                             <p>บาท</p> */}
-                            <p>ราคาต่อหน่วย . . . บาท</p>
+                            <p>ราคาต่อหน่วย 7 บาท</p>
                         </div>
                     </div>
                   </div>
                   {/* /.col */}
                 </div>
                 <div className="row">
-                <div className="col-sm-1"></div>
-                  <div className="col-sm-10">
+                  <div className="col-sm-1" style={{padding: '0px'}}/>
+                  <div className="col-sm-7" style={{padding: '0px'}}>
                     <div className="card">
-                    <Table columns={columns} dataSource={tables} />
+                      <Table columns={columns} dataSource={tables} pagination={false}/>
+                    </div>
+                  </div>
+                  <div className="col-sm-2" style={{padding: '0px'}}>
+                    <div className="card">
+                      <Table columns={columns1} dataSource={Real[0]} pagination={false}/>
+                    </div>
+                  </div>
+                  <div className="col-sm-2" style={{padding: '0px'}}>
+                  <div className="card">
+                      <Table columns={columns2} dataSource={Real[1]} pagination={false}/>
                     </div>
                   </div>
                 </div>

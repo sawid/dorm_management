@@ -164,7 +164,7 @@ const handlePageClick = (data) => {
 useEffect(() => {
   
   loadData(user.token, id );
-  loadDataRenter(user.token,idRen);
+  loadDataRenter(user.token,data.renterId);
 }, []);
 
 

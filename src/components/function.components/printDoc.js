@@ -8,7 +8,22 @@ export const uploadFile = async (authtoken, id, formData) => {
             headers: {
               authtoken,
               'Content-Type': 'multipart/form-data',
+              
             },
+            
           }
         );
       };
+
+export const getFile = async (authtoken, id) => {
+  return await axios.get(
+    process.env.REACT_APP_API + "/uploads/" + id,
+    {
+      headers: {
+        authtoken,
+        'Content-Type': 'multipart/form-data',
+      },
+      responseType: "blob",
+    }
+  );
+};

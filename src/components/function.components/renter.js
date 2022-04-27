@@ -20,6 +20,7 @@ export const listRenter = async(authtoken) => {
     );
 };
 
+
 export const createRenter = async (authtoken, data) => {
     return await axios.post(
       process.env.REACT_APP_API + "/renter/",
@@ -47,3 +48,13 @@ export const resetValueRenter = async (authtoken, id, values) => {
 
 
 
+export const removeRenter = async (authtoken, id) => {
+      return await axios.delete(
+        process.env.REACT_APP_API + "/renter/" + id,
+        {
+          headers: {
+            authtoken,
+          },
+        }
+      );
+    };

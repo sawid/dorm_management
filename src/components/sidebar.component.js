@@ -97,6 +97,16 @@ const Menu = (props) => {
               </li>
               <li className="nav-item">
                 <a className="nav-link">
+                <i class="nav-icon fa fa-solid fa-users"/>
+                  <p>
+                    <Link style={{ textDecoration: "none" }} to="/manage-renter">
+                      จัดการผู้เช่า
+                    </Link>
+                    </p>
+                </a>
+              </li>
+              <li className="nav-item">
+                <a className="nav-link">
                   <i className="nav-icon fa fa-solid fa-bed" />
                   <p>
                     <Link style={{ textDecoration: "none" }} to="/management-room">

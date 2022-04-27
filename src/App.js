@@ -18,6 +18,8 @@ import Managemeter from "./components/managemeter.component";
 import Printbill from "./components/printbill.component";
 import Printagreement  from "./components/printagreement.component";
 import ManageRenter from "./components/renter.component";
+import ManagementRenter from "./components/managerenter.component";
+
 
 import HomeUser from "./components/user/Home";
 import HomeAdmin from "./components/admin/Home";
@@ -142,6 +144,11 @@ function App() {
               <Printagreement />
             </UserRoute>
           } />
+          <Route path="/manage-renter" element={
+              <UserRoute>
+                <ManagementRenter />
+              </UserRoute>
+            } />
           </Route>
         </Routes>
     </div>

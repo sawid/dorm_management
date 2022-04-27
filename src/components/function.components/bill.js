@@ -51,9 +51,9 @@ export const resetVaule = async(authtoken, id, values) => {
     );
 };
 
-export const changePayStatus = async(authtoken, id, value) => {
+export const changePayStatus = async(authtoken, id, values) => {
     return await axios.post(
-        process.env.REACT_APP_API + "/payStatus/", id, value, {
+        process.env.REACT_APP_API + "/payStatus/" + id, values, {
             headers: {
                 authtoken,
             },

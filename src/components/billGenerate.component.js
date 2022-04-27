@@ -177,17 +177,15 @@ const Billgenerate = () => {
   });
 
 
- function handleonChangePay(payed, id) {
-   console.log(payed);
-   console.log(id);
-   const value = {
-    id:id,
-    payed:payed,
+ const handleonChangePay = (data) =>{
+  const value = {
+    id:data._id,
+    isPayed:!data.isPayed,
 };
-  changePayStatus(user.token, value)
+  changePayStatus(user.token,id,value)
   .then(res => {
         console.log(res)
-        loadData(user.token);
+        loadData(user.token, id);
   })
   .catch(err => {
           console.log(err)
@@ -343,7 +341,7 @@ const Billgenerate = () => {
                   <input
                     class="btn btn-outline-success btn-block text-sm"
                     type="button"
-                    onClick={handleonChangePay(!data.isPayed,data._id)}
+                    onClick={()=>handleonChangePay(data)}
                     value="จ่ายเรียบร้อยแล้ว"
                   ></input>
                   <p></p>

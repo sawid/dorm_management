@@ -5,11 +5,12 @@ import {
   DatePicker,
   Button,
   Card,
+  Alert,
 } from "antd";
 import { CaretRightFilled, CaretLeftFilled } from "@ant-design/icons";
 import { useParams, Link,useNavigate  } from "react-router-dom";
 import { Modal } from "react-bootstrap";
-import { listBill, readBill, resetVaule,readMonth } from "./function.components/bill";
+import { listBill, readBill, resetVaule,readMonth,changePayStatus } from "./function.components/bill";
 
 const Billgenerate = () => {
   let { id } = useParams();
@@ -27,7 +28,9 @@ const Billgenerate = () => {
   const [selectMonthData, setSelectMonthData] = useState({
     month: data.month,
   });
+  const [isModalVisible, setIsModalVisible] = useState(false);
   const navigate = useNavigate();
+  
 
   const separator = (numb) => {
     var str = numb.toString().split(".");
@@ -73,9 +76,13 @@ const Billgenerate = () => {
         e.preventDefault();
     }
 };
-
-
-  const [isModalVisible, setIsModalVisible] = useState(false);
+  const UnitPrice = (thisMonth, lastMonth) => {
+    if (lastMonth > thisMonth) {
+      return thisMonth - lastMonth + 9999;
+    } else {
+      return thisMonth - lastMonth;
+    }
+  };
 
   //search
 
@@ -92,8 +99,10 @@ const Billgenerate = () => {
     if(typeof searchbill !== 'undefined'){
       navigate('/Billgenerate/' + searchbill._id);
       window.location.reload()}
-    else console.log('not exists')
-    console.log(stateData.input);
+    else {console.log('not exists');
+    alert("Room not exist!");
+  }
+  
   };
 
   //change Fee
@@ -113,21 +122,12 @@ const Billgenerate = () => {
     setIsModalVisible(false);
   };
 
-
-  
   const showModal = (id) => {
     setIsModalVisible(true);
     setValues({ ...values, id: id });
   };
 
-  const UnitPrice = (thisMonth, lastMonth) => {
-    if (lastMonth > thisMonth) {
-      return thisMonth - lastMonth + 9999;
-    } else {
-      return thisMonth - lastMonth;
-    }
-  };
-
+ 
   const handleonChange = (e) => {
     setValues({ ...values, [e.target.name]: e.target.value });
   };
@@ -172,6 +172,35 @@ const Billgenerate = () => {
     });
   };
 
+  const [payData, setPayData] = useState({
+    isPayed: data.isPayed,
+  });
+
+
+ function handleonChangePay(payed, id) {
+   console.log(payed);
+   console.log(id);
+   const value = {
+    id:id,
+    payed:payed,
+};
+  changePayStatus(user.token, value)
+  .then(res => {
+        console.log(res)
+        loadData(user.token);
+  })
+  .catch(err => {
+          console.log(err)
+  })
+}
+
+
+  const onChangeDate = (date) => {
+    console.log(date, date.format("MMM"));
+    setSelectMonthData({ ...selectMonthData, month: date.format("MMM") });
+    loadDataMonthId(user.token,data.roomId,selectMonthData);
+  };
+
   const loadData = (authtoken, values) => {
     readBill(authtoken, values)
       .then((res) => {
@@ -193,11 +222,6 @@ const Billgenerate = () => {
       });
   };
 
-  const onChangeDate = (date) => {
-    console.log(date, date.format("MMM"));
-    setSelectMonthData({ ...selectMonthData, month: date.format("MMM") });
-    loadDataMonthId(user.token,data.roomId,selectMonthData);
-  };
 
   const loadAllData = (authtoken) => {
     listBill(authtoken)
@@ -209,13 +233,12 @@ const Billgenerate = () => {
       });
   };
 
-
   useEffect(() => {
     loadData(user.token, id);
     loadAllData(user.token)
   }, []);
   console.log(data);
-
+  console.log(data.isPayed);
   return (
     <div>
       <div className="content-wrapper font-sarabun">
@@ -252,7 +275,7 @@ const Billgenerate = () => {
                 <div className="card">
                   <p></p>
                   <div className="col-sm-8">
-                    {isPayedBadge(data.isBillNotified)}
+                    {isPayedBadge(data.isPayed)}
                     <p></p>
                     <DatePicker  format={"MMM YYYY"}
                       className="ms-3"
@@ -306,12 +329,22 @@ const Billgenerate = () => {
                     </small>
                   </h4>
                   <p></p>
+
+                </div>
+                <div>
+                  <input
+                    class="btn btn-outline-info btn-block text-sm"
+                    type="submit"
+                    value="แจ้งบิล"
+                  ></input>
+                  <p></p>
                 </div>
                 <div>
                   <input
                     class="btn btn-outline-success btn-block text-sm"
-                    type="submit"
-                    value="แจ้งบิล"
+                    type="button"
+                    onClick={handleonChangePay(!data.isPayed,data._id)}
+                    value="จ่ายเรียบร้อยแล้ว"
                   ></input>
                   <p></p>
                 </div>
@@ -323,6 +356,8 @@ const Billgenerate = () => {
                       <input
                         type="number"
                         onChange={ handleChange }
+                        maxLength = '16'
+                        onInput={maxLengthCheck} 
                         class="form-control"
                         placeholder="ค้นหาหมายเลขห้อง"
                       />
@@ -376,7 +411,7 @@ const Billgenerate = () => {
                   <p>ค่าหอ = {separator(1 * data.rentalFee)} บาท</p>
                   <p>
                     ค่าไฟ ={' '}{data.electricUnitThisMonth }{'-'}{data.electricUnitLastMonth} {'= '}
-                    {data.electricUnitThisMonth-data.electricUnitLastMonth}{' หน่วย '}{' = '}
+                    {UnitPrice(data.electricUnitThisMonth,data.electricUnitLastMonth)}{' หน่วย '}{' = '}
                     {separator(
                       7 *
                         UnitPrice(
@@ -388,7 +423,7 @@ const Billgenerate = () => {
                   </p>
                   <p>
                     ค่าน้ำ ={" "}{data.waterUnitThisMonth }{'-'}{data.waterUnitLastMonth} {'= '}
-                    {data.waterUnitThisMonth-data.waterUnitLastMonth}{' หน่วย '}{' = '}
+                    {UnitPrice(data.waterUnitThisMonth,data.waterUnitLastMonth)}{' หน่วย '}{' = '}
                     {separator(
                       18 *
                         UnitPrice(
@@ -730,6 +765,7 @@ const Billgenerate = () => {
           </Button>
         </Modal.Footer>
       </Modal>
+      
     </div>
   );
 };

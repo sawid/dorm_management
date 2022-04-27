@@ -23,7 +23,7 @@ export const listBill = async(authtoken) => {
 
 export const readMonth = async(authtoken, id, values) => {
     return await axios.post(
-        process.env.REACT_APP_API + "/bill/" + id,values, {
+        process.env.REACT_APP_API + "/bill/" + id, values, {
             headers: {
                 authtoken,
             },
@@ -44,6 +44,16 @@ export const changeBillNet = async(authtoken, values) => {
 export const resetVaule = async(authtoken, id, values) => {
     return await axios.put(
         process.env.REACT_APP_API + "/bill/" + id, values, {
+            headers: {
+                authtoken,
+            },
+        }
+    );
+};
+
+export const changePayStatus = async(authtoken, id, value) => {
+    return await axios.post(
+        process.env.REACT_APP_API + "/payStatus/", id, value, {
             headers: {
                 authtoken,
             },

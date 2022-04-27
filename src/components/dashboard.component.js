@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { Table } from "react-bootstrap";
 import { useSelector } from "react-redux";
-import { createAnnoucement, listAnnoucement } from "./function.components/dashboard";
+import { createAnnoucement, listAnnoucement, numberDashboardTop } from "./function.components/dashboard";
 import moment from "moment/min/moment-with-locales";
 import { Modal, Button } from "react-bootstrap";
 
 const Dashboard = () => {
   const { user } = useSelector((state) => ({ ...state }));
   const [dataAnnoucement, setDataAnnoucement] = useState([]);
+  const [dataStatsTopBar, setDataStatsTopBar] = useState([]);
 
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
@@ -39,12 +40,23 @@ console.log(dataAnnoucementInput)
 
   useEffect(() => {
     loadDataAnnoucement(user.token);
+    loadDataDashboardTop(user.token);
   }, []);
 
   const loadDataAnnoucement = (authtoken) => {
     listAnnoucement(authtoken)
       .then((res) => {
         setDataAnnoucement(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  const loadDataDashboardTop = (authtoken) => {
+    numberDashboardTop(authtoken)
+      .then((res) => {
+        setDataStatsTopBar(res.data);
       })
       .catch((err) => {
         console.log(err);
@@ -83,14 +95,14 @@ console.log(dataAnnoucementInput)
             {/* Small boxes (Stat box) */}
             <div className="row">
               <div className="col-lg-3 col-6">
-                <div className="small-box bg-info">
+                <div className="small-box bg-light">
                   {/* small box */}
                   <div className="inner">
-                    <h3>150</h3>
+                    <h3>{ dataStatsTopBar.numberRenter }</h3>
                     <p>จำนวนผู้เช่า</p>
                   </div>
                   <div className="icon">
-                    <i className="ion ion-bag" />
+                    <i className="ion ion-person-stalker" />
                   </div>
                   <a className="small-box-footer">
                     ข้อมูลเพิ่มเติม <i className="fas fa-arrow-circle-right" />
@@ -100,15 +112,15 @@ console.log(dataAnnoucementInput)
               {/* ./col */}
               <div className="col-lg-3 col-6">
                 {/* small box */}
-                <div className="small-box bg-success">
+                <div className="small-box bg-light">
                   <div className="inner">
                     <h3>
-                      530,000<sup style={{ fontSize: 20 }}>฿</sup>
+                    { dataStatsTopBar.numberTotal }<sup style={{ fontSize: 20 }}>฿</sup>
                     </h3>
                     <p>จำนวนยอดเงิน</p>
                   </div>
                   <div className="icon">
-                    <i className="ion ion-stats-bars" />
+                    <i className="ion ion-social-bitcoin" />
                   </div>
                   <a href="#" className="small-box-footer">
                     ข้อมูลเพิ่มเติม <i className="fas fa-arrow-circle-right" />
@@ -118,13 +130,13 @@ console.log(dataAnnoucementInput)
               {/* ./col */}
               <div className="col-lg-3 col-6">
                 {/* small box */}
-                <div className="small-box bg-warning">
+                <div className="small-box bg-light">
                   <div className="inner">
-                    <h3>44</h3>
+                    <h3>{ dataStatsTopBar.numberProblem }</h3>
                     <p>ปัญหาที่ได้รับรายงาน</p>
                   </div>
                   <div className="icon">
-                    <i className="ion ion-person-add" />
+                    <i className="ion ion-alert-circled" />
                   </div>
                   <a href="#" className="small-box-footer">
                     ข้อมูลเพิ่มเติม <i className="fas fa-arrow-circle-right" />
@@ -134,13 +146,13 @@ console.log(dataAnnoucementInput)
               {/* ./col */}
               <div className="col-lg-3 col-6">
                 {/* small box */}
-                <div className="small-box bg-danger">
+                <div className="small-box bg-light">
                   <div className="inner">
-                    <h3>65</h3>
+                    <h3>{ dataStatsTopBar.numberNotPay }</h3>
                     <p>จำนวนผู้ค้างชำระ</p>
                   </div>
                   <div className="icon">
-                    <i className="ion ion-pie-graph" />
+                    <i className="ion ion-ios-stopwatch" />
                   </div>
                   <a href="#" className="small-box-footer">
                     ข้อมูลเพิ่มเติม <i className="fas fa-arrow-circle-right" />
@@ -151,7 +163,7 @@ console.log(dataAnnoucementInput)
             </div>
 
             <div className="row">
-              <div className="col-lg-6">
+              <div className="col-lg-12">
                 <div className="card">
                   <div className="card-body">
                     <h4>ประกาศถึงผู้เข้าพัก</h4>

@@ -396,6 +396,7 @@ const Billgenerate = () => {
                       <input
                         type="number"
                         onChange={handleChange}
+                        min = '0'
                         maxLength="16"
                         onInput={maxLengthCheck}
                         onKeyPress={preventRoomSearchBug}

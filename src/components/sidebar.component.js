@@ -41,7 +41,7 @@ const Menu = (props) => {
 
   return (
     <div>
-      <aside className="main-sidebar sidebar-dark-primary elevation-4">
+      <aside className="main-sidebar sidebar-light-primary elevation-4">
         {/* Brand Logo */}
         <p className="brand-link">
           <img
@@ -50,7 +50,7 @@ const Menu = (props) => {
             className="brand-image img-circle elevation-3"
             style={{ opacity: ".8" }}
           />
-          <span className="brand-text font-weight-light font-sarabun text-light">
+          <span className="brand-text font-weight-light font-sarabun text-dark">
             ระบบจัดการหอพัก
           </span>
         </p>
@@ -59,13 +59,9 @@ const Menu = (props) => {
           {/* Sidebar user panel (optional) */}
           <div className="user-panel pb-3 mb-3 d-flex">
             <div className="image">
-              <img
-                src="dist/img/user2-160x160.jpg"
-                className="img-circle elevation-2"
-                alt="User Image"
-              />
+              
             </div>
-            <div className="info font-sarabun text-light">{ props.username }</div>
+            <div className="info font-sarabun text-dark"><b>ชื่อผู้ใช้ </b>{ props.username }</div>
           </div>
           {/* Sidebar Menu */}
           <nav className="mt-2 font-sarabun">
@@ -81,7 +77,7 @@ const Menu = (props) => {
               <li className="nav-header">ระบบจัดการทั่วไป</li>
               <li className="nav-item">
                 <a className="nav-link">
-                  <i className="nav-icon far fa-calendar-alt" />
+                  <i className="nav-icon fa fa-solid fa-chart-line" />
                   <p>
                     <Link style={{ textDecoration: "none" }} to="/">
                       รายงานผล
@@ -91,7 +87,7 @@ const Menu = (props) => {
               </li>
               <li className="nav-item">
                 <a className="nav-link">
-                  <i className="nav-icon far fa-image" />
+                <i class="nav-icon fa fa-solid fa-users"/>
                   <p>
                     <Link style={{ textDecoration: "none" }} to="/manage-user">
                       จัดการผู้ใช้
@@ -101,7 +97,17 @@ const Menu = (props) => {
               </li>
               <li className="nav-item">
                 <a className="nav-link">
-                  <i className="nav-icon far fa-image" />
+                <i class="nav-icon fa fa-solid fa-users"/>
+                  <p>
+                    <Link style={{ textDecoration: "none" }} to="/manage-renter">
+                      จัดการผู้เช่า
+                    </Link>
+                    </p>
+                </a>
+              </li>
+              <li className="nav-item">
+                <a className="nav-link">
+                  <i className="nav-icon fa fa-solid fa-bed" />
                   <p>
                     <Link style={{ textDecoration: "none" }} to="/management-room">
                       จัดการห้องพัก
@@ -111,7 +117,7 @@ const Menu = (props) => {
               </li>
               <li className="nav-item">
                 <a className="nav-link">
-                  <i className="nav-icon far fa-image" />
+                  <i className="nav-icon fa fa-solid fa-bolt" />
                   <p>
                     <Link style={{ textDecoration: "none" }} to="/managemeter">
                       จัดการมิเตอร์
@@ -121,7 +127,7 @@ const Menu = (props) => {
               </li>
               <li className="nav-item">
                 <a className="nav-link">
-                  <i className="nav-icon far fa-image" />
+                  <i className="nav-icon fa fa-solid fa-file-invoice-dollar" />
                   <p>
                     <Link style={{ textDecoration: "none" }} to="/billmanage">
                       จัดการบิล
@@ -130,7 +136,14 @@ const Menu = (props) => {
                 </a>
               </li>
               <li className="nav-item">
-                <button type="button" class="btn btn-block btn-primary" onClick={logout}>ออกจากระบบ</button>
+                <a className="nav-link">
+                  <i className="nav-icon fa fa-solid fa-door-open" />
+                  <p onClick={logout}>
+                    
+                      ออกจากระบบ
+                    
+                    </p>
+                </a>
               </li>
             </ul>
           </nav>

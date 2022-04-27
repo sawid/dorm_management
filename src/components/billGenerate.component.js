@@ -74,6 +74,27 @@ const Billgenerate = () => {
     setIsModalVisible(false);
   };
 
+  const maxLengthCheck = (object) => {
+    if (object.target.value.length > object.target.maxLength) {
+     object.target.value = object.target.value.slice(0, object.target.maxLength)
+      }
+    }
+
+    const preventMinus = (e) => {
+      if (e.code === 'Minus' || e.code ==='NumpadSubtract') {
+          e.preventDefault();
+      }
+  };
+
+  const preventPasteNegative = (e) => {
+    const clipboardData = e.clipboardData || window.clipboardData;
+    const pastedData = parseFloat(clipboardData.getData('text'));
+
+    if (pastedData < 0) {
+        e.preventDefault();
+    }
+};
+
   const showModal = (id) => {
     setIsModalVisible(true);
     setValues({ ...values, id: id });
@@ -327,7 +348,6 @@ const Billgenerate = () => {
               <div className="col-sm-6">
                 <Card
                   title="การคิดคำนวณค่าหอ"
-                  extra={<a href="#">ดูข้อมูล</a>}
                   block
                 >
                   <p>ค่าหอ = {separator(1 * data.rentalFee)} บาท</p>
@@ -556,11 +576,16 @@ const Billgenerate = () => {
               </span>
             </div>
             <input
-              name="rentalFee"
-              onChange={handleonChangeValue}
-              type="text"
+              name="rentalFee"          
+              type="number"
               class="form-control"
               placeholder="กรอกค่าห้อง"
+              maxLength = "5" 
+              min="0"
+              onInput={maxLengthCheck} 
+              onKeyPress={preventMinus}
+              onPaste={preventPasteNegative}
+              onChange={handleonChangeValue}
               aria-label="Username"
               aria-describedby="basic-addon1"
             />
@@ -573,10 +598,15 @@ const Billgenerate = () => {
             </div>
             <input
               name="electricUnitLastMonth"
-              onChange={handleonChangeValue}
-              type="text"
+              onChange={handleonChangeValue}         
+              type="number"
               class="form-control"
               placeholder="กรอกค่ามิเตอร์ไฟฟ้าเดือนที่แล้ว"
+              maxLength = "4" 
+              min="0"
+              onInput={maxLengthCheck} 
+              onKeyPress={preventMinus}
+              onPaste={preventPasteNegative}
               aria-label="Username"
               aria-describedby="basic-addon1"
             />
@@ -590,9 +620,14 @@ const Billgenerate = () => {
             <input
               name="electricUnitThisMonth"
               onChange={handleonChangeValue}
-              type="text"
+              type="number"
               class="form-control"
               placeholder="กรอกค่ามิเตอร์ไฟฟ้าเดือนนี้"
+              maxLength = "4" 
+              min="0"
+              onInput={maxLengthCheck} 
+              onKeyPress={preventMinus}
+              onPaste={preventPasteNegative}
               aria-label="Username"
               aria-describedby="basic-addon1"
             />
@@ -606,9 +641,14 @@ const Billgenerate = () => {
             <input
               name="waterUnitLastMonth"
               onChange={handleonChangeValue}
-              type="text"
+              type="number"
               class="form-control"
               placeholder="กรอกค่ามิเตอร์น้ำเดือนที่แล้ว"
+              maxLength = "4" 
+              min="0"
+              onInput={maxLengthCheck} 
+              onKeyPress={preventMinus}
+              onPaste={preventPasteNegative}
               aria-label="Username"
               aria-describedby="basic-addon1"
             />
@@ -622,9 +662,14 @@ const Billgenerate = () => {
             <input
               name="waterUnitThisMonth"
               onChange={handleonChangeValue}
-              type="text"
+              type="number"
               class="form-control"
               placeholder="กรอกค่ามิเตอร์น้ำเดือนนี้"
+              maxLength = "4" 
+              min="0"
+              onInput={maxLengthCheck} 
+              onKeyPress={preventMinus}
+              onPaste={preventPasteNegative}
               aria-label="Username"
               aria-describedby="basic-addon1"
             />
@@ -637,10 +682,15 @@ const Billgenerate = () => {
             </div>
             <input
               name="rentalNet"
-              type="text"
+              type="number"
               onChange={handleonChangeValue}
               class="form-control"
               placeholder="กรอกค่าส่วนกลาง"
+              maxLength = "4" 
+              min="0"
+              onInput={maxLengthCheck} 
+              onKeyPress={preventMinus}
+              onPaste={preventPasteNegative}
               aria-label="Username"
               aria-describedby="basic-addon1"
             />

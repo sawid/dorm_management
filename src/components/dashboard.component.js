@@ -163,7 +163,7 @@ console.log(dataAnnoucementInput)
             </div>
 
             <div className="row">
-              <div className="col-lg-6">
+              <div className="col-lg-12">
                 <div className="card">
                   <div className="card-body">
                     <h4>ประกาศถึงผู้เข้าพัก</h4>

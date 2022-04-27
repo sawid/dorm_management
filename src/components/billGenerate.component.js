@@ -28,9 +28,6 @@ const Billgenerate = () => {
     month: data.month,
   });
   const navigate = useNavigate();
-  const onChange = (date, dateString) => {
-    console.log(date, dateString);
-  };
 
   const separator = (numb) => {
     var str = numb.toString().split(".");
@@ -56,24 +53,6 @@ const Billgenerate = () => {
     }
   };
 
-  const [isModalVisible, setIsModalVisible] = useState(false);
-
-  const handleOk = () => {
-    setIsModalVisible(false);
-    resetVaule(user.token, values.id, { dataBill })
-      .then((res) => {
-        console.log(res);
-        loadData(user.token, id);
-      })
-      .catch((err) => {
-        console.log(err.response);
-      });
-  };
-
-  const handleCancel = () => {
-    setIsModalVisible(false);
-  };
-
   const maxLengthCheck = (object) => {
     if (object.target.value.length > object.target.maxLength) {
      object.target.value = object.target.value.slice(0, object.target.maxLength)
@@ -95,6 +74,47 @@ const Billgenerate = () => {
     }
 };
 
+
+  const [isModalVisible, setIsModalVisible] = useState(false);
+
+  //search
+
+  const [stateData, setState] = useState({
+    input: '',
+  });
+
+  const handleChange = (e) =>{
+    setState({ input: e.target.value });
+  };
+
+  const handleClick =()=> {
+    const searchbill=allData.find(x=>Number(x.roomId) === Number(stateData.input))
+    if(typeof searchbill !== 'undefined'){
+      navigate('/Billgenerate/' + searchbill._id);
+      window.location.reload()}
+    else console.log('not exists')
+    console.log(stateData.input);
+  };
+
+  //change Fee
+  const handleOk = () => {
+    setIsModalVisible(false);
+    resetVaule(user.token, values.id, { dataBill })
+      .then((res) => {
+        console.log(res);
+        loadData(user.token, id);
+      })
+      .catch((err) => {
+        console.log(err.response);
+      });
+  };
+
+  const handleCancel = () => {
+    setIsModalVisible(false);
+  };
+
+
+  
   const showModal = (id) => {
     setIsModalVisible(true);
     setValues({ ...values, id: id });
@@ -189,7 +209,6 @@ const Billgenerate = () => {
       });
   };
 
-  
 
   useEffect(() => {
     loadData(user.token, id);
@@ -302,13 +321,15 @@ const Billgenerate = () => {
                   <div className="col-sm-12">
                     <div class="input-group input-group-sm">
                       <input
-                        type="text"
+                        type="number"
+                        onChange={ handleChange }
                         class="form-control"
                         placeholder="ค้นหาหมายเลขห้อง"
                       />
                       <span class="input-group-append">
                         <button
                           type="button"
+                          onClick={handleClick}
                           class="btn btn-info btn-flat text-white"
                         >
                           ค้นหา
@@ -354,7 +375,8 @@ const Billgenerate = () => {
                 >
                   <p>ค่าหอ = {separator(1 * data.rentalFee)} บาท</p>
                   <p>
-                    ค่าไฟ ={" "}
+                    ค่าไฟ ={' '}{data.electricUnitThisMonth }{'-'}{data.electricUnitLastMonth} {'= '}
+                    {data.electricUnitThisMonth-data.electricUnitLastMonth}{' หน่วย '}{' = '}
                     {separator(
                       7 *
                         UnitPrice(
@@ -365,7 +387,8 @@ const Billgenerate = () => {
                     บาท
                   </p>
                   <p>
-                    ค่าน้ำ ={" "}
+                    ค่าน้ำ ={" "}{data.waterUnitThisMonth }{'-'}{data.waterUnitLastMonth} {'= '}
+                    {data.waterUnitThisMonth-data.waterUnitLastMonth}{' หน่วย '}{' = '}
                     {separator(
                       18 *
                         UnitPrice(

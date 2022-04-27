@@ -104,7 +104,7 @@ const Billgenerate = () => {
       e.code === "NumpadDecimal" ||
       e.code === "Minus" ||
       e.code === "NumpadSubtract" ||
-      e.code === "KeyE" ||
+      e.code === "KeyE" 
     ) {
       e.preventDefault();
     }

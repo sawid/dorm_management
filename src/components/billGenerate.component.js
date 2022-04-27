@@ -91,7 +91,22 @@ const Billgenerate = () => {
     if (
       e.code === "Minus" ||
       e.code === "NumpadSubtract" ||
-      e.code === "KeyE"
+      e.code === "KeyE" ||
+      e.code === "Digit3" 
+    ) {
+      e.preventDefault();
+    }
+  };
+
+  
+  const preventRoomSearchBug = (e) => {
+    if (
+      e.code === "Period" ||
+      e.code === "NumpadDecimal" ||
+      e.code === "Minus" ||
+      e.code === "NumpadSubtract" ||
+      e.code === "KeyE" ||
+      e.code === "Digit3"
     ) {
       e.preventDefault();
     }
@@ -105,6 +120,7 @@ const Billgenerate = () => {
       e.preventDefault();
     }
   };
+
   const UnitPrice = (thisMonth, lastMonth) => {
     if (lastMonth > thisMonth) {
       return thisMonth - lastMonth + 9999;
@@ -384,6 +400,8 @@ const Billgenerate = () => {
                         onChange={handleChange}
                         maxLength="16"
                         onInput={maxLengthCheck}
+                        onKeyPress={preventRoomSearchBug}
+                        onPaste={preventPasteNegative}
                         class="form-control"
                         placeholder="ค้นหาหมายเลขห้อง"
                       />

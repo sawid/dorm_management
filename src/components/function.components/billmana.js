@@ -10,3 +10,13 @@ export const listBills = async (authtoken) => {
           }
         );
       };
+    
+export const createBill = async(authtoken, values) => {
+  return await axios.post(
+      process.env.REACT_APP_API + "/bill/" ,values, {
+          headers: {
+              authtoken,
+          },
+      }
+  );
+};

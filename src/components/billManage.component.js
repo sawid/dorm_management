@@ -2,7 +2,10 @@ import { DatePicker,Space } from "antd";
 import ReactPaginate from "react-paginate";
 import { useSelector } from "react-redux";
 import {useState, useEffect} from 'react';
-import { listBills } from "./function.components/billmana";
+import { listBills ,createBill} from "./function.components/billmana";
+
+import { Modal, Button } from "react-bootstrap";
+import { message } from 'antd';
 
 import moment from "moment";
 
@@ -18,8 +21,11 @@ function Billmanage(){
     const [currentPage, setCurrentPage] = useState(1);
     const [postsPerPage, setPostPerPage] = useState(9);
     const [searchText,setSearchText]=useState('');
-
   const navigate = useNavigate();
+   // Modal
+   const [show, setShow] = useState(false);
+   const handleClose = () => setShow(false);
+   const handleShow = () => setShow(true);
 
     
     
@@ -71,7 +77,63 @@ function Billmanage(){
         return thisMonth - lastMonth;
       }
     };
+    const maxLengthCheck = (object) => {
+      if (object.target.value.length > object.target.maxLength) {
+        object.target.value = object.target.value.slice(
+          0,
+          object.target.maxLength
+        );
+      }
+    };
   
+    const preventMinus = (e) => {
+      if (
+        e.code === "Minus" ||
+        e.code === "NumpadSubtract" ||
+        e.code === "KeyE" 
+      ) {
+        e.preventDefault();
+      }
+    };
+  
+    
+    const preventRoomSearchBug = (e) => {
+      if (
+        e.code === "Period" ||
+        e.code === "NumpadDecimal" ||
+        e.code === "Minus" ||
+        e.code === "NumpadSubtract" ||
+        e.code === "KeyE" 
+      ) {
+        e.preventDefault();
+      }
+    };
+  
+    const preventPasteNegative = (e) => {
+      const clipboardData = e.clipboardData || window.clipboardData;
+      const pastedData = parseFloat(clipboardData.getData("text"));
+  
+      if (pastedData < 0) {
+        e.preventDefault();
+      }
+    };
+    function makeBill(event){
+      setShow(false);
+      event.preventDefault();
+      const value = {
+        roomId: event.target.room.value,
+        month: moment().format('MMM'),
+        rentalFee: event.target.price.value,
+      };
+      createBill(user.token, value)
+        .then((res) => {
+          console.log(res);
+          loadData(user.token);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
     function showNotPayed() {
       setPosts(notPayed)
     }
@@ -89,7 +151,7 @@ function Billmanage(){
     const indexOfLastPost = currentPage * postsPerPage;
     const indexOfFirstPost = indexOfLastPost - postsPerPage;
     const currentPosts = fillteredPosts.slice(indexOfFirstPost,indexOfLastPost);
-                
+            
     return (
                     <div>
           <div className="content-wrapper font-sarabun">
@@ -113,6 +175,10 @@ function Billmanage(){
                             <DatePicker picker="month" onChange={(date)=>fillterDate(moment(date).format("MMM YY"))}/>
                         </Space>
                     </div>
+                    <span>
+                   
+                    </span>
+                    
                   </div>
                   {/* /.col */}
                 </div>
@@ -131,6 +197,9 @@ function Billmanage(){
                     <button type="button" class="btn btn-outline-success my-2 my-sm-0 m-2" onClick={showAll}>แสดงทั้งหมด</button>
                     <button type="button" class="btn btn-outline-danger m-2" onClick={showNotPayed}>ยังไม่จ่าย</button>
                     <button type="button" class="btn btn-outline-primary m-2" onClick={showPayed}>จ่ายแล้ว</button>
+                    <button type="button" class="btn btn-outline-success m-2" onClick={handleShow}>
+                สร้างห้อง
+              </button>
                 </form>
             </nav>
                 
@@ -169,6 +238,33 @@ function Billmanage(){
             }
             )
             }
+            <Modal className="font-sarabun" show={show} onHide={handleClose} centered backdrop="static" keyboard={false}>
+        <Modal.Header>
+          <Modal.Title>สร้างห้องพักใหม่</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+        <form onSubmit={(event)=>makeBill(event)}>
+        <div class="form-group">
+          <label for="exampleInputEmail1">room</label>
+          <input class="form-control" id="room"type="number" placeholder="Default input" maxLength="4"
+              min="0"
+              onInput={maxLengthCheck}
+              onKeyPress={preventMinus}
+              onPaste={preventPasteNegative}/>
+        </div>
+        <div class="form-group">
+          <label for="exampleInputPassword1">price</label>
+          <input class="form-control" id="price" type="number" placeholder="Default input" maxLength="4"
+              min="0"
+              onInput={maxLengthCheck}
+              onKeyPress={preventMinus}
+              onPaste={preventPasteNegative}/>
+        </div>
+        <button type="submit" class="btn btn-primary m-3">make</button>
+        <button type="button" class="btn btn-primary" onClick={handleClose}>cancel</button>
+      </form>
+        </Modal.Body>
+      </Modal>
             </div>
             <ReactPaginate
             onPageChange={handlePageClick}

@@ -13,31 +13,66 @@ import { Viewer } from '@react-pdf-viewer/core';
 // Plugins
 import { defaultLayoutPlugin } from '@react-pdf-viewer/default-layout';
 
+import { useParams } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { useState, useEffect } from 'react';
+import { readRoom , resetVaule } from "./function.components/room";
+
 // Import styles
 import '@react-pdf-viewer/core/lib/styles/index.css';
 import '@react-pdf-viewer/default-layout/lib/styles/index.css';
+import { uploadFile } from './function.components/printDoc';
 
 const Printagreement = () => {
-    
-    // ant design upload file
-    const props = {
-        name: 'file',
-        action: 'https://www.mocky.io/v2/5cc8019d300000980a055e76',
-        headers: {
-            authorization: 'authorization-text',
-        },
-        onChange(info) {
-            if (info.file.status !== 'uploading') {
-                console.log(info.file, info.fileList);
-            }
-            if (info.file.status === 'done') {
-                message.success(`${info.file.name} file uploaded successfully`);
-            } else if (info.file.status === 'error') {
-                message.error(`${info.file.name} file upload failed.`);
-            }
-        },
-    };
+    let { id } = useParams(); 
+    const { user } = useSelector((state) => ({ ...state }));
+    const [ data, setData ] = useState([]);
+    const filePathData = "http://localhost:5000/api/uploads/"
+    const [ fileData, setfileData ] = useState({
+        selectedFile: null,
+    });
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        const formData = new FormData();
+        formData.append(
+            "file",
+            fileData.selectedFile,
+            fileData.selectedFile.name
+          );
+        console.log(formData)
+        uploadFile(user.token, id, formData)
+        .then(res => {
+            console.log(res)
+            
+        })
+        .catch(err => {
+                console.log(err);
+        })
+    }
 
+    const loadData = (authtoken, values) => {
+        readRoom(authtoken, values)
+        .then(res => {
+                setData(res.data)
+                console.log(data)
+                
+        })
+        .catch(err => {
+                console.log(err);
+        })
+      };
+
+      useEffect(() => {
+        loadData(user.token, id);
+      },[])
+      
+
+    const handleonChangeFile = (e) => {
+        setfileData({ selectedFile: e.target.files[0] });
+      
+    }
+
+    console.log(fileData)
 
     return (
         <div>
@@ -70,20 +105,27 @@ const Printagreement = () => {
                     <div className='container-fluid'>
                         <div class="container">
                             <div class="row">
-                                <div class="col-auto me-auto"> <h1>ห้อง1234</h1> </div>
+                                <div class="col-auto me-auto"> <h1>ห้อง { data.roomName }</h1> </div>
                                 <div class="col-auto">
                                     <a
                                         href={agreement} download="สัญญาหอพัก" target='_blank'>
-                                        <button type="button" class="btn btn-danger" >ดาวน์โหลด</button>
+                                        <button type="button" class="btn btn-danger" >ดาวน์โหลดร่างสัญญา</button>
                                     </a>
                                 </div>
                             </div>
                         </div>
                         {/*upload*/}
 
-                        <Upload {...props}>
-                            <Button icon={<UploadOutlined />}>Click to Upload</Button>
-                        </Upload>
+                        <form className='' onSubmit={handleSubmit} enctype="multipart/form-data">
+                          <div className='col-lg-8'>
+                          <input type="file" class="form-control" name="selectedFile" onChange={handleonChangeFile}/>
+                          </div>
+                          <div className='col-lg-2'>
+                          <button className='btn btn-primary form-control' type='submit'>Submit</button>
+                          </div>
+                          
+                          
+                        </form>
                         {/* pdf viewer */}
                         <Worker workerUrl="https://unpkg.com/pdfjs-dist@2.13.216/build/pdf.worker.min.js">
                             <div
@@ -92,7 +134,7 @@ const Printagreement = () => {
                                     height: '750px',
                                 }}
                             >
-                                <Viewer fileUrl={agreement} />
+                                <Viewer fileUrl={ data.contactPath === "none" ? agreement : (filePathData + data.contactPath) } />
                             </div>
                         </Worker>
 

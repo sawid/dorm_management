@@ -132,7 +132,7 @@ function App() {
               <Printbill />
             </UserRoute>
           } />
-          <Route path="/printagreement" element={
+          <Route path="/printagreement/:id" element={
             <UserRoute>
               <Printagreement />
             </UserRoute>

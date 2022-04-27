@@ -128,13 +128,15 @@ const Billgenerate = () => {
   function prevBill(){
     const prevbill=allData.find(x=>Number(x.roomId) === Number(data.roomId)-1)
     if(typeof prevbill !== 'undefined'){
-      setData(prevbill)}
+      navigate('/Billgenerate/' + prevbill._id);
+      window.location.reload()}
       else console.log('not exists')
   }
   function nextBill(){
     const nextbill=allData.find(x=>Number(x.roomId) === Number(data.roomId)+1)
     if(typeof nextbill !== 'undefined'){
-      setData(nextbill)}
+      navigate('/Billgenerate/' + nextbill._id);
+      window.location.reload()}
     else console.log('not exists')
   }
 

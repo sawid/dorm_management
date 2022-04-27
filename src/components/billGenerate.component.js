@@ -1,16 +1,17 @@
 import React, { Component } from "react";
 import { useContext, useState, useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
-import {
-  DatePicker,
-  Button,
-  Card,
-  Alert,
-} from "antd";
+import { DatePicker, Button, Card, Alert } from "antd";
 import { CaretRightFilled, CaretLeftFilled } from "@ant-design/icons";
-import { useParams, Link,useNavigate  } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import { Modal } from "react-bootstrap";
-import { listBill, readBill, resetVaule,readMonth,changePayStatus } from "./function.components/bill";
+import {
+  listBill,
+  readBill,
+  resetVaule,
+  readMonth,
+  changePayStatus,
+} from "./function.components/bill";
 
 const Billgenerate = () => {
   let { id } = useParams();
@@ -30,12 +31,33 @@ const Billgenerate = () => {
   });
   const [isModalVisible, setIsModalVisible] = useState(false);
   const navigate = useNavigate();
-  
 
   const separator = (numb) => {
     var str = numb.toString().split(".");
     str[0] = str[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     return str.join(".");
+  };
+
+  const isPayedButton = (props) => {
+    if (props) {
+      return (
+        <input
+          class="btn btn-outline-danger btn-block text-sm"
+          type="button"
+          onClick={() => handleonChangePay(data)}
+          value="ยังไม่ได้จ่ายเงิน"
+        ></input>
+      );
+    } else {
+      return (
+        <input
+          class="btn btn-outline-success btn-block text-sm"
+          type="button"
+          onClick={() => handleonChangePay(data)}
+          value="จ่ายเรียบร้อยแล้ว"
+        ></input>
+      );
+    }
   };
 
   const isPayedBadge = (props) => {
@@ -58,24 +80,31 @@ const Billgenerate = () => {
 
   const maxLengthCheck = (object) => {
     if (object.target.value.length > object.target.maxLength) {
-     object.target.value = object.target.value.slice(0, object.target.maxLength)
-      }
+      object.target.value = object.target.value.slice(
+        0,
+        object.target.maxLength
+      );
     }
+  };
 
-    const preventMinus = (e) => {
-      if (e.code === 'Minus' || e.code ==='NumpadSubtract' || e.code ==='KeyE') {
-          e.preventDefault();
-      }
+  const preventMinus = (e) => {
+    if (
+      e.code === "Minus" ||
+      e.code === "NumpadSubtract" ||
+      e.code === "KeyE"
+    ) {
+      e.preventDefault();
+    }
   };
 
   const preventPasteNegative = (e) => {
     const clipboardData = e.clipboardData || window.clipboardData;
-    const pastedData = parseFloat(clipboardData.getData('text'));
+    const pastedData = parseFloat(clipboardData.getData("text"));
 
     if (pastedData < 0) {
-        e.preventDefault();
+      e.preventDefault();
     }
-};
+  };
   const UnitPrice = (thisMonth, lastMonth) => {
     if (lastMonth > thisMonth) {
       return thisMonth - lastMonth + 9999;
@@ -87,22 +116,24 @@ const Billgenerate = () => {
   //search
 
   const [stateData, setState] = useState({
-    input: '',
+    input: "",
   });
 
-  const handleChange = (e) =>{
+  const handleChange = (e) => {
     setState({ input: e.target.value });
   };
 
-  const handleClick =()=> {
-    const searchbill=allData.find(x=>Number(x.roomId) === Number(stateData.input))
-    if(typeof searchbill !== 'undefined'){
-      navigate('/Billgenerate/' + searchbill._id);
-      window.location.reload()}
-    else {console.log('not exists');
-    alert("Room not exist!");
-  }
-  
+  const handleClick = () => {
+    const searchbill = allData.find(
+      (x) => Number(x.roomId) === Number(stateData.input)
+    );
+    if (typeof searchbill !== "undefined") {
+      navigate("/Billgenerate/" + searchbill._id);
+      window.location.reload();
+    } else {
+      console.log("not exists");
+      alert("Room not exist!");
+    }
   };
 
   //change Fee
@@ -127,7 +158,6 @@ const Billgenerate = () => {
     setValues({ ...values, id: id });
   };
 
- 
   const handleonChange = (e) => {
     setValues({ ...values, [e.target.name]: e.target.value });
   };
@@ -145,58 +175,60 @@ const Billgenerate = () => {
   const handleonChangeValue = (e) => {
     setdataBill({ ...dataBill, [e.target.name]: e.target.value });
   };
-  function prevBill(){
-    const prevbill=allData.find(x=>Number(x.roomId) === Number(data.roomId)-1)
-    if(typeof prevbill !== 'undefined'){
-      navigate('/Billgenerate/' + prevbill._id);
-      window.location.reload()}
-      else console.log('not exists')
+  function prevBill() {
+    const prevbill = allData.find(
+      (x) => Number(x.roomId) === Number(data.roomId) - 1
+    );
+    if (typeof prevbill !== "undefined") {
+      navigate("/Billgenerate/" + prevbill._id);
+      window.location.reload();
+    } else console.log("not exists");
   }
-  function nextBill(){
-    const nextbill=allData.find(x=>Number(x.roomId) === Number(data.roomId)+1)
-    if(typeof nextbill !== 'undefined'){
-      navigate('/Billgenerate/' + nextbill._id);
-      window.location.reload()}
-    else console.log('not exists')
+  function nextBill() {
+    const nextbill = allData.find(
+      (x) => Number(x.roomId) === Number(data.roomId) + 1
+    );
+    if (typeof nextbill !== "undefined") {
+      navigate("/Billgenerate/" + nextbill._id);
+      window.location.reload();
+    } else console.log("not exists");
   }
 
   const handleOnclick = () => {
-    loadDataMonthId(user.token,data.roomId,selectMonthData);
-    readMonth(user.token,id, values)
-    .then((res) => {
-      var selectMonth = res.data._id;
-       window.location.reload()
-    })
-    .catch((err) => {
-      console.log(err);
-    });
+    loadDataMonthId(user.token, data.roomId, selectMonthData);
+    readMonth(user.token, id, values)
+      .then((res) => {
+        var selectMonth = res.data._id;
+        window.location.reload();
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   const [payData, setPayData] = useState({
     isPayed: data.isPayed,
   });
 
-
- const handleonChangePay = (data) =>{
-  const value = {
-    id:data._id,
-    isPayed:!data.isPayed,
-};
-  changePayStatus(user.token,id,value)
-  .then(res => {
-        console.log(res)
+  const handleonChangePay = (data) => {
+    const value = {
+      id: data._id,
+      isPayed: !data.isPayed,
+    };
+    changePayStatus(user.token, id, value)
+      .then((res) => {
+        console.log(res);
         loadData(user.token, id);
-  })
-  .catch(err => {
-          console.log(err)
-  })
-}
-
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
   const onChangeDate = (date) => {
     console.log(date, date.format("MMM"));
     setSelectMonthData({ ...selectMonthData, month: date.format("MMM") });
-    loadDataMonthId(user.token,data.roomId,selectMonthData);
+    loadDataMonthId(user.token, data.roomId, selectMonthData);
   };
 
   const loadData = (authtoken, values) => {
@@ -209,17 +241,16 @@ const Billgenerate = () => {
       });
   };
 
-  const loadDataMonthId = (authtoken, id,values) => {
-    readMonth(authtoken,id, values)
+  const loadDataMonthId = (authtoken, id, values) => {
+    readMonth(authtoken, id, values)
       .then((res) => {
         var selectMonth = res.data._id;
-        navigate('/Billgenerate/' + selectMonth);
+        navigate("/Billgenerate/" + selectMonth);
       })
       .catch((err) => {
         console.log(err);
       });
   };
-
 
   const loadAllData = (authtoken) => {
     listBill(authtoken)
@@ -233,7 +264,7 @@ const Billgenerate = () => {
 
   useEffect(() => {
     loadData(user.token, id);
-    loadAllData(user.token)
+    loadAllData(user.token);
   }, []);
   console.log(data);
   console.log(data.isPayed);
@@ -275,14 +306,18 @@ const Billgenerate = () => {
                   <div className="col-sm-8">
                     {isPayedBadge(data.isPayed)}
                     <p></p>
-                    <DatePicker  format={"MMM YYYY"}
+                    <DatePicker
+                      format={"MMM YYYY"}
                       className="ms-3"
                       picker="month"
-                      placeholder= {data.month}
+                      placeholder={data.month}
                       onChange={onChangeDate}
                     />
-                    <button type="click" className="btn btn-outline-success btn-sm text-sm ms-3 " 
-                    onClick={() => handleOnclick()}>
+                    <button
+                      type="click"
+                      className="btn btn-outline-success btn-sm text-sm ms-3 "
+                      onClick={() => handleOnclick()}
+                    >
                       change month
                     </button>
                   </div>
@@ -291,8 +326,7 @@ const Billgenerate = () => {
                     <p></p>
                     <button
                       className="btn btn-info btn-sm text-white ms-3"
-                      onClick={() => navigate('/roomdetail/' + data._id)}
-
+                      onClick={() => navigate("/roomdetail/" + data._id)}
                       role="button"
                     >
                       ดูข้อมูล
@@ -300,7 +334,7 @@ const Billgenerate = () => {
                     <button
                       type="button"
                       className="btn  btn-sm btn-warning text-white"
-                      onClick={() => navigate('/printbill/' + data._id)}
+                      onClick={() => navigate("/printbill/" + data._id)}
                     >
                       สร้าง pdf
                     </button>
@@ -327,7 +361,6 @@ const Billgenerate = () => {
                     </small>
                   </h4>
                   <p></p>
-
                 </div>
                 <div>
                   <input
@@ -338,12 +371,7 @@ const Billgenerate = () => {
                   <p></p>
                 </div>
                 <div>
-                  <input
-                    class="btn btn-outline-success btn-block text-sm"
-                    type="button"
-                    onClick={()=>handleonChangePay(data)}
-                    value="จ่ายเรียบร้อยแล้ว"
-                  ></input>
+                  {isPayedButton(data.isPayed)}
                   <p></p>
                 </div>
               </div>
@@ -353,9 +381,9 @@ const Billgenerate = () => {
                     <div class="input-group input-group-sm">
                       <input
                         type="number"
-                        onChange={ handleChange }
-                        maxLength = '16'
-                        onInput={maxLengthCheck} 
+                        onChange={handleChange}
+                        maxLength="16"
+                        onInput={maxLengthCheck}
                         class="form-control"
                         placeholder="ค้นหาหมายเลขห้อง"
                       />
@@ -402,14 +430,18 @@ const Billgenerate = () => {
             <div></div>
             <div className="row">
               <div className="col-sm-6">
-                <Card
-                  title="การคิดคำนวณค่าหอ"
-                  block
-                >
+                <Card title="การคิดคำนวณค่าหอ" block>
                   <p>ค่าหอ = {separator(1 * data.rentalFee)} บาท</p>
                   <p>
-                    ค่าไฟ ={' '}{data.electricUnitThisMonth }{'-'}{data.electricUnitLastMonth} {'= '}
-                    {UnitPrice(data.electricUnitThisMonth,data.electricUnitLastMonth)}{' หน่วย '}{' = '}
+                    ค่าไฟ = {data.electricUnitThisMonth}
+                    {"-"}
+                    {data.electricUnitLastMonth} {"= "}
+                    {UnitPrice(
+                      data.electricUnitThisMonth,
+                      data.electricUnitLastMonth
+                    )}
+                    {" หน่วย "}
+                    {" = "}
                     {separator(
                       7 *
                         UnitPrice(
@@ -420,8 +452,15 @@ const Billgenerate = () => {
                     บาท
                   </p>
                   <p>
-                    ค่าน้ำ ={" "}{data.waterUnitThisMonth }{'-'}{data.waterUnitLastMonth} {'= '}
-                    {UnitPrice(data.waterUnitThisMonth,data.waterUnitLastMonth)}{' หน่วย '}{' = '}
+                    ค่าน้ำ = {data.waterUnitThisMonth}
+                    {"-"}
+                    {data.waterUnitLastMonth} {"= "}
+                    {UnitPrice(
+                      data.waterUnitThisMonth,
+                      data.waterUnitLastMonth
+                    )}
+                    {" หน่วย "}
+                    {" = "}
                     {separator(
                       18 *
                         UnitPrice(
@@ -634,13 +673,13 @@ const Billgenerate = () => {
               </span>
             </div>
             <input
-              name="rentalFee"          
+              name="rentalFee"
               type="number"
               class="form-control"
               placeholder="กรอกค่าห้อง"
-              maxLength = "5" 
+              maxLength="5"
               min="0"
-              onInput={maxLengthCheck} 
+              onInput={maxLengthCheck}
               onKeyPress={preventMinus}
               onPaste={preventPasteNegative}
               onChange={handleonChangeValue}
@@ -656,13 +695,13 @@ const Billgenerate = () => {
             </div>
             <input
               name="electricUnitLastMonth"
-              onChange={handleonChangeValue}         
+              onChange={handleonChangeValue}
               type="number"
               class="form-control"
               placeholder="กรอกค่ามิเตอร์ไฟฟ้าเดือนที่แล้ว"
-              maxLength = "4" 
+              maxLength="4"
               min="0"
-              onInput={maxLengthCheck} 
+              onInput={maxLengthCheck}
               onKeyPress={preventMinus}
               onPaste={preventPasteNegative}
               aria-label="Username"
@@ -681,9 +720,9 @@ const Billgenerate = () => {
               type="number"
               class="form-control"
               placeholder="กรอกค่ามิเตอร์ไฟฟ้าเดือนนี้"
-              maxLength = "4" 
+              maxLength="4"
               min="0"
-              onInput={maxLengthCheck} 
+              onInput={maxLengthCheck}
               onKeyPress={preventMinus}
               onPaste={preventPasteNegative}
               aria-label="Username"
@@ -702,9 +741,9 @@ const Billgenerate = () => {
               type="number"
               class="form-control"
               placeholder="กรอกค่ามิเตอร์น้ำเดือนที่แล้ว"
-              maxLength = "4" 
+              maxLength="4"
               min="0"
-              onInput={maxLengthCheck} 
+              onInput={maxLengthCheck}
               onKeyPress={preventMinus}
               onPaste={preventPasteNegative}
               aria-label="Username"
@@ -723,9 +762,9 @@ const Billgenerate = () => {
               type="number"
               class="form-control"
               placeholder="กรอกค่ามิเตอร์น้ำเดือนนี้"
-              maxLength = "4" 
+              maxLength="4"
               min="0"
-              onInput={maxLengthCheck} 
+              onInput={maxLengthCheck}
               onKeyPress={preventMinus}
               onPaste={preventPasteNegative}
               aria-label="Username"
@@ -744,9 +783,9 @@ const Billgenerate = () => {
               onChange={handleonChangeValue}
               class="form-control"
               placeholder="กรอกค่าส่วนกลาง"
-              maxLength = "4" 
+              maxLength="4"
               min="0"
-              onInput={maxLengthCheck} 
+              onInput={maxLengthCheck}
               onKeyPress={preventMinus}
               onPaste={preventPasteNegative}
               aria-label="Username"
@@ -763,7 +802,6 @@ const Billgenerate = () => {
           </Button>
         </Modal.Footer>
       </Modal>
-      
     </div>
   );
 };

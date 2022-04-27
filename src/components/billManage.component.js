@@ -120,12 +120,15 @@ function Billmanage(){
     function makeBill(event){
       setShow(false);
       event.preventDefault();
-      const value = {
-        roomId: event.target.room.value,
-        month: moment().format('MMM'),
-        rentalFee: event.target.price.value,
-      };
-      createBill(user.token, value)
+      let min=Number(event.target.min.value) 
+      let max=Number(event.target.max.value) 
+      for(let i=min;i<=max;i++){
+        const value = {
+          roomId: i,
+          month: moment().format('MMM'),
+          rentalFee: event.target.price.value,
+        };
+        createBill(user.token, value)
         .then((res) => {
           console.log(res);
           loadData(user.token);
@@ -133,6 +136,7 @@ function Billmanage(){
         .catch((err) => {
           console.log(err);
         });
+      }
     }
     function showNotPayed() {
       setPosts(notPayed)
@@ -246,7 +250,12 @@ function Billmanage(){
         <form onSubmit={(event)=>makeBill(event)}>
         <div class="form-group">
           <label for="exampleInputEmail1">room</label>
-          <input class="form-control" id="room"type="number" placeholder="Default input" maxLength="4"
+          <input class="form-control mb-3" id="min"type="number" placeholder="min" maxLength="4"
+              min="0"
+              onInput={maxLengthCheck}
+              onKeyPress={preventMinus}
+              onPaste={preventPasteNegative}/>
+          <input class="form-control" id="max"type="number" placeholder="max" maxLength="4"
               min="0"
               onInput={maxLengthCheck}
               onKeyPress={preventMinus}

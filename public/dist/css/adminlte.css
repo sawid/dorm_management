@@ -13213,7 +13213,7 @@ body:not(.layout-fixed) .main-sidebar .sidebar {
 }
 
 .user-panel .info {
-  text-decoration:none
+  text-decoration:none;
   display: inline-block;
   padding: 5px 5px 5px 10px;
 }

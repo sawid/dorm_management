@@ -21,3 +21,14 @@ export const createAnnoucement = async (authtoken, data) => {
       }
     );
   };
+
+export const numberDashboardTop = async (authtoken) => {
+  return await axios.get(
+    process.env.REACT_APP_API + "/dashboardtopbar/",
+    {
+      headers: {
+        authtoken,
+      },
+    }
+  );
+};

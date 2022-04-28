@@ -11,6 +11,7 @@ import {
   resetVaule,
   readMonth,
   changePayStatus,
+  changeNotiStatus,
   sentNotificate,
 } from "./function.components/bill";
 
@@ -33,6 +34,7 @@ const Billgenerate = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const navigate = useNavigate();
 
+  
   const separator = (numb) => {
     var str = numb.toString().split(".");
     str[0] = str[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -82,9 +84,22 @@ const Billgenerate = () => {
   const sentNotification = () => {
     const messageNoti = {
       roomId: data.roomId,
-      messageData: "แจ้งยอดบิลเดือน " + data.month + " จำนวน " + data.rentalNet + " บาท",
+      messageData: "แจ้งยอดบิลเดือน " + data.month + " จำนวน " + (separator(data.rentalFee +
+        7 *
+          UnitPrice(
+            data.electricUnitThisMonth,
+            data.electricUnitLastMonth
+          ) +
+        18 *
+          UnitPrice(
+            data.waterUnitThisMonth,
+            data.waterUnitLastMonth
+          ) +
+        data.rentalNet
+)) + " บาท",
     };
     console.log(messageNoti)
+    handleonChangeNoti(data)
     sentNotificate(user.token, messageNoti);
   }
 
@@ -249,6 +264,21 @@ const Billgenerate = () => {
       });
   };
 
+  const handleonChangeNoti = (data) => {
+    const value = {
+      id: data._id,
+      isBillNotified: !data.isBillNotified,
+    };
+    changeNotiStatus(user.token, id, value)
+      .then((res) => {
+        console.log(res);
+        loadData(user.token, id);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   const onChangeDate = (date) => {
     console.log(date, date.format("MMM"));
     setSelectMonthData({ ...selectMonthData, month: date.format("MMM") });
@@ -391,7 +421,7 @@ const Billgenerate = () => {
                     class="btn btn-outline-info btn-block text-sm"
                     type="submit"
                     value="แจ้งบิล"
-                    onClick={sentNotification}
+                    onClick={() => sentNotification(data)}
                   ></input>
                   <p></p>
                 </div>

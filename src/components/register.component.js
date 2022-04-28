@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
 import { register } from './function.components/auth'
+import { toast, ToastContainer } from "react-toastify";
 
 const Registerpage = () => {
 
@@ -29,10 +30,24 @@ const Registerpage = () => {
       register(value)
       .then(res => {
         console.log(res.data)
-        alert(res.data)
+        toast.success('สมัครสมาชิกสำเร็จ !', {
+          position: "top-right",
+          autoClose: 1000,
+          hideProgressBar: false,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          });
       } ).catch(err => {
         console.log(err.response.data)
-        alert(err.response.data)
+        toast.error('ไม่สามารถสมัครสมาชิก', {
+          position: "top-right",
+          autoClose: 1000,
+          hideProgressBar: false,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          });
       })
     }
   }
@@ -42,7 +57,7 @@ const Registerpage = () => {
   return (
     <body class="hold-transition login-page font-sarabun">
       <div class="login-box">
-        <div class="card card-outline card-primary">
+        <div class="card card-outline card-light">
           <div class="card-header text-center">
             <a href="" class="h1">
               <b>dorm</b>System
@@ -97,7 +112,7 @@ const Registerpage = () => {
                 <div class="col-6"></div>
 
                 <div class="col-6">
-                  <button disabled={value.password.length < 6} type="submit" class="btn btn-primary btn-block">
+                  <button disabled={value.password.length < 6} type="submit" class="btn btn-light btn-block">
                     สมัครสมาชิก
                   </button>
                 </div>

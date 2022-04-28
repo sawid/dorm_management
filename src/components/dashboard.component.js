@@ -4,6 +4,7 @@ import { useSelector } from "react-redux";
 import { createAnnoucement, listAnnoucement, numberDashboardTop } from "./function.components/dashboard";
 import moment from "moment/min/moment-with-locales";
 import { Modal, Button } from "react-bootstrap";
+import { Link } from "react-router-dom";
 
 const Dashboard = () => {
   const { user } = useSelector((state) => ({ ...state }));
@@ -105,7 +106,9 @@ console.log(dataAnnoucementInput)
                     <i className="ion ion-person-stalker" />
                   </div>
                   <a className="small-box-footer">
-                    ข้อมูลเพิ่มเติม <i className="fas fa-arrow-circle-right" />
+                    <Link style={{ textDecoration: "none", color:"#000000 "}} to="/manage-renter">
+                      ข้อมูลเพิ่มเติม <i className="fas fa-arrow-circle-right" />
+                    </Link>
                   </a>
                 </div>
               </div>
@@ -123,7 +126,9 @@ console.log(dataAnnoucementInput)
                     <i className="ion ion-social-bitcoin" />
                   </div>
                   <a href="#" className="small-box-footer">
-                    ข้อมูลเพิ่มเติม <i className="fas fa-arrow-circle-right" />
+                  <Link style={{ textDecoration: "none", color:"#000000 "}} to="/billmanage">
+                      ข้อมูลเพิ่มเติม <i className="fas fa-arrow-circle-right" />
+                    </Link>
                   </a>
                 </div>
               </div>
@@ -155,7 +160,9 @@ console.log(dataAnnoucementInput)
                     <i className="ion ion-ios-stopwatch" />
                   </div>
                   <a href="#" className="small-box-footer">
-                    ข้อมูลเพิ่มเติม <i className="fas fa-arrow-circle-right" />
+                  <Link style={{ textDecoration: "none", color:"#000000 "}} to="/billmanage">
+                      ข้อมูลเพิ่มเติม <i className="fas fa-arrow-circle-right" />
+                    </Link>
                   </a>
                 </div>
               </div>

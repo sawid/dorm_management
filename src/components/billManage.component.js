@@ -204,7 +204,7 @@ function Billmanage(){
               {/* /.container-fluid */}
               <nav class="navbar navbar-light bg-light">
                 <form class="form-inline">
-                    <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" value={searchText}
+                    <input class="form-control mr-sm-2" type="search" placeholder="ค้นหาห้อง" aria-label="Search" value={searchText}
                 onChange={(event)=>{setSearchText(event.target.value)}}/>
                     <button type="button" class="btn btn-outline-success my-2 my-sm-0 m-2" onClick={showAll}>แสดงทั้งหมด</button>
                     <button type="button" class="btn btn-outline-danger m-2" onClick={showNotPayed}>ยังไม่จ่าย</button>
@@ -243,6 +243,7 @@ function Billmanage(){
                         post.rentalNet)} บาท</h5>
                     <div className="d-flex justify-content-center">
                     <button type="button" class="btn btn-success text-center m-4" onClick={() => navigate('/Billgenerate/' + post._id)}>ดูรายละเอียดของบิล {post.roomName}</button>
+                    <button type="button" class="btn btn-danger text-center m-4" onClick={() => navigate('/Billgenerate/' + post._id)}>ลบบิล {post.roomName}</button>
                     
                 </div>
                 </div>
@@ -258,28 +259,28 @@ function Billmanage(){
         <Modal.Body>
         <form onSubmit={(event)=>makeBill(event)}>
         <div class="form-group">
-          <label for="exampleInputEmail1">room</label>
+          <label for="exampleInputEmail1">ใส่ชื่อห้อง</label>
           {/* <input class="form-control mb-3" id="min"type="number" placeholder="min" maxLength="4"
               min="0"
               onInput={maxLengthCheck}
               onKeyPress={preventMinus}
               onPaste={preventPasteNegative}/> */}
-          <input class="form-control" id="roomid"type="number" placeholder="roomid" maxLength="4"
+          <input class="form-control" id="roomid"type="number" placeholder="กรอกชื่อห้อง" maxLength="4"
               min="0"
               onInput={maxLengthCheck}
               onKeyPress={preventMinus}
               onPaste={preventPasteNegative}/>
         </div>
         <div class="form-group">
-          <label for="exampleInputPassword1">price</label>
-          <input class="form-control" id="price" type="number" placeholder="Default input" maxLength="4"
+          <label for="exampleInputPassword1">ค่าเช่า</label>
+          <input class="form-control" id="price" type="number" placeholder="กรอกค่าเช่า" maxLength="4"
               min="0"
               onInput={maxLengthCheck}
               onKeyPress={preventMinus}
               onPaste={preventPasteNegative}/>
         </div>
-        <button type="submit" class="btn btn-primary m-3">make</button>
-        <button type="button" class="btn btn-primary" onClick={handleClose}>cancel</button>
+        <button type="submit" class="btn btn-primary m-3">สร้างบิล</button>
+        <button type="button" class="btn btn-primary" onClick={handleClose}>ยกเลิก</button>
       </form>
         </Modal.Body>
       </Modal>

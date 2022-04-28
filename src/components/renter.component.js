@@ -203,9 +203,9 @@ const loadData = (authtoken) => {
         <Modal.Body>
         <div class="input-group mb-3">
           <div class="input-group-prepend">
-            <span class="input-group-text" id="basic-addon1">รหัสห้อง</span>
+            <span class="input-group-text" id="basic-addon1">ชื่อผู้เช่า</span>
           </div>
-          <input name="renterName" onChange={handleonChangeRenterName} type="text" class="form-control" placeholder="กรอกรหัสห้อง" aria-label="Username" aria-describedby="basic-addon1"/>
+          <input name="renterName" onChange={handleonChangeRenterName} type="text" class="form-control" placeholder="กรอกชื่อ" aria-label="Username" aria-describedby="basic-addon1"/>
         </div>
         </Modal.Body>
         <Modal.Footer>

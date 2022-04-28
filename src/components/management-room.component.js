@@ -129,7 +129,7 @@ function ManagementRoom() {
               <input
                 class="form-control mr-sm-2"
                 type="search"
-                placeholder="Search"
+                placeholder="ค้นหาห้อง"
                 aria-label="Search"
                 value={searchText}
                 onChange={(event) => {
@@ -174,7 +174,14 @@ function ManagementRoom() {
                           class="btn btn-outline-success text-center m-3"
                           onClick={() => navigate('/roomdetail/' + post._id)}
                         >
-                          ดูรายละเอียดของห้อง {post.roomName}
+                          รายละเอียด
+                        </button>
+                        <button
+                          type="button"
+                          class="btn btn-outline-danger text-center m-3"
+                          onClick={() => navigate('/roomdetail/' + post._id)}
+                        >
+                          ลบห้อง
                         </button>
                       </div>
                     </div>

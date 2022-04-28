@@ -233,7 +233,7 @@ const RoomDetail = () => {
                       <div className="card-subtitle text-muted">
                         <p>⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀</p>
                         <p>⠀⠀ผู้เช่า {dataRenter.renterName}</p>
-                        <p>⠀⠀ประเถทห้อง {data.room_type}</p>
+                        <p>⠀⠀ประเภทห้อง {data.room_type}</p>
                         <p>⠀⠀จำนวนเตียง {data.amountBed}</p>
                         <p>⠀⠀ค่าเช่า {data.rentalFee}</p>
                       </div>

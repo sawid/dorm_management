@@ -6,6 +6,7 @@ import { Switch, Select, Tag } from 'antd';
 import { DeleteFilled, EditFilled } from '@ant-design/icons'
 import moment from "moment/min/moment-with-locales";
 import { Modal, Button } from "react-bootstrap";
+import { toast, ToastContainer } from "react-toastify";
 
 const Manageuser = () => {
   const { user } = useSelector((state) => ({...state}))
@@ -88,17 +89,25 @@ const Manageuser = () => {
   }
 
   const handleonRemove = (id) => {
-          if(window.confirm("Are you sure Remove")) {
+
                   console.log(id)
                   removeUser(user.token, id)
                   .then(res => {
                         console.log(res)
                         loadData(user.token);
+                        toast.success('ลบผู้ใช้แล้ว', {
+                          position: "top-right",
+                          autoClose: 1000,
+                          hideProgressBar: false,
+                          pauseOnHover: true,
+                          draggable: true,
+                          progress: undefined,
+                          });
                       })
                   .catch(err => {
                           console.log(err)
                   })
-          }
+          
   }
 
   const roleData = ['admin', 'user']

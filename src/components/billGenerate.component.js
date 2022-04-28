@@ -343,7 +343,7 @@ const Billgenerate = () => {
         {/* Content Header (Page header) */}
         <div className="content-header">
           <div className="container-fluid">
-            <div className="row mb-2">
+            <div className="row">
               <div className="col-sm-6">
                 <h1 className="m-0 text-dark">การจัดการบิล</h1>
               </div>
@@ -387,19 +387,19 @@ const Billgenerate = () => {
                       className="btn btn-outline-success btn-sm text-sm ms-3 "
                       onClick={() => handleOnclick()}
                     >
-                      change month
+                      ยืนยัน
                     </button>
                   </div>
 
                   <div className="col-sm-6">
                     <p></p>
-                    <button
+                    {/*<button
                       className="btn btn-info btn-sm text-white ms-3"
                       onClick={() => navigate("/roomdetail/" + data._id)}
                       role="button"
                     >
                       ดูข้อมูล
-                    </button>
+                    </button> */}
                     <button
                       type="button"
                       className="btn  btn-sm btn-warning text-white"

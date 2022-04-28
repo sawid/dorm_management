@@ -100,7 +100,7 @@ const Printbill = () => {
 
         doc.addImage(imagebill, 'JPEG', 120, 78, 50, 45);
         doc.text(dorm_name, 14, 15);
-        doc.text("ห้อง : " + dataRoomName, 100, 15);
+        doc.text("ห้อง : " + data.roomId, 100, 15);
         doc.text(" ใบแจ้งหนี้ ( Invoice ) ", 160, 15);
         doc.text(" หมายเหตุ ( Note )  : ", 15, 75);
         doc.text(" หมายเลข (Bank Account No.) : " + "XXX-XXXXXX-X", 15, 85);
@@ -141,7 +141,7 @@ const Printbill = () => {
                     <div className='container-fluid'>
                         <div class="container">
                             <div class="row">
-                                <div class="col-auto me-auto"><h1>ห้อง {dataRoomName}</h1></div>
+                                <div class="col-auto me-auto"><h1>ห้อง {data.roomId}</h1></div>
                                 <div class="col-auto "><button onClick={SavePDF} type="button" class="btn btn-danger" >ดาวน์โหลด</button></div>
                             </div>
                         </div>
@@ -153,7 +153,7 @@ const Printbill = () => {
                             <div class="container">
                             <div class="row">
                                 <div class="col-auto me-auto"> <h6>สุขใจ อพาร์ตเม้นท์</h6> </div>
-                                <div class="col-auto me-auto"> <h6>ห้อง : {dataRoomName}</h6> </div>
+                                <div class="col-auto me-auto"> <h6>ห้อง : {data.roomId}</h6> </div>
                                 <div class="col-auto"> <h6> ใบแจ้งหนี้ ( Invoice )</h6> </div>
                             </div>
                             </div>

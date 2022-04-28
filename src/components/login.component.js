@@ -73,7 +73,7 @@ const Loginpage = ({ history }) => {
     <body class="hold-transition login-page font-sarabun">
 
       <div class="login-box">
-        <div class="card card-outline card-primary">
+        <div class="card card-outline card-light">
           <div class="card-header text-center">
             <a href="" class="h1">
               <b>dorm</b>System
@@ -114,7 +114,7 @@ const Loginpage = ({ history }) => {
                 <div class="col-7"></div>
 
                 <div class="col-5">
-                  <button type="submit" class="btn btn-primary btn-block">
+                  <button type="submit" class="btn btn-light btn-block">
                     เข้าสู่ระบบ
                   </button>
                 </div>
@@ -125,9 +125,7 @@ const Loginpage = ({ history }) => {
             <p class="mb-1">
               <Link to="/register">สมัครสมาชิก</Link>
             </p>
-            <p class="mb-1">
-              <a href="forgot-password.html">ลืมรหัสผ่าน</a>
-            </p>
+            
           </div>
         </div>
       </div>

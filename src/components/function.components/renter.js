@@ -68,9 +68,9 @@ export const removeRenter = async (authtoken, id) => {
         }
       );
     };
-export const putRenterRoom = async (authtoken, id) => {
+export const putRenterRoom = async (authtoken, id , values) => {
   return await axios.put(
-    process.env.REACT_APP_API + "/putRenter/" + id,
+    process.env.REACT_APP_API + "/putRenter/" + id ,values,
     {
       headers: {
         authtoken,

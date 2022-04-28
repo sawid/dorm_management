@@ -4,9 +4,11 @@ import { useParams } from "react-router-dom";
 import { Provider, useSelector } from "react-redux";
 import { useState, useEffect } from 'react';
 import { Input } from 'antd';
+import { useNavigate } from "react-router-dom";
+
 import { Table, Tag, Space } from 'antd';
 import { readRoom, resetValueRoom } from "./function.components/room";
-import { listRenter, resetValueRenter, readRenter, getRenterRoom } from "./function.components/renter"
+import { listRenter, resetValueRenter, readRenter, getRenterRoom, putRenterRoom } from "./function.components/renter"
 
 import { Modal } from "react-bootstrap";
 
@@ -23,10 +25,12 @@ const RoomDetail = () => {
   const { user } = useSelector((state) => ({ ...state }))
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
   const [postsPerPage, setPostPerPage] = useState(9);
   const [dataRenter, setdataRenter] = useState([]);
   const [dataRenterNameList, setdataRenterNameList] = useState([]);
+  const [dataPutRenterList, setdataPutRenterNameList] = useState([]);
   const [data, setData] = useState([]);
   const [values, setValues] = useState({
     id: "",
@@ -102,10 +106,7 @@ const RoomDetail = () => {
 
 
   // Seach and droplist
-  const onChangeRenterName = (value) => {
-
-    console.log(value);
-  };
+ 
 
   const onSearch = (vale) => {
 
@@ -162,16 +163,16 @@ const RoomDetail = () => {
   console.log(dataRenterNameList, "datalist")
 
 
-  /*const onChangeRenterName = (e , authtoken) => {
-    listRenter(authtoken)
+  const onChangeRenterName = ( authtoken, id , values) => {
+    putRenterRoom(authtoken ,id , values)
     .then(res => {
-      setdataRenter(res.data)
+      setdataPutRenterNameList(res.data)
       console.log(data)
       })
     .catch(err => {
       console.log(err);
     })
-    };*/
+    };
 
   const onChangeRadio = e => {
     console.log('radio checked:', e.target.value)
@@ -227,14 +228,14 @@ const RoomDetail = () => {
               <div className="col-6 ">
                 <div className="row">
                   <div className="card ms-3">
-                    <div className="card-body justify-content-center">
+                    <div className="card-body justify-content-center mb-1">
                       <h2 className="mt-1">ห้องพัก {data.roomName}</h2>
                       <div className="card-subtitle text-muted">
-                        <p>ผู้เช่า {dataRenter.renterName}</p>
-                        <p>ประเถทห้อง {data.room_type}</p>
-                        <p>จำนวนเตียง {data.amountBed}</p>
-                        <p>ค่าเช่า {data.rentalFee}</p>
-                        <p>เบอร์โทรศัพท์  </p>
+                        <p>⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀</p>
+                        <p>⠀⠀ผู้เช่า {dataRenter.renterName}</p>
+                        <p>⠀⠀ประเถทห้อง {data.room_type}</p>
+                        <p>⠀⠀จำนวนเตียง {data.amountBed}</p>
+                        <p>⠀⠀ค่าเช่า {data.rentalFee}</p>
                       </div>
                     </div>
                   </div>
@@ -244,8 +245,7 @@ const RoomDetail = () => {
                 <div>
                   <form>
                     <button type="button" className="btn btn-success btn-block text-lg mb-3 mt-2 ms-3" onClick={() => showModal(data._id)}>แก้ไขรายละเอียด</button>
-                    <input className="btn btn-success btn-block text-lg mb-3 ms-3" type="button" value="ดูสัญญา"></input>
-                    <input className="btn btn-success btn-block text-lg ms-3" type="button" value="ดูรอบบิล"></input>
+                    <input className="btn btn-success btn-block text-lg mb-3 ms-3" type="button" value="ดูสัญญา" onClick={() => navigate('/printagreement/' + data._id) }></input>
                   </form>
                 </div>
 
@@ -296,9 +296,9 @@ const RoomDetail = () => {
             </div>
             <div>
               <form>
-                <select class="form-select" aria-label="Default select example">
+                <select class="form-select" name="renterId" aria-label="Default select example" onChange={onChangeRenterName} >
                   {dataRenterNameList.map((item, index) =>
-                    <option> {item.renterName} </option>              
+                    <option name="renterId"> {item.renterName}⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀   </option>              
               )}
               </select>
             </form>
@@ -321,12 +321,6 @@ const RoomDetail = () => {
             <span class="input-group-text" id="basic-addon1"> ⠀⠀ค่าเช่า ⠀⠀</span>
           </div>
           <input name="rentalFee" onChange={handleonChangeValue} type="text" class="form-control" placeholder="กรอกประเภทห้อง" aria-label="Username" aria-describedby="basic-addon1" />
-        </div>
-        <div class="input-group mb-3">
-          <div class="input-group-prepend">
-            <span class="input-group-text" id="basic-addon1">เบอร์โทรศัพท์</span>
-          </div>
-          <input name="phoneNumber" type="text" class="form-control" placeholder="กรอกประเภทห้อง" aria-label="Username" aria-describedby="basic-addon1" />
         </div>
       </Modal.Body>
       <Modal.Footer>

@@ -308,19 +308,27 @@ const RoomDetail = () => {
           <div class="input-group-prepend">
             <span class="input-group-text" id="basic-addon1">ประเภทห้อง⠀</span>
           </div>
-          <input name="room_type" onChange={handleonChangeValue} type="text" class="form-control" placeholder="กรอกประเภทห้อง" aria-label="Username" aria-describedby="basic-addon1" />
+          <input name="room_type" onChange={handleonChangeValue} maxLength="3"  type="text" class="form-control" placeholder="กรอกประเภทห้อง" aria-label="Username" aria-describedby="basic-addon1" />
         </div>
         <div class="input-group mb-3">
           <div class="input-group-prepend">
             <span class="input-group-text" id="basic-addon1">จำนวนเตียง⠀</span>
           </div>
-          <input name="amountBed" onChange={handleonChangeValue} type="text" class="form-control" placeholder="กรอกประเภทห้อง" aria-label="Username" aria-describedby="basic-addon1" />
+          <input name="amountBed" maxLength="2"
+              min="0" 
+              onChange={handleonChangeValue} 
+              type="number" 
+              class="form-control" placeholder="กรอกประเภทห้อง" aria-label="Username" aria-describedby="basic-addon1" />
         </div>
         <div class="input-group mb-3">
           <div class="input-group-prepend">
             <span class="input-group-text" id="basic-addon1"> ⠀⠀ค่าเช่า ⠀⠀</span>
           </div>
-          <input name="rentalFee" onChange={handleonChangeValue} type="text" class="form-control" placeholder="กรอกประเภทห้อง" aria-label="Username" aria-describedby="basic-addon1" />
+          <input name="rentalFee" maxLength="4"
+             min="0" 
+             onChange={handleonChangeValue} 
+             type="number" 
+             class="form-control" placeholder="กรอกประเภทห้อง" aria-label="Username" aria-describedby="basic-addon1" />
         </div>
       </Modal.Body>
       <Modal.Footer>

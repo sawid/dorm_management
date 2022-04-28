@@ -7,6 +7,9 @@ import { useSelector } from "react-redux";
 import { useEffect } from "react";
 import { useState } from "react";
 
+import mainLogo from "./dorm.png";
+ 
+
 const Menu = (props) => {
   const { user } = useSelector((state) => ({...state}))
   const dispatch = useDispatch();
@@ -45,8 +48,8 @@ const Menu = (props) => {
         {/* Brand Logo */}
         <p className="brand-link">
           <img
-            src="https://imgur.com/WP6TS7g"
-            alt ="dorm.png"
+            src={mainLogo}
+            alt =  ""
             className="brand-image img-circle elevation-3"
             style={{ opacity: ".8" }}
           ></img>

@@ -69,14 +69,14 @@ const Billgenerate = () => {
     if (props) {
       return (
         <h1 className="m-0 ms-3 text-dark">
-          ห้อง {data.roomId}
+          ห้อง {data.roomName}
           <span class="badge rounded-pill bg-success text-md">จ่ายแล้ว</span>
         </h1>
       );
     } else {
       return (
         <h1 className="m-0 ms-3 text-dark">
-          ห้อง {data.roomId}
+          ห้อง {data.roomName}
           <span class="badge rounded-pill bg-danger text-md">ยังไม่จ่าย</span>
         </h1>
       );
@@ -85,7 +85,7 @@ const Billgenerate = () => {
 
   const sentNotification = () => {
     const messageNoti = {
-      roomId: data.roomId,
+      roomName: data.roomName,
       messageData: "แจ้งยอดบิลเดือน " + data.month + " จำนวน " + (separator(data.rentalFee +
         7 *
           UnitPrice(
@@ -167,7 +167,7 @@ const Billgenerate = () => {
 
   const handleClick = () => {
     const searchbill = allData.find(
-      (x) => Number(x.roomId) === Number(stateData.input)
+      (x) => Number(x.roomName) === Number(stateData.input)
     );
     if (typeof searchbill !== "undefined") {
       navigate("/Billgenerate/" + searchbill._id);
@@ -219,7 +219,7 @@ const Billgenerate = () => {
   };
   function prevBill() {
     const prevbill = allData.find(
-      (x) => Number(x.roomId) === Number(data.roomId) - 1
+      (x) => Number(x.roomName) === Number(data.roomName) - 1
     );
     if (typeof prevbill !== "undefined") {
       navigate("/Billgenerate/" + prevbill._id);
@@ -228,7 +228,7 @@ const Billgenerate = () => {
   }
   function nextBill() {
     const nextbill = allData.find(
-      (x) => Number(x.roomId) === Number(data.roomId) + 1
+      (x) => Number(x.roomName) === Number(data.roomName) + 1
     );
     if (typeof nextbill !== "undefined") {
       navigate("/Billgenerate/" + nextbill._id);
@@ -237,7 +237,7 @@ const Billgenerate = () => {
   }
 
   const handleOnclick = () => {
-    loadDataMonthId(user.token, data.roomId, selectMonthData);
+    loadDataMonthId(user.token, data.roomName, selectMonthData);
     readMonth(user.token, id, values)
       .then((res) => {
         var selectMonth = res.data._id;
@@ -285,7 +285,7 @@ const Billgenerate = () => {
   const onChangeDate = (date) => {
     console.log(date, date.format("MMM"));
     setSelectMonthData({ ...selectMonthData, month: date.format("MMM") });
-    loadDataMonthId(user.token, data.roomId, selectMonthData);
+    loadDataMonthId(user.token, data.roomName, selectMonthData);
   };
 
   const loadData = (authtoken, values) => {
@@ -350,7 +350,7 @@ const Billgenerate = () => {
               {/* /.col */}
               <div className="col-sm-6">
                 <ol className="breadcrumb float-sm-right">
-                  <li className="breadcrumb-item active">ห้อง {data.roomId}</li>
+                  <li className="breadcrumb-item active">ห้อง {data.roomName}</li>
                   <li className="breadcrumb-item">
                     <Link to="/billmanage">ระบบจัดการหอพัก</Link>
                   </li>

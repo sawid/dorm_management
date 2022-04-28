@@ -26,7 +26,7 @@ export default function Managemeter () {
 
   const UnitPrice = (thisMonth, lastMonth) => {
     if (lastMonth > thisMonth) {
-      return Math.abs(thisMonth - lastMonth);
+      return thisMonth - lastMonth + 9999;
     } else {
       return thisMonth - lastMonth;
     }

@@ -13,6 +13,7 @@ import {
   changePayStatus,
   changeNotiStatus,
   sentNotificate,
+  getRoomName
 } from "./function.components/bill";
 
 const Billgenerate = () => {
@@ -20,6 +21,7 @@ const Billgenerate = () => {
   const { user } = useSelector((state) => ({ ...state }));
   const [data, setData] = useState([]);
   const [allData, setAllData] = useState([]);
+  const [ dataRoomName , setdataRoomName] = useState([]);
   const [values, setValues] = useState({
     rentalFee: "",
     waterUnitLastMonth: "",
@@ -99,7 +101,8 @@ const Billgenerate = () => {
 )) + " บาท",
     };
     console.log(messageNoti)
-    handleonChangeNoti(data)
+    if (!data.isBillNotified){
+    handleonChangeNoti(data)}
     sentNotificate(user.token, messageNoti);
   }
 
@@ -305,6 +308,18 @@ const Billgenerate = () => {
         console.log(err);
       });
   };
+
+  const loadDataRoomName = (authtoken, values) => {
+    getRoomName(authtoken, values)
+        .then(res => {
+            setdataRoomName(res.data)
+
+        })
+        .catch(err => {
+            console.log(err);
+        })
+};
+
 
   const loadAllData = (authtoken) => {
     listBill(authtoken)

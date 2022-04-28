@@ -2,21 +2,22 @@ import React, { Component } from "react";
 
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
-import { DatePicker, Space } from 'antd';
+import { Button, DatePicker, Space } from 'antd';
 import { Table, Tag} from 'antd';
 
 import { listBills } from "./function.components/billmana";
+import moment from "moment";
 
 
 export default function Managemeter () {
 
   const [tables, setTables] = useState([]);
   const { user } = useSelector((state) => ({...state}))
+  const [data, setData] = useState([]);
 
 
   // const [searchText,setSearchText]=useState('');
-
-
+  const [tablesDate, setTablesDate] = useState('')
 
 
   let colorB = 'blue';
@@ -31,14 +32,50 @@ export default function Managemeter () {
     }
   };
   const Real = [[], []]
+  const Month = []
   
   for (let i = 0;i < tables.length;i++) 
   {
-    console.log(1)
     Real[0].push(UnitPrice(tables[i].waterUnitThisMonth, tables[i].waterUnitLastMonth))
     Real[1].push(UnitPrice(tables[i].electricUnitThisMonth, tables[i].electricUnitLastMonth))
+    Month.push(tables[i].month)
   }
   console.log(Real)
+  console.log(Month)
+  console.log(tablesDate)
+
+
+  async function fillterDate(date){
+    await setTablesDate(date)
+    console.log(tablesDate)
+    let fillteredTablesDate = data.filter((tables)=>{ 
+      return tables.month === date
+    })
+    showAll()
+    setTables(fillteredTablesDate)
+  }
+  // moment().format("MMM")
+
+  function showAll(){
+    setTables(data)
+  }
+
+  const loadData = (authtoken) => {
+    listBills(authtoken)
+    .then(res => {
+        setData(res.data);
+        setTables(res.data);
+    })
+    .catch(err => {
+        console.log(err);
+    })
+};
+
+  useEffect(()=> {
+  loadData(user.token)
+
+  }, []);
+  console.log(data)
   
   const columns = [
     {
@@ -126,21 +163,7 @@ export default function Managemeter () {
     },
   ];
 
-    const loadData = (authtoken) => {
-          listBills(authtoken)
-          .then(res => {
-              setTables(res.data);
-          })
-          .catch(err => {
-              console.log(err);
-          })
-    };
 
-    useEffect(()=> {
-      loadData(user.token)
-
-  }, []);
-  
   return (
     <div>
       <div>
@@ -159,10 +182,16 @@ export default function Managemeter () {
                     </ol>
                   </div>
                   <div className="col-sm-12">
-                    <div className="card" style={{margin: "auto",padding: "25px 100px 25px 100px", width: "40%", textAlign: "center"}}>
-                        <h1 className="m-0 text-dark">รอบมิเตอร์</h1>
-                        {/* <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" value={searchText}                
-                        onChange={(event)=>{setSearchText(event.target.value)}}/> */}
+                    <div className="card" style={{margin: "auto",padding: "25px 50px 25px 50px", width: "60%", textAlign: "center"}}>
+                        <h1 className="m-0 text-dark">เลือกรอบมิเตอร์</h1>
+                        <Space direction="vertical" style={{margin: "20px 0px 20px 0px"}}>
+                            <DatePicker picker="month" onChange={(date)=>fillterDate(moment(date).format("MMM"))}/>
+                        </Space>
+                        <div>
+                          <Button type="primary" onClick={showAll}>
+                            แสดงทั้งหมด
+                          </Button>
+                        </div>
                     </div>
                   </div>
                   {/* /.col */}
@@ -176,8 +205,7 @@ export default function Managemeter () {
             <section className="content">
               {/* /.container-fluid */}
 
-
-
+            <div className="container-fluid">
               <div>
                 <div className="row" style={{textAlign: "center"}}>
                   {/* /.col */}
@@ -228,7 +256,7 @@ export default function Managemeter () {
               </div>   
 
 
-
+            </div>
             </section>
             {/* /.content */}
           </div>

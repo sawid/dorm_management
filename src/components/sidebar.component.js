@@ -45,11 +45,11 @@ const Menu = (props) => {
         {/* Brand Logo */}
         <p className="brand-link">
           <img
-            src="dist/img/AdminLTELogo.png"
-            alt="AdminLTE Logo"
+            src="https://imgur.com/WP6TS7g"
+            alt ="dorm.png"
             className="brand-image img-circle elevation-3"
             style={{ opacity: ".8" }}
-          />
+          ></img>
           <span className="brand-text font-weight-light font-sarabun text-dark">
             ระบบจัดการหอพัก
           </span>

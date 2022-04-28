@@ -2,7 +2,7 @@ import { DatePicker,Space } from "antd";
 import ReactPaginate from "react-paginate";
 import { useSelector } from "react-redux";
 import {useState, useEffect} from 'react';
-import { listBills ,createBill} from "./function.components/billmana";
+import { listBills ,createBill,getRoomName} from "./function.components/billmana";
 
 import { Modal, Button } from "react-bootstrap";
 import { message } from 'antd';
@@ -21,13 +21,24 @@ function Billmanage(){
     const [currentPage, setCurrentPage] = useState(1);
     const [postsPerPage, setPostPerPage] = useState(9);
     const [searchText,setSearchText]=useState('');
+    const [ dataRoomName , setdataRoomName] = useState('000');
   const navigate = useNavigate();
    // Modal
    const [show, setShow] = useState(false);
    const handleClose = () => setShow(false);
    const handleShow = () => setShow(true);
 
-    
+   const loadDataRoomName = (authtoken, values) => {
+    getRoomName(authtoken, values)
+        .then(res => {
+            setdataRoomName(res.data)
+            console.log(values)
+
+        })
+        .catch(err => {
+            console.log(err);
+        })
+    };
     
     const loadData = (authtoken) => {
             listBills(authtoken)
@@ -56,8 +67,8 @@ function Billmanage(){
         console.log(data.selected)
         setCurrentPage(data.selected + 1)
     };
-    var notPayed = data.filter(post => post.isBillNotified == false)
-    var payed = data.filter(post => post.isBillNotified == true)
+    var notPayed = data.filter(post => post.isPayed == false)
+    var payed = data.filter(post => post.isPayed == true)
 
 
     function showAll() {
@@ -120,11 +131,10 @@ function Billmanage(){
     function makeBill(event){
       setShow(false);
       event.preventDefault();
-      let min=Number(event.target.min.value) 
-      let max=Number(event.target.max.value) 
-      for(let i=min;i<=max;i++){
+      // let min=Number(event.target.min.value) 
+      // let max=Number(event.target.max.value) 
         const value = {
-          roomId: i,
+          roomId: event.target.roomid.value,
           month: moment().format('MMM'),
           rentalFee: event.target.price.value,
         };
@@ -136,7 +146,6 @@ function Billmanage(){
         .catch((err) => {
           console.log(err);
         });
-      }
     }
     function showNotPayed() {
       setPosts(notPayed)
@@ -201,7 +210,7 @@ function Billmanage(){
                     <button type="button" class="btn btn-outline-danger m-2" onClick={showNotPayed}>ยังไม่จ่าย</button>
                     <button type="button" class="btn btn-outline-primary m-2" onClick={showPayed}>จ่ายแล้ว</button>
                     <button type="button" class="btn btn-outline-success m-2" onClick={handleShow}>
-                สร้างห้อง
+                สร้างบิล
               </button>
                 </form>
             </nav>
@@ -209,6 +218,7 @@ function Billmanage(){
             <div className="row m-2">
              {
             currentPosts.map(post =>{
+              // loadDataRoomName(post._id)
               return <div className="col-sm-6 col-md-4 v my-2">
                 <div className="card shadow-sm w-100 " style={{ minHeight:175}}>
                 <div className="card-header">
@@ -249,12 +259,12 @@ function Billmanage(){
         <form onSubmit={(event)=>makeBill(event)}>
         <div class="form-group">
           <label for="exampleInputEmail1">room</label>
-          <input class="form-control mb-3" id="min"type="number" placeholder="min" maxLength="4"
+          {/* <input class="form-control mb-3" id="min"type="number" placeholder="min" maxLength="4"
               min="0"
               onInput={maxLengthCheck}
               onKeyPress={preventMinus}
-              onPaste={preventPasteNegative}/>
-          <input class="form-control" id="max"type="number" placeholder="max" maxLength="4"
+              onPaste={preventPasteNegative}/> */}
+          <input class="form-control" id="roomid"type="number" placeholder="roomid" maxLength="4"
               min="0"
               onInput={maxLengthCheck}
               onKeyPress={preventMinus}

@@ -11,6 +11,7 @@ import {
   resetVaule,
   readMonth,
   changePayStatus,
+  sentNotificate,
 } from "./function.components/bill";
 
 const Billgenerate = () => {
@@ -77,6 +78,15 @@ const Billgenerate = () => {
       );
     }
   };
+
+  const sentNotification = () => {
+    const messageNoti = {
+      roomId: data.roomId,
+      messageData: "แจ้งยอดบิลเดือน " + data.month + " จำนวน " + data.rentalNet + " บาท",
+    };
+    console.log(messageNoti)
+    sentNotificate(user.token, messageNoti);
+  }
 
   const maxLengthCheck = (object) => {
     if (object.target.value.length > object.target.maxLength) {
@@ -381,6 +391,7 @@ const Billgenerate = () => {
                     class="btn btn-outline-info btn-block text-sm"
                     type="submit"
                     value="แจ้งบิล"
+                    onClick={sentNotification}
                   ></input>
                   <p></p>
                 </div>

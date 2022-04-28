@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { useState, useEffect } from 'react';
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import { readBill} from "./function.components/bill";
+import { getRoomName, readBill} from "./function.components/bill";
 //Import jspdf **make pdf
 import jsPDF from "jspdf";
 //Import table to make in pdf
@@ -20,6 +20,7 @@ const Printbill = () => {
     let { id } = useParams();
     const { user } = useSelector((state) => ({ ...state }))
     const [data, setData] = useState([]);
+    const [ dataRoomName , setdataRoomName] = useState([]);
     const [values, setValues] = useState({
         rentalFee: "",
         electricUnitPrice: "",
@@ -37,12 +38,27 @@ const Printbill = () => {
                 console.log(err);
             })
     };
+
+    const loadDataRoomName = (authtoken, values) => {
+        getRoomName(authtoken, values)
+            .then(res => {
+                setdataRoomName(res.data)
+
+            })
+            .catch(err => {
+                console.log(err);
+            })
+    };
+
     const handleonChange = (e) => {
         setValues({...values, [e.target.name]:e.target.value });
       }
     useEffect(() => {
         loadData(user.token, id);
+        loadDataRoomName(user.token, id);
     }, [])
+
+    console.log(dataRoomName)
     console.log(data)
     const UnitPrice = (thisMonth, lastMonth) => {
         if (lastMonth > thisMonth) {
@@ -75,7 +91,7 @@ const Printbill = () => {
             body: [
                 ['ค่าเช่า(Rental)', rental_price, rental_quantity, rental_totals],
                 ['ค่าไฟฟ้า(Electricity)', electricity_price, electricity_quantity, electricity_totals],
-                ['ต่าน้ำ(Water)', water_price, water_quantity, water_totals],
+                ['ค่าน้ำ(Water)', water_price, water_quantity, water_totals],
                 ['ค่าส่วนกลาง(Common fee)', common_price, common_quantity, common_totals],
                 
             ],
@@ -84,12 +100,12 @@ const Printbill = () => {
 
         doc.addImage(imagebill, 'JPEG', 120, 78, 50, 45);
         doc.text(dorm_name, 14, 15);
-        doc.text("ห้อง : "+data.roomId, 100, 15);
+        doc.text("ห้อง : "+ dataRoomName , 100, 15);
         doc.text(" ใบแจ้งหนี้ ( Invoice ) ", 160, 15);
         doc.text(" หมายเหตุ ( Note )  : ", 15, 75);
-        doc.text(" หมายเลข(Bank Account No.) : " + "XXX-XXXXXX-X", 15, 85);
-        doc.text(" ธนาคาร(Bank) : " + "กสิกร (KBank)", 15, 92);
-        doc.text(" รวมทั้งหมด(Totals) : " + totals, 120, 75);
+        doc.text(" หมายเลข (Bank Account No.) : " + "XXX-XXXXXX-X", 15, 85);
+        doc.text(" ธนาคาร (Bank) : " + "กสิกร (KBank)", 15, 92);
+        doc.text(" รวมทั้งหมด (Totals) : " + totals, 120, 75);
         doc.save('บิลหอพัก.pdf');
     }
 
@@ -125,7 +141,7 @@ const Printbill = () => {
                     <div className='container-fluid'>
                         <div class="container">
                             <div class="row">
-                                <div class="col-auto me-auto"><h1>ห้อง {data.roomId}</h1></div>
+                                <div class="col-auto me-auto"><h1>ห้อง {dataRoomName}</h1></div>
                                 <div class="col-auto "><button onClick={SavePDF} type="button" class="btn btn-danger" >ดาวน์โหลด</button></div>
                             </div>
                         </div>
@@ -134,7 +150,7 @@ const Printbill = () => {
                         <div class="container">
                             <div class="row">
                                 <div class="col-auto me-auto"> <h6>สุขใจ อพาร์ตเม้นท์</h6> </div>
-                                <div class="col-auto me-auto"> <h6>ห้อง : {data.roomId}</h6> </div>
+                                <div class="col-auto me-auto"> <h6>ห้อง : {dataRoomName}</h6> </div>
                                 <div class="col-auto"> <h6> ใบแจ้งหนี้ ( Invoice )</h6> </div>
                             </div>
                         </div>

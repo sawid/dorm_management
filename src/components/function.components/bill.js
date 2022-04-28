@@ -80,3 +80,13 @@ export const getRoomName = async(authtoken, values) => {
         }
     );
 };
+
+export const changeNotiStatus = async(authtoken, id, values) => {
+    return await axios.post(
+        process.env.REACT_APP_API + "/notiStatus/" + id, values, {
+            headers: {
+                authtoken,
+            },
+        }
+    );
+};

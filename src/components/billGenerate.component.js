@@ -69,7 +69,7 @@ const Billgenerate = () => {
     if (props) {
       return (
         <h1 className="m-0 ms-3 text-dark">
-          ห้อง {data.roomId}
+          ห้อง {data.roomName}
           <span class="badge rounded-pill bg-success text-md">จ่ายแล้ว</span>
         </h1>
       );

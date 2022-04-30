@@ -400,13 +400,25 @@ const Billgenerate = () => {
                     >
                       ดูข้อมูล
                     </button> */}
+                    <div className="btn-group ms-3">
                     <button
                       type="button"
-                      className="btn  btn-sm btn-warning text-white"
+                      className="btn btn-warning text-white"
                       onClick={() => navigate("/printbill/" + data._id)}
                     >
                       สร้าง pdf
                     </button>
+                    <button
+                      type="button"
+                      className="btn btn-info text-white"
+                      onClick={() => navigate("/roomdetail/" + data.roomIdDataBase)}
+                    >
+                      ดูข้อมูลห้อง
+                    </button>
+                    </div>
+                    
+                   
+                    
                   </div>
                   <p></p>
                 </div>

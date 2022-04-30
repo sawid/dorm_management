@@ -41,6 +41,16 @@ export const changeBillNet = async(authtoken, values) => {
     );
 };
 
+export const removeBill = async(authtoken, values) => {
+    return await axios.delete(
+        process.env.REACT_APP_API + "/bill/" + values, {
+            headers: {
+                authtoken,
+            },
+        }
+    );
+};
+
 export const resetVaule = async(authtoken, id, values) => {
     return await axios.put(
         process.env.REACT_APP_API + "/bill/" + id, values, {

@@ -10,7 +10,8 @@ import { message } from 'antd';
 import moment from "moment";
 
 import { useNavigate } from "react-router-dom";
-
+import { toast, ToastContainer } from "react-toastify";
+import { removeBill } from "./function.components/bill";
 
 function Billmanage(){
     const { user } = useSelector((state) => ({...state}))
@@ -145,6 +146,14 @@ function Billmanage(){
         })
         .catch((err) => {
           console.log(err);
+          toast.danger('ไม่มีห้องหมายเลขนี้ !', {
+            position: "top-right",
+            autoClose: 1000,
+            hideProgressBar: false,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            });
         });
     }
     function showNotPayed() {
@@ -164,6 +173,18 @@ function Billmanage(){
     const indexOfFirstPost = indexOfLastPost - postsPerPage;
     const currentPosts = fillteredPosts.slice(indexOfFirstPost,indexOfLastPost);
             
+    const handleRemoveBill = (renterId) => {
+      console.log(renterId)
+      removeBill(user.token, renterId)
+      .then(res => {
+        console.log(res)
+        loadData(user.token);
+        })
+        .catch(err => {
+              console.log(err)
+        })
+      }
+
     return (
                     <div>
           <div className="content-wrapper font-sarabun">
@@ -243,7 +264,7 @@ function Billmanage(){
                         post.rentalNet)} บาท</h5>
                     <div className="d-flex justify-content-center">
                     <button type="button" class="btn btn-success text-center m-4" onClick={() => navigate('/Billgenerate/' + post._id)}>ดูรายละเอียดของบิล {post.roomName}</button>
-                    <button type="button" class="btn btn-danger text-center m-4" onClick={() => navigate('/Billgenerate/' + post._id)}>ลบบิล {post.roomName}</button>
+                    <button type="button" class="btn btn-danger text-center m-4" onClick={() => handleRemoveBill(post._id) }>ลบบิล {post.roomName}</button>
                     
                 </div>
                 </div>

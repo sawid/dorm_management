@@ -20,6 +20,15 @@ export const listRoom = async(authtoken) => {
     );
 };
 
+export const removeRoom = async(authtoken, values) => {
+  return await axios.delete(
+      process.env.REACT_APP_API + "/room/" + values, {
+          headers: {
+              authtoken,
+          },
+      }
+  );
+};
 
 
 export const createRoom = async (authtoken, data) => {

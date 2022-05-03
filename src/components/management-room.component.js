@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 import axios from "axios";
-import { createRoom, listRoom } from "./function.components/room";
+import { createRoom, listRoom, removeRoom } from "./function.components/room";
 import { Modal, Button } from "react-bootstrap";
 
 function ManagementRoom() {
@@ -93,6 +93,18 @@ function ManagementRoom() {
     // console.log(dataRoom.roomName)
 }
 
+const handleRemoveRoom = (renterId) => {
+  console.log(renterId)
+  removeRoom(user.token, renterId)
+  .then(res => {
+    console.log(res)
+    loadData(user.token);
+    })
+    .catch(err => {
+          console.log(err)
+    })
+  }
+
   return (
     <div>
       <div className="content-wrapper font-sarabun">
@@ -179,7 +191,7 @@ function ManagementRoom() {
                         <button
                           type="button"
                           class="btn btn-outline-danger text-center m-3"
-                          onClick={() => navigate('/roomdetail/' + post._id)}
+                          onClick={() => handleRemoveRoom(post._id)}
                         >
                           ลบห้อง
                         </button>

@@ -60,6 +60,11 @@ function App() {
           token: idtoken,
           username: res.data.username,
           role: res.data.role,
+          firstname: res.data.firstname,
+          lastname: res.data.lastname,
+          telnum: res.data.telnumber,
+          email: res.data.Email,
+          cellnum: res.data.cellnumber,
         }
       });
     })

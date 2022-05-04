@@ -36,9 +36,8 @@ const Menu = (props) => {
 
 
   console.log(user)
-  console.log(user.id)
-  console.log(user.role)
-  console.log(user.username)
+  // console.log(user.id)
+  // console.log(user.role)
   console.log("user.username")
   
   
@@ -145,7 +144,7 @@ const Menu = (props) => {
                 <a className="nav-link">
                 <i className="nav-icon fa fa-solid fa-user" />
                   <p>
-                    {/* <Link style={{ textDecoration: "none" }} to={"/editprofile/" + user.id}>
+                    {/* <Link style={{ textDecoration: "none" }} to={""}>
                       จัดการโปรไฟล์
                     </Link> */}
                     </p>

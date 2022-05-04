@@ -129,7 +129,7 @@ function App() {
               <RoomDetail />
             </AdminRoute>
             } /> 
-            <Route path="/editprofile" element={
+            <Route path="/editprofile/:id" element={
               <UserRoute>
                 <Editprofile />
               </UserRoute>

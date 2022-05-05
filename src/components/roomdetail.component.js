@@ -5,9 +5,9 @@ import { Provider, useSelector } from "react-redux";
 import { useState, useEffect } from 'react';
 import { Input } from 'antd';
 import { useNavigate } from "react-router-dom";
-
+import moment from "moment/min/moment-with-locales";
 import { Table, Tag, Space } from 'antd';
-import { readRoom, resetValueRoom } from "./function.components/room";
+import { readRoom, resetValueRoom ,readProblem , getProblem} from "./function.components/room";
 import { listRenter, resetValueRenter, readRenter, getRenterRoom, putRenterRoom } from "./function.components/renter"
 
 import { Modal } from "react-bootstrap";
@@ -15,6 +15,7 @@ import { Modal } from "react-bootstrap";
 // Seachbar with dropdown
 import { Select } from 'antd';
 import Item from "antd/lib/list/Item";
+
 const { Option } = Select;
 
 
@@ -28,10 +29,19 @@ const RoomDetail = () => {
   const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
   const [postsPerPage, setPostPerPage] = useState(9);
+  
+  // Renter
   const [dataRenter, setdataRenter] = useState([]);
   const [dataRenterNameList, setdataRenterNameList] = useState([]);
+  
+  // Problem
+  const [dataProblem ,setdataProblem] = useState([]);  
+  
   const [dataPutRenterList, setdataPutRenterNameList] = useState([]);
+  
+  // Room
   const [data, setData] = useState([]);
+ 
   const [values, setValues] = useState({
     id: "",
     val: "",
@@ -55,6 +65,7 @@ const RoomDetail = () => {
       .catch(err => {
         console.log(err);
       })
+    
 
   };
 
@@ -114,9 +125,18 @@ const RoomDetail = () => {
   };
 
 
-
-
-
+ // Problem
+ const loadProblem = (authtoken , value) => {
+  getProblem(authtoken, value)
+    .then(res => {
+      setdataProblem(res.data)
+      console.log(data)
+    })
+    .catch(err => {
+      console.log(err);
+    })
+}
+console.log(dataProblem, "problem") 
 
   // Modal  
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -128,6 +148,7 @@ const RoomDetail = () => {
       .then(res => {
         console.log(res)
         loadData(user.token, id)
+        loadDataRenter(user.token, id)
         console.log("check load ")
 
       })
@@ -191,6 +212,7 @@ const RoomDetail = () => {
     console.log(data.renterId, "renter ID ")
     loadDataRenter(user.token, id);
     loadDataRenterList(user.token);
+    loadProblem(user.token ,id) 
   }, []);
 
 
@@ -264,7 +286,27 @@ const RoomDetail = () => {
                   <div className="col-lg-12 mt-2">
                     <div className="card ms-2">
                       <div>
-                        <Table columns={columns} >  </Table>
+                        <table className="table table-bordered" >  
+                        <thead className="table-light">
+                          <tr>
+                            <th scope="col">วันที่</th>
+                            <th scope="col">ปัญหา</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {dataProblem.map((item, index)=>
+                          <tr>
+                              <th scope="row">
+                              <p>{ moment(item.createdAt).locale('th').format('LLL') }</p>
+                              </th> 
+                              <th scope="row">
+                              <p>{item.detailProblem}</p>  
+                              </th>    
+
+                          </tr>
+                          )}
+                        </tbody> 
+                        </table>
                       </div>
                     </div>
                   </div>
@@ -296,9 +338,9 @@ const RoomDetail = () => {
             </div>
             <div>
               <form>
-                <select class="form-select" name="renterId" aria-label="Default select example" onChange={onChangeRenterName} >
+                <select class="form-select" name="renterId" aria-label="Default select example" onChange={handleonChangeValue} >
                   {dataRenterNameList.map((item, index) =>
-                    <option name="renterId"> {item.renterName}⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀   </option>              
+                    <option name="renterId" key = {index} value={item._id}  > {item.renterName}⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀   </option>              
               )}
               </select>
             </form>

@@ -10,6 +10,8 @@ export const readRoom = async(authtoken, values) => {
     );
 };
 
+
+
 export const listRoom = async(authtoken) => {
     return await axios.get(
         process.env.REACT_APP_API + "/room/" , {
@@ -19,6 +21,8 @@ export const listRoom = async(authtoken) => {
         }
     );
 };
+
+
 
 export const removeRoom = async(authtoken, values) => {
   return await axios.delete(
@@ -57,5 +61,36 @@ export const resetValueRoom = async (authtoken, id, values) => {
 
 
 
+// Problem
+
+export const listProblem = async(authtoken) => {
+    return await axios.get(
+        process.env.REACT_APP_API + "/problem/" , {
+            headers: {
+                authtoken,
+            },
+        }
+    );
+  };
 
 
+export const readProblem = async(authtoken, values) => {
+    return await axios.get(
+        process.env.REACT_APP_API + "/problem/" + values, {
+            headers: {
+                authtoken,
+            },
+        }
+    );
+  };
+
+export const getProblem = async (authtoken, id) => {
+    return await axios.get(
+      process.env.REACT_APP_API + "/get-problem/" + id,
+      {
+        headers: {
+          authtoken,
+        },
+      }
+    );
+  };

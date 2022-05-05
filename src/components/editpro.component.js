@@ -73,7 +73,9 @@ const Editprofile = () => {
         .then(res => {
           console.log(res)
           loadData(user.token, id)
+          
         })
+        
         .catch(err => {
           console.log(err.response)
         })
